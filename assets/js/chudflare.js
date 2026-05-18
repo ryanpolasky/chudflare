@@ -92,7 +92,7 @@
         '</label>' +
         '<button class="btn btn-primary btn-sm" id="gate-verify" disabled>Verify</button>' +
       '</div>' +
-      '<div class="gate-note">Chudflare needs to confirm you are a chud before continuing. By checking the box you affirm you have not mewed today, are wearing a hoodie indoors, and have consumed at least one (1) Monster Energy in the last 24 hours.</div>';
+      '<div class="gate-note">Chudflare needs to confirm you are a chud before continuing. By checking the box you affirm you have not mewed today, are wearing a hoodie indoors, and have consumed at least one (1) energy drink in the last 24 hours.</div>';
     gate.innerHTML = html;
 
     var cb = document.getElementById('gate-cb');
