@@ -615,8 +615,11 @@
 
   function buildBadgeHtml(host) {
     // Inline-style, no external assets. Single-line for easy copy.
+    // !important guards keep the dark background and white text from being
+    // wiped out by any embedder's reset stylesheet or "a { color: inherit }"
+    // style of cascade interference.
     var safeHost = String(host).replace(/[<>"'&]/g, '');
-    return '<a href="https://chudflare.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#0B0F14;color:#fff;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;font-size:12px;font-weight:600;line-height:1;border-radius:6px;text-decoration:none;border:1px solid #F38020;letter-spacing:-0.01em"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#F38020;border-radius:50%;font-size:10px;font-weight:900;color:#fff">&#10003;</span><span>Verified Chud</span><span style="opacity:.6;font-weight:500">&middot; chudflare.com</span></a>';
+    return '<a href="https://chudflare.com" target="_blank" rel="noopener" style="display:inline-flex !important;align-items:center;gap:8px;padding:8px 14px;background-color:#0B0F14 !important;color:#ffffff !important;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;font-size:12px;font-weight:600;line-height:1;border-radius:6px;text-decoration:none !important;border:1px solid #F38020;letter-spacing:-0.01em;box-sizing:border-box"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background-color:#F38020 !important;border-radius:50%;font-size:10px;font-weight:900;color:#ffffff !important;line-height:1;box-sizing:border-box">&#10003;</span><span style="color:#ffffff !important">Verified Chud</span><span style="opacity:.6;font-weight:500;color:#ffffff !important">&middot; ' + safeHost + '</span></a>';
   }
 
   function copyToClipboard(text) {
