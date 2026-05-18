@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>SDKs | Chudflare</title>
+  <meta name="description" content="Real, installable parody SDKs for the Chudflare ChudVerse. Python, Node.js, and Go."/>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css?v=3"/>
+  <style>
+    .sdk-wrap { max-width: 880px; margin: 0 auto; padding: 56px 24px 96px; }
+    .sdk-wrap h1 { font-size: clamp(36px, 4.4vw, 52px); margin-bottom: 8px; }
+    .sdk-wrap .lead { font-size: 18px; color: var(--chud-ink-2); margin-bottom: 32px; max-width: 640px; }
+    .sdk-card { border: 1px solid var(--chud-line); border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; background: #fff; }
+    .sdk-card h3 { margin: 0 0 6px; font-size: 20px; }
+    .sdk-card p { margin: 0 0 12px; color: var(--chud-ink-2); }
+    .sdk-card code { background: var(--chud-fog); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+    .sdk-card .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+    .sdk-card .btn-row a { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="compliance" style="background:#FAF7F1;color:#5a6068;font-size:12px;line-height:1.5;text-align:center;padding:10px 24px;border-bottom:1px solid var(--chud-line)">
+    Chudflare is a parody of Cloudflare. It is not affiliated with, endorsed by, sponsored by, or in any way related to Cloudflare, Inc. Cloudflare ships excellent infrastructure that this site has nothing to do with. For real infrastructure, visit <a href="https://cloudflare.com" style="color:var(--chud-orange-dark);font-weight:600">cloudflare.com</a>.
+  </div>
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/>
+        <span>Chudflare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="../products.html">Products</a>
+        <a href="../pricing.html">Pricing</a>
+        <a href="../chud-check.html">Verify your site</a>
+        <a href="../docs.html">Docs</a>
+        <a href="../status.html">Status</a>
+        <a href="../blog/index.html">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="../pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="sdk-wrap">
+    <div class="eyebrow">Chud SDKs</div>
+    <h1>Real, installable SDKs.</h1>
+    <p class="lead">Three official client libraries. Each one installs in a single command. None of them call a real API; every method returns plausible-looking fake data so your demo works without a backend.</p>
+
+    <div class="sdk-card">
+      <h3>Python <code>v4.0.0</code></h3>
+      <p>Install directly from chudflare.com:</p>
+      <pre style="background:var(--chud-ink);color:#fff;padding:12px 16px;border-radius:8px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;margin:0">pip install https://chudflare.com/sdk/chudflare-4.0.0.tar.gz</pre>
+      <div class="btn-row">
+        <a href="chudflare-4.0.0.tar.gz" class="btn btn-secondary btn-sm">Download tarball</a>
+        <a href="python/" class="btn btn-secondary btn-sm">Browse source</a>
+        <a href="../docs.html#sdk-python" class="btn btn-secondary btn-sm">Docs</a>
+      </div>
+    </div>
+
+    <div class="sdk-card">
+      <h3>Node.js <code>v4.0.0</code></h3>
+      <p>Install directly from chudflare.com:</p>
+      <pre style="background:var(--chud-ink);color:#fff;padding:12px 16px;border-radius:8px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;margin:0">npm install https://chudflare.com/sdk/chudflare-4.0.0.tgz</pre>
+      <div class="btn-row">
+        <a href="chudflare-4.0.0.tgz" class="btn btn-secondary btn-sm">Download tarball</a>
+        <a href="node/" class="btn btn-secondary btn-sm">Browse source</a>
+        <a href="../docs.html#sdk-node" class="btn btn-secondary btn-sm">Docs</a>
+      </div>
+    </div>
+
+    <div class="sdk-card">
+      <h3>Go <code>v4.0.0</code></h3>
+      <p>No backing git repo, so we ship a vendorable zip:</p>
+      <pre style="background:var(--chud-ink);color:#fff;padding:12px 16px;border-radius:8px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;margin:0;white-space:pre-wrap">curl -L -o chudflare-go.zip https://chudflare.com/sdk/chudflare-go-4.0.0.zip
+unzip chudflare-go.zip
+# then in your go.mod:
+#   require chudflare.com/chudflare-go v4.0.0
+#   replace chudflare.com/chudflare-go =&gt; ./chudflare-go-4.0.0</pre>
+      <div class="btn-row">
+        <a href="chudflare-go-4.0.0.zip" class="btn btn-secondary btn-sm">Download zip</a>
+        <a href="go/" class="btn btn-secondary btn-sm">Browse source</a>
+        <a href="../docs.html#sdk-go" class="btn btn-secondary btn-sm">Docs</a>
+      </div>
+    </div>
+
+    <p style="margin-top:32px;color:var(--chud-ink-2);font-size:14px">All SDKs are MIT licensed. Forged with love by an actual chud.</p>
+  </div>
+
+  <footer class="foot" style="margin-top:0">
+    <div class="container">
+      <div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px">
+        &copy; 2026 Chudflare, Inc. All rights chudded. &middot; <a href="../index.html" style="color:var(--chud-orange-light)">chudflare.com</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

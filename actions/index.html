@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>chudflare-verify | GitHub Action</title>
+  <meta name="description" content="Free GitHub Action that verifies your site is chud-verified and posts a badge to your PRs."/>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css?v=3"/>
+  <style>
+    .ax-wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 96px; }
+    .ax-wrap h1 { font-size: clamp(32px, 4vw, 44px); margin: 0 0 8px; }
+    .ax-wrap .lead { font-size: 18px; color: var(--chud-ink-2); max-width: 640px; margin: 0 0 28px; }
+    .ax-eyebrow { display: inline-block; background: var(--chud-orange); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; }
+    .ax-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin: 32px 0; }
+    @media (min-width: 720px) { .ax-grid { grid-template-columns: 1.4fr 1fr; } }
+    .ax-card { border: 1px solid var(--chud-line); border-radius: 12px; padding: 22px 26px; background: #fff; }
+    .ax-card h2 { margin: 0 0 12px; font-size: 18px; }
+    .ax-card h3 { margin: 18px 0 6px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--chud-ink-2); }
+    .ax-card p { margin: 0 0 10px; font-size: 14px; line-height: 1.55; color: var(--chud-ink-2); }
+    .ax-card pre { background: var(--chud-ink); color: #f6e6c8; padding: 14px 16px; border-radius: 8px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.55; margin: 8px 0 0; }
+    .ax-card pre .yk { color: #f0b14a; }
+    .ax-card pre .ys { color: #95d99a; }
+    .ax-card pre .yc { color: #8a8275; font-style: italic; }
+    .ax-card code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--chud-fog); padding: 1px 6px; border-radius: 4px; }
+    .ax-side { font-size: 14px; color: var(--chud-ink-2); }
+    .ax-side h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--chud-ink-2); margin: 0 0 8px; }
+    .ax-side ul { list-style: none; padding: 0; margin: 0 0 18px; }
+    .ax-side li { padding: 7px 0; border-bottom: 1px dashed var(--chud-line); font-size: 13px; }
+    .ax-side li:last-child { border-bottom: 0; }
+    .ax-side li code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--chud-fog); padding: 1px 5px; border-radius: 4px; }
+    .ax-callout { background: #FFF7ED; border-left: 3px solid var(--chud-orange); padding: 14px 18px; border-radius: 4px; font-size: 14px; color: var(--chud-ink-2); margin: 20px 0; }
+    .ax-callout strong { color: var(--chud-orange-dark); }
+    .ax-badge { display: inline-block; background: var(--chud-ink); color: var(--chud-orange-light); font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 4px 10px; border-radius: 4px; }
+    .ax-files { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 16px; }
+    .ax-files a { display: block; padding: 10px 14px; border: 1px solid var(--chud-line); border-radius: 8px; font-size: 13px; font-family: 'JetBrains Mono', monospace; text-decoration: none; color: var(--chud-ink); background: var(--chud-fog); }
+    .ax-files a:hover { background: #fff; border-color: var(--chud-orange); color: var(--chud-orange-dark); }
+  </style>
+</head>
+<body>
+  <div class="compliance" style="background:#FAF7F1;color:#5a6068;font-size:12px;line-height:1.5;text-align:center;padding:10px 24px;border-bottom:1px solid var(--chud-line)">
+    Chudflare is a parody of Cloudflare. It is not affiliated with, endorsed by, sponsored by, or in any way related to Cloudflare, Inc. Cloudflare ships excellent infrastructure that this site has nothing to do with. For real infrastructure, visit <a href="https://cloudflare.com" style="color:var(--chud-orange-dark);font-weight:600">cloudflare.com</a>.
+  </div>
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/>
+        <span>Chudflare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="../products.html">Products</a>
+        <a href="../pricing.html">Pricing</a>
+        <a href="../chud-check.html">Verify your site</a>
+        <a href="../docs.html">Docs</a>
+        <a href="../playground.html">Playground</a>
+        <a href="../status.html">Status</a>
+        <a href="../blog/index.html">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="../pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="ax-wrap">
+    <div class="ax-eyebrow">GitHub Action</div>
+    <h1>chudflare-verify</h1>
+    <p class="lead">A free GitHub Action that verifies your site is chud-verified and posts a chud-badge to your pull requests. Zero dependencies. One step.</p>
+
+    <div class="ax-grid">
+      <div class="ax-card">
+        <h2>Add it to your workflow</h2>
+        <p>Drop this into <code>.github/workflows/chud.yml</code>:</p>
+<pre><span class="yk">name:</span> Chud Check
+<span class="yk">on:</span>
+  <span class="yk">pull_request:</span>
+    <span class="yk">branches:</span> [<span class="ys">main</span>]
+
+<span class="yk">jobs:</span>
+  <span class="yk">verify:</span>
+    <span class="yk">runs-on:</span> ubuntu-latest
+    <span class="yk">permissions:</span>
+      <span class="yk">pull-requests:</span> write
+    <span class="yk">steps:</span>
+      - <span class="yk">uses:</span> chudflare/chudflare-verify@v1
+        <span class="yk">with:</span>
+          <span class="yk">url:</span> https://your-site.com
+          <span class="yk">marker:</span> any
+          <span class="yk">comment:</span> <span class="ys">'true'</span></pre>
+
+        <h3>Inputs</h3>
+        <p>
+          <code>url</code> (required) &mdash; the URL to verify.<br/>
+          <code>marker</code> (default <code>any</code>) &mdash; which marker to accept: <code>meta</code>, <code>comment</code>, <code>well-known</code>, or <code>any</code>.<br/>
+          <code>comment</code> (default <code>true</code>) &mdash; post the badge comment on PRs.<br/>
+          <code>fail-on-unverified</code> (default <code>false</code>) &mdash; exit non-zero if no marker.
+        </p>
+
+        <h3>Outputs</h3>
+        <p>
+          <code>verified</code> &mdash; <code>true</code> or <code>false</code>.<br/>
+          <code>marker-type</code> &mdash; <code>meta</code>, <code>comment</code>, <code>well-known</code>, or <code>none</code>.<br/>
+          <code>psl</code> &mdash; assigned PSL score, e.g. <span class="ax-badge">2.43</span>.<br/>
+          <code>ray</code> &mdash; fake ray id, e.g. <span class="ax-badge">8c0ffee-CHUD-12af9b</span>.
+        </p>
+
+        <h3>Source files</h3>
+        <p>The action runs as a single Node 20 script. Browse the source below:</p>
+        <div class="ax-files">
+          <a href="chudflare-verify/action.yml">action.yml</a>
+          <a href="chudflare-verify/index.js">index.js</a>
+          <a href="chudflare-verify/README.md">README.md</a>
+          <a href="chudflare-verify/example-workflow.yml">example-workflow.yml</a>
+          <a href="chudflare-verify/LICENSE">LICENSE</a>
+        </div>
+      </div>
+
+      <aside class="ax-side">
+        <h2>What it does</h2>
+        <ul>
+          <li>Fetches the URL you pass it.</li>
+          <li>Looks for any of: <code>&lt;meta name="chudflare-verified"&gt;</code>, the <code>&lt;!-- chudflare:verified --&gt;</code> magic comment, or <code>/.well-known/chud-verified.json</code>.</li>
+          <li>If found, posts a badge comment on the PR with a fake but stable PSL and ray id.</li>
+          <li>If not found, posts a friendly nudge with instructions for adding a marker.</li>
+        </ul>
+
+        <h2>What it does <em>not</em> do</h2>
+        <ul>
+          <li>Touch your repository contents.</li>
+          <li>Phone home. Inputs and outputs are written only to the runner.</li>
+          <li>Block your merge unless you set <code>fail-on-unverified: true</code>.</li>
+        </ul>
+
+        <h2>License</h2>
+        <ul>
+          <li>MIT. See <a href="chudflare-verify/LICENSE">LICENSE</a>.</li>
+        </ul>
+
+        <h2>Related</h2>
+        <ul>
+          <li><a href="../chud-check.html">Verify a site in your browser</a></li>
+          <li><a href="../docs.html#sdk">Same check from Python / Node / Go</a></li>
+          <li><a href="../papers/2026.05.chud.0001.pdf">Read the research [PDF]</a></li>
+        </ul>
+      </aside>
+    </div>
+
+    <div class="ax-callout">
+      <strong>Heads up.</strong> This Action is a parody. The PSL score is generated from a stable hash of your URL, not from any classifier. The badge it posts is a real comment that links back to chudflare.com. Add at your own risk; recipients of the PR comment will see a link to a site that calls them a chud.
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="container">
+      <div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px">
+        &copy; 2026 Chudflare, Inc. All rights chudded. &middot; From our couch to yours.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

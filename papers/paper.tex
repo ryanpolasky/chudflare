@@ -1,0 +1,444 @@
+% ──────────────────────────────────────────────────────────────────────────
+%  PSL-Based Adversarial Filtering at the CDN Edge: A Production Evaluation
+%  arXiv:2026.05.chud.0001  ·  Chudmaxx Labs Technical Report CL-TR-2026-03
+%
+%  Chudflare is a parody of Cloudflare. Nothing in this document reflects
+%  any real research, dataset, deployment, or person. All citations are
+%  fictional. For real infrastructure research, visit cloudflare.com/research
+%  or the actual arXiv at arxiv.org.
+% ──────────────────────────────────────────────────────────────────────────
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{times}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+
+% ── colors + section formatting ───────────────────────────────────────────
+\definecolor{cfo}{HTML}{D8541C}
+\definecolor{cfi}{HTML}{1F2937}
+\titleformat{\section}{\normalfont\large\bfseries\color{cfi}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\color{cfi}}{\thesubsection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\titlespacing*{\subsection}{0pt}{6pt}{2pt}
+
+% ── header / footer ───────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize Slopwell, Chudwell, Slopkowski}
+\fancyhead[R]{\footnotesize \textit{PSL-Based Adversarial Filtering at the CDN Edge}}
+\fancyfoot[L]{\footnotesize arXiv:2026.05.chud.0001v2 [cs.CR] 14 May 2026}
+\fancyfoot[R]{\footnotesize \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\captionsetup[table]{font=small,labelfont=bf,skip=4pt}
+\captionsetup[figure]{font=small,labelfont=bf,skip=4pt}
+
+% ── metadata ──────────────────────────────────────────────────────────────
+\title{
+  \vspace{-2em}
+  \textbf{PSL-Based Adversarial Filtering at the CDN Edge:\\
+  A Production Evaluation Across 310 Points of Presence}
+  \vspace{0.5em}
+}
+\author{
+  Hugo Slopwell\thanks{Corresponding author: \texttt{hugo.slopwell@chudflare.com}} \quad
+  Madison Chudwell \quad
+  Brennan Slopkowski \\[2pt]
+  \small Chudmaxx Labs, Chudflare Inc.\\
+  \small Agartha Research Park, Denver, CO 80202, USA\\[6pt]
+  \small \texttt{\{slopwell, chudwell, slopkowski\}@chudflare.com}
+}
+\date{}
+
+\begin{document}
+\twocolumn[\maketitle
+  \vspace{-1em}
+  \begin{minipage}{0.92\textwidth}
+    \small
+    \begin{center}\textbf{Abstract}\end{center}
+    \noindent
+    We present the design, deployment, and evaluation of an adversarial
+    request-filtering system based on the Perceived Sigma Level (PSL) metric,
+    a 1.0--10.0 continuous-valued classifier trained on $4.2 \times 10^9$
+    labeled HTTP request samples. PSL inference is performed in-line at the
+    CDN edge across 310 points of presence (PoPs) with a median added
+    latency of $0.91$\,ms (p99: $4.3$\,ms). The classifier achieves
+    $98.7\%$ true-positive rate at a $0.4\%$ false-positive rate against a
+    held-out adversarial corpus. We further introduce \emph{Chad Fight Mode},
+    a deployment posture in which all requests scoring above $5.5$ on the
+    PSL axis are silently downgraded via HTTP 403, and demonstrate that the
+    approach reduces ``unwanted cheekbone exposure'' by $93.4\%$ at the
+    edge. We discuss the limitations of PSL as a security primitive, the
+    ethical considerations of cosmetic-coded filtering, and outline a
+    pipeline for federated retraining of the classifier from user-supplied
+    hunch telemetry. We release neither the model weights nor the labeled
+    corpus, on the grounds that we have not yet found a buyer.
+
+    \medskip
+    \noindent\textbf{Keywords:} content delivery, web security, adversarial
+    classification, edge computing, looksmaxxing, parody.
+  \end{minipage}
+  \vspace{1.5em}]
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+
+The proliferation of high-jawline traffic on the public Internet poses an
+emerging challenge for content delivery providers \cite{chudwell2024edge,
+slopkowski2025taxonomy}. While prior work has focused on rate limiting
+\cite{rfc6585}, IP reputation \cite{spamhaus2003}, and JA3 fingerprinting
+\cite{althouse2017ja3}, none of these signals adequately capture the
+\emph{cosmetic posture} of an incoming request, defined here as the
+joint distribution over visitor facial-harmony characteristics inferred
+from User-Agent string, request cadence, and TLS ClientHello entropy.
+
+This paper makes the following contributions:
+\begin{enumerate}[leftmargin=*,nosep]
+  \item We define the \textbf{Perceived Sigma Level (PSL)}, a continuous
+    metric in $[1.0, 10.0]$ summarizing the cosmetic posture of an HTTP
+    request (\S\ref{sec:psl}).
+  \item We describe a production system, \textsc{Chud Fight Mode}, that
+    performs in-line PSL inference at the edge of a global CDN with median
+    added latency of under $1$\,ms (\S\ref{sec:system}).
+  \item We evaluate the classifier on $1.43 \times 10^{10}$ requests
+    captured in March 2026, demonstrating that it removes $93.4\%$ of
+    cheekbone-bearing traffic at a $0.4\%$ false-positive rate
+    (\S\ref{sec:eval}).
+  \item We discuss the limitations of the approach, including its
+    documented inability to reliably classify visitors who recently
+    showered (\S\ref{sec:limits}).
+\end{enumerate}
+
+A note on terminology. ``Chud'' in this paper refers to the operational
+class of \emph{desired} CDN visitor, characterized in our dataset by
+$\textsc{psl} \in [1.0, 3.5]$, a measurable hunching angle, and at least
+one Monster Ultra Zero opened in the prior $24$\,h window. We acknowledge
+the term carries connotations elsewhere; in this work it is used in its
+purely operational sense.
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Edge filtering.}
+The use of edge computing for security has been extensively studied
+\cite{cflare2017workers, fastlyedge2019, akamai2020origin}. Most prior
+systems filter on lexical or structural request features. Our work extends
+this line of inquiry by introducing a cosmetic axis to the classification
+boundary.
+
+\paragraph{Facial-harmony metrics.}
+The PSL scale traces its origins to anonymous fora active between
+2014--2019 \cite{anon2018psl, anon2019harmony}. Rigorous benchmarks remain
+scarce. Hunched et al.~\cite{hunched2022bench} attempt a normalization
+to the [0,1] interval but report a Cohen's kappa below $0.2$, suggesting
+fundamental inter-rater disagreement. We do not address this; our
+classifier is trained against a single rater (\S\ref{sec:methods}).
+
+\paragraph{Looksmaxxing detection.}
+Recent work has examined the detection of looksmaxxing communities in
+short-form video \cite{tiktok2024lmx, chudwell2025drift}. To our knowledge
+this is the first work to apply analogous detectors at the CDN layer.
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{The PSL Metric}
+\label{sec:psl}
+
+We define the Perceived Sigma Level of a request $r$ as a weighted
+combination of three submetrics:
+\begin{equation}
+\textsc{psl}(r) = w_1 \cdot \phi_{\text{cb}}(r) + w_2 \cdot \phi_{\text{jl}}(r) + w_3 \cdot \phi_{\text{cad}}(r),
+\end{equation}
+where $\phi_{\text{cb}}(r)$ is the estimated cheekbone visibility,
+$\phi_{\text{jl}}(r)$ is the estimated jawline angle from horizontal, and
+$\phi_{\text{cad}}(r)$ is request cadence relative to the population
+median. Weights $(w_1, w_2, w_3) = (0.42, 0.39, 0.19)$ were fit by
+five-fold cross-validation against a hand-labeled corpus of $50{,}000$
+requests collected by Chudwell over the spring 2025 quarter.
+
+Crucially, none of $\phi_{\text{cb}}$, $\phi_{\text{jl}}$, or
+$\phi_{\text{cad}}$ has access to any biometric data. All three are
+estimated purely from HTTP-layer signals; we present this estimation
+as a feature rather than a limitation.
+
+\subsection{Calibration}
+\label{sec:calibration}
+
+We calibrate PSL such that the median chud scores approximately $2.1$ and
+fewer than $1\%$ of chuds exceed $3.5$. The scale is open at the top: a
+score of $10.0$ corresponds to the theoretical Pareto-optimal Gigachad,
+which we have never observed in our deployment\footnote{Slopwell reports
+one suspected sighting in February 2026, but the offending request was
+filtered before headers could be captured.}.
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{System Architecture}
+\label{sec:system}
+
+The Chud Fight Mode classifier is deployed as a hot path in the request
+pipeline of all $310$ Chudflare PoPs. Inference proceeds as follows:
+
+\begin{algorithm}
+\caption{In-line PSL inference at the edge.}
+\label{alg:psl}
+\begin{algorithmic}[1]
+\Require Incoming HTTP request $r$, threshold $\tau$.
+\State $h \gets \texttt{hashClientHello}(r)$
+\State $f \gets \texttt{extractFeatures}(r, h)$
+\State $p \gets \texttt{PSLModel}(f)$ \Comment{$O(\text{model depth})$}
+\If{$p > \tau$}
+  \State \Return \texttt{Response}(403, ``you got mogged.'')
+\ElsIf{$p > \tau - 1.0$}
+  \State \Return \texttt{ChudChallenge}(r) \Comment{5-second hunch CAPTCHA}
+\Else
+  \State \Return \texttt{forward}(r) \Comment{originate to backend}
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+The classifier is implemented as a 3-layer perceptron with hidden
+dimension 64, exported to ONNX and compiled to WebAssembly for execution
+inside our Chudders serverless runtime \cite{chudflare2026chudders}.
+Inference cost is dominated by feature extraction; the model itself runs
+in under $200$\,$\mu$s at p99.
+
+\subsection{Deployment Postures}
+\label{sec:postures}
+
+Customers select among four operational postures, summarized in
+Table~\ref{tab:postures}.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+Posture & Threshold $\tau$ & Action above $\tau$ \\
+\midrule
+Chuddle           & 7.5  & forward, log only \\
+Chud Mode         & 5.5  & forward, log only \\
+Chad Fight Mode   & 5.5  & 403 ``you got mogged.'' \\
+Under Mew Mode    & 4.0  & 102 ``processing in silence'' \\
+\bottomrule
+\end{tabular}
+\caption{Deployment postures available to Chudflare customers. Under Mew
+Mode is recommended only for users actively being mogged in production.}
+\label{tab:postures}
+\end{table}
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Evaluation}
+\label{sec:eval}
+
+We evaluate the classifier on $1.43 \times 10^{10}$ requests captured
+across all $310$ PoPs during the four-week window of March 2--29, 2026.
+Of these, $9.2\%$ were labeled (post hoc) as adversarial; the remainder
+served as our negative class.
+
+\subsection{Methods}
+\label{sec:methods}
+
+Labels were assigned by Chudwell in a single sitting on March 30, 2026,
+while seated, hunched, and consuming a Monster Ultra Zero. We acknowledge
+this is methodologically suboptimal; see \S\ref{sec:limits} for a
+discussion. All experiments were conducted on production traffic;
+we did not maintain a clean test set.
+
+\subsection{Results}
+
+Table~\ref{tab:results} summarizes our results against three baselines:
+IP reputation lookup, JA3 fingerprinting, and a generic rule-based WAF.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Method & TPR & FPR & Med. lat. \\
+\midrule
+IP reputation only        & 41.2\% & 1.8\% & 0.1\,ms \\
+JA3 fingerprint match     & 68.4\% & 2.3\% & 0.3\,ms \\
+Rule-based WAF (94 rules) & 79.1\% & 4.6\% & 1.2\,ms \\
+\textbf{PSL (ours)}       & \textbf{98.7\%} & \textbf{0.4\%} & 0.9\,ms \\
+\bottomrule
+\end{tabular}
+\caption{True-positive rate, false-positive rate, and median added
+latency across $1.43 \times 10^{10}$ March 2026 requests. PSL achieves a
+$24.9$ percentage-point absolute improvement in TPR over the strongest
+baseline (rule-based WAF), at lower FPR and comparable latency.}
+\label{tab:results}
+\end{table}
+
+\subsection{Ablation}
+
+To isolate the contribution of each submetric, we re-train PSL with each
+of $\phi_{\text{cb}}$, $\phi_{\text{jl}}$, $\phi_{\text{cad}}$ ablated.
+Removing $\phi_{\text{jl}}$ produces the largest drop in TPR ($-7.2$
+points), suggesting that jawline estimation carries the bulk of the
+classifier's signal. Removing $\phi_{\text{cad}}$ has negligible effect,
+which we attribute to its high collinearity with $\phi_{\text{cb}}$.
+
+\subsection{Discussion}
+
+The PSL classifier achieves strong performance against our held-out
+adversarial corpus, but several observations warrant care. First, the
+true-positive rate is unusually high relative to prior work; this may
+indicate label leakage during corpus construction. Second, the FPR of
+$0.4\%$ corresponds to approximately $5.7 \times 10^7$ misclassified
+chuds per day at peak traffic, which our customer support team
+characterizes as ``a lot of angry emails.''
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Limitations and Ethical Considerations}
+\label{sec:limits}
+
+We identify the following limitations.
+
+\paragraph{Single-rater labels.} All adversarial labels were assigned by
+a single annotator over a four-hour interval. Inter-annotator agreement
+was not measured, in part because we did not have a second annotator.
+
+\paragraph{Cosmetic axis.} The premise of filtering by inferred cosmetic
+posture is, strictly speaking, indefensible. We deploy it because our
+customers ask for it. We do not endorse the practice and recommend its
+use only as a parody.
+
+\paragraph{Adversarial robustness.} A motivated attacker can lower their
+PSL by hunching, opening Doordash, or replacing their TLS stack with that
+of an unmaintained 2014-era distribution. We have observed all three in
+the wild.
+
+\paragraph{Ethical disclosure.} The authors hold equity in Chudflare,
+which sells the Chad Fight Mode product evaluated in this paper. The
+labeled corpus was collected without IRB review, on the grounds that
+no humans were classified (only their requests). We acknowledge this
+distinction is thin.
+
+% ──────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+
+We have presented PSL, an edge-deployed adversarial classifier for HTTP
+requests, and \textsc{Chad Fight Mode}, the deployment posture in which
+it is most usefully embodied. The classifier achieves a $98.7\%$
+true-positive rate at $0.4\%$ FPR on a production corpus of
+$1.43 \times 10^{10}$ requests. Future work includes (i) extending the
+classifier to support federated retraining from customer-supplied hunch
+telemetry, (ii) introducing a continuous variant of Under Mew Mode in
+which all responses are stochastically lowercased, and (iii) finding a
+buyer for the labeled corpus.
+
+\section*{Acknowledgments}
+
+The authors thank the Chudflare ChudVerse 2026 program committee for
+helpful early feedback, the Slop Operations team for keeping inference
+latency under p99 targets, and Brennan's couch for hosting the entire
+labeling session.
+
+\paragraph{Reproducibility.} We release neither the labeled corpus nor
+the trained weights. Source code for the inference path is available on
+request, by sending an email and never receiving a reply. A reference
+implementation of the classifier (in Chudscript) is available at
+\url{https://chudflare.com/playground}.
+
+% ──────────────────────────────────────────────────────────────────────────
+\begin{thebibliography}{99}
+\small
+\bibitem{chudwell2024edge}
+M.~Chudwell.
+``Cosmetic Coded Filtering at the CDN Edge: Position Paper.''
+In \textit{Proc.\ ChudVerse '24}, pp.\ 12--19, 2024.
+
+\bibitem{slopkowski2025taxonomy}
+B.~Slopkowski.
+``A Taxonomy of High-Jawline Traffic in Production HTTP Logs.''
+\textit{ACM Trans.\ Slop Sys.}, 14(3):1--28, 2025.
+
+\bibitem{rfc6585}
+M.~Nottingham and R.~Fielding.
+``Additional HTTP Status Codes.''
+RFC 6585, IETF, 2012.
+
+\bibitem{spamhaus2003}
+The Spamhaus Project.
+``The Spamhaus Block List.''
+\url{https://www.spamhaus.org/sbl/}, accessed 2026.
+
+\bibitem{althouse2017ja3}
+J.~Althouse, J.~Atkinson, and J.~Atkins.
+``JA3: A Method for Profiling SSL/TLS Clients.''
+\textit{Black Hat USA}, 2017.
+
+\bibitem{anon2018psl}
+Anonymous.
+``A Note on Sigma Calibration.''
+\textit{[forum thread]}, 2018. Citation withheld for taste.
+
+\bibitem{anon2019harmony}
+Anonymous.
+``Re: A Note on Sigma Calibration (followup).''
+\textit{[same forum]}, 2019. Citation withheld for taste.
+
+\bibitem{hunched2022bench}
+H.~Hunched, P.~Posture, and L.~Levator.
+``A Benchmark for Inter-Rater Agreement on Cosmetic Scales.''
+\textit{Proc.\ Slop Conf.\ '22}, pp.\ 244--251, 2022.
+
+\bibitem{tiktok2024lmx}
+TikTok Trust \& Safety Team.
+``Trend Detection in Looksmaxxing Communities: Internal Report.''
+\textit{Unpublished}, 2024.
+
+\bibitem{chudwell2025drift}
+M.~Chudwell.
+``Concept Drift in the TikTok Algorithm: A Longitudinal Study.''
+\textit{ChudVerse '25}, pp.\ 88--104, 2025.
+
+\bibitem{cflare2017workers}
+A. Real Company.
+``Cloudflare Workers: Serverless on the Edge.''
+\url{https://workers.cloudflare.com}, 2017. \textit{Not us. They are real. We are not.}
+
+\bibitem{fastlyedge2019}
+Fastly Inc.
+``Compute@Edge: Architectural Overview.''
+\textit{Fastly White Paper}, 2019.
+
+\bibitem{akamai2020origin}
+Akamai Technologies.
+``Origin Shield for the Anti-Looksmaxxing Era.''
+\textit{Akamai Tech Doc}, 2020.
+
+\bibitem{chudflare2026chudders}
+H.~Slopwell.
+``Chudders: Edge-Native JavaScript for the Hunched Engineer.''
+\textit{Chudflare Engineering Blog}, March 2026.
+\url{https://chudflare.com/blog/}.
+\end{thebibliography}
+
+\section*{Compliance Notice}
+{\footnotesize
+This document is a parody. \emph{Chudflare} is a parody of \emph{Cloudflare,
+Inc.} It is not affiliated with, endorsed by, sponsored by, or in any way
+related to Cloudflare, Inc. Cloudflare ships excellent infrastructure
+that this paper has nothing to do with. All cited works marked
+``Anonymous'' or attributed to \emph{Chudmaxx Labs}, \emph{Hugo Slopwell},
+\emph{Madison Chudwell}, or \emph{Brennan Slopkowski} are fictional and
+should not be entered into any reference manager that you intend to use
+in a serious work. No humans were classified in the preparation of this
+manuscript. For real infrastructure research, visit
+\url{https://blog.cloudflare.com/research}.\par}
+
+\end{document}

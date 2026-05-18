@@ -50,6 +50,8 @@
   RewriteRule ^products$ products.html [L]
   RewriteRule ^pricing$ pricing.html [L]
   RewriteRule ^chud-check$ chud-check.html [L]
+  RewriteRule ^docs$ docs.html [L]
+  RewriteRule ^playground$ playground.html [L]
   RewriteRule ^1020$ 1020.html [L]
 </IfModule>
 

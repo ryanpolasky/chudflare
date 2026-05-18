@@ -15,4 +15,10 @@
   <url><loc>https://chudflare.com/blog/why-we-rotated-counter-clockwise</loc><priority>0.6</priority></url>
   <url><loc>https://chudflare.com/blog/zero-chud-at-scale</loc><priority>0.6</priority></url>
   <url><loc>https://chudflare.com/blog/the-great-doordash-degradation</loc><priority>0.6</priority></url>
+  <url><loc>https://chudflare.com/docs</loc><priority>0.9</priority></url>
+  <url><loc>https://chudflare.com/sdk/</loc><priority>0.7</priority></url>
+  <url><loc>https://chudflare.com/playground</loc><priority>0.9</priority></url>
+  <url><loc>https://chudflare.com/papers/</loc><priority>0.6</priority></url>
+  <url><loc>https://chudflare.com/papers/2026.05.chud.0001.pdf</loc><priority>0.6</priority></url>
+  <url><loc>https://chudflare.com/actions/</loc><priority>0.6</priority></url>
 </urlset>

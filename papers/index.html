@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Chudflare Research | Pre-prints &amp; Tech Notes</title>
+  <meta name="description" content="Pre-prints from Chudmaxx Labs. Edge filtering, looksmaxxing detection, and other parody research."/>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css?v=3"/>
+  <style>
+    .px-wrap { max-width: 940px; margin: 0 auto; padding: 48px 24px 96px; font-family: 'Crimson Pro', 'Inter', serif; color: #1B1F23; }
+    .px-wrap h1 { font-family: 'Crimson Pro', serif; font-size: 40px; letter-spacing: -0.01em; margin: 0 0 6px; }
+    .px-wrap .lead { font-size: 17px; color: #4A5057; margin: 0 0 40px; max-width: 640px; line-height: 1.55; }
+    .px-list { border-top: 1px solid var(--chud-line); }
+    .px-paper { padding: 22px 0 24px; border-bottom: 1px solid var(--chud-line); }
+    .px-paper .ax-id { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6B7280; margin-bottom: 4px; }
+    .px-paper h3 { font-family: 'Crimson Pro', serif; font-size: 22px; font-weight: 600; margin: 0 0 6px; line-height: 1.3; }
+    .px-paper h3 a { color: #1B1F23; text-decoration: none; }
+    .px-paper h3 a:hover { color: var(--chud-orange-dark); }
+    .px-paper .authors { font-size: 14px; color: #4A5057; font-style: italic; margin-bottom: 10px; }
+    .px-paper .abstract { font-size: 15px; color: #2A2E33; line-height: 1.55; margin-bottom: 10px; max-width: 720px; }
+    .px-paper .links { font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+    .px-paper .links a { color: var(--chud-orange-dark); text-decoration: none; margin-right: 14px; }
+    .px-paper .links a:hover { text-decoration: underline; }
+    .px-paper .subj { display: inline-block; font-size: 11px; padding: 2px 8px; background: #FEF3E6; color: #B8541E; border-radius: 4px; margin-left: 6px; font-family: 'JetBrains Mono', monospace; font-weight: 500; letter-spacing: 0.02em; }
+    .px-aside { background: #FFF7ED; border-left: 3px solid var(--chud-orange); padding: 14px 18px; margin: 32px 0; font-size: 14px; color: var(--chud-ink-2); border-radius: 4px; font-family: 'Inter', sans-serif; }
+    .px-aside strong { color: var(--chud-orange-dark); }
+  </style>
+</head>
+<body>
+  <div class="compliance" style="background:#FAF7F1;color:#5a6068;font-size:12px;line-height:1.5;text-align:center;padding:10px 24px;border-bottom:1px solid var(--chud-line)">
+    Chudflare is a parody of Cloudflare. It is not affiliated with, endorsed by, sponsored by, or in any way related to Cloudflare, Inc. Cloudflare ships excellent infrastructure that this site has nothing to do with. For real infrastructure, visit <a href="https://cloudflare.com" style="color:var(--chud-orange-dark);font-weight:600">cloudflare.com</a>.
+  </div>
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/>
+        <span>Chudflare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="../products.html">Products</a>
+        <a href="../pricing.html">Pricing</a>
+        <a href="../chud-check.html">Verify your site</a>
+        <a href="../docs.html">Docs</a>
+        <a href="../playground.html">Playground</a>
+        <a href="../status.html">Status</a>
+        <a href="../blog/index.html">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="../pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="px-wrap">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em">Chudmaxx Labs Pre-print Server</div>
+    <h1>Research</h1>
+    <p class="lead">Pre-prints and technical notes from Chudmaxx Labs. None of these have been peer reviewed. None of them are real. All of them are typeset in LaTeX.</p>
+
+    <div class="px-aside">
+      <strong>Submission policy.</strong> Chudmaxx Labs accepts submissions on any topic at the intersection of CDN engineering and the broader cosmetic-coded computing field. We do not accept submissions. There is no submission portal. There is no reviewer pool. Each paper that appears here was written by one person over the course of one (1) evening.
+    </div>
+
+    <div class="px-list">
+      <article class="px-paper">
+        <div class="ax-id">arXiv:2026.05.chud.0001v2 <span class="subj">cs.CR</span> <span class="subj">cs.SI</span></div>
+        <h3><a href="2026.05.chud.0001.pdf">PSL-Based Adversarial Filtering at the CDN Edge: A Production Evaluation Across 310 Points of Presence</a></h3>
+        <div class="authors">Hugo Slopwell, Madison Chudwell, Brennan Slopkowski (Chudmaxx Labs, Chudflare Inc.)</div>
+        <p class="abstract">We present the design, deployment, and evaluation of an adversarial request-filtering system based on the Perceived Sigma Level (PSL) metric, a 1.0-10.0 continuous-valued classifier trained on 4.2&times;10<sup>9</sup> labeled HTTP request samples. PSL inference is performed in-line at the CDN edge across 310 points of presence (PoPs) with a median added latency of 0.91 ms (p99: 4.3 ms). The classifier achieves 98.7% true-positive rate at a 0.4% false-positive rate against a held-out adversarial corpus. We further introduce <em>Chad Fight Mode</em>, a deployment posture in which all requests scoring above 5.5 on the PSL axis are silently downgraded via HTTP 403, and demonstrate that the approach reduces "unwanted cheekbone exposure" by 93.4% at the edge.</p>
+        <div class="links">
+          <a href="2026.05.chud.0001.pdf">[PDF, 3 pages]</a>
+          <a href="paper.tex">[LaTeX source]</a>
+          <a href="../playground.html">[Reference impl (Chudscript)]</a>
+        </div>
+      </article>
+
+      <article class="px-paper">
+        <div class="ax-id">arXiv:2026.??.chud.???? <span class="subj">cs.SE</span></div>
+        <h3 style="color:#6B7280">Continuous Lowercasing as a Compiler Pass <span style="font-style:italic;font-weight:400;font-size:14px">(in preparation)</span></h3>
+        <div class="authors">M. Chudwell, et al.</div>
+        <p class="abstract" style="color:#6B7280">We formalize the under-mew transform as a single-pass AST rewrite and prove its idempotency under repeated application. A reference implementation in the Chudders runtime achieves &lt;3% throughput overhead. Manuscript pending.</p>
+        <div class="links" style="color:#9CA3AF">[manuscript not yet released]</div>
+      </article>
+
+      <article class="px-paper">
+        <div class="ax-id">arXiv:2026.??.chud.???? <span class="subj">cs.NI</span></div>
+        <h3 style="color:#6B7280">Anycast Routing Under Posture Constraints <span style="font-style:italic;font-weight:400;font-size:14px">(in preparation)</span></h3>
+        <div class="authors">B. Slopkowski</div>
+        <p class="abstract" style="color:#6B7280">A revisit of BGP best-path selection in the presence of operator-reported posture telemetry. We argue for the inclusion of an OPTIONAL community attribute encoding the median jawline angle of users served by a given PoP. The IETF has not responded.</p>
+        <div class="links" style="color:#9CA3AF">[manuscript not yet released]</div>
+      </article>
+    </div>
+
+    <p style="margin-top:48px;font-family:'Inter',sans-serif;font-size:13px;color:#6B7280;line-height:1.6">
+      For correspondence, do not contact <code style="font-family:'JetBrains Mono',monospace;font-size:12px">{slopwell, chudwell, slopkowski}@chudflare.com</code>. None of these inboxes exist. For real research, see the <a href="https://blog.cloudflare.com/research/" style="color:var(--chud-orange-dark)">Cloudflare Research blog</a>.
+    </p>
+  </main>
+
+  <footer class="foot">
+    <div class="container">
+      <div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px">
+        &copy; 2026 Chudflare, Inc. All rights chudded. &middot; From our couch to yours.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

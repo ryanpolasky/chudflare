@@ -1,0 +1,29 @@
+# Copy this file to .github/workflows/chud-check.yml in your repo.
+name: Chud Check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Verify the site is a chud
+        id: chud
+        uses: chudflare/verify-action@v1
+        with:
+          # Change this to whichever URL you want to verify on every PR.
+          url: https://chudflare.com
+          # Optionally fail the build if the site is not chud-verified.
+          fail-on-unverified: false
+
+      - name: Print the chud verdict
+        run: |
+          echo "verified: ${{ steps.chud.outputs.verified }}"
+          echo "marker:   ${{ steps.chud.outputs.marker-type }}"
+          echo "psl:      ${{ steps.chud.outputs.psl }}"
+          echo "ray:      ${{ steps.chud.outputs.ray }}"

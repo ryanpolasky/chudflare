@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chudflare"
+version = "4.0.0"
+description = "The chudmaxxed cloud, in Python. Parody SDK for the Chudflare ChudVerse."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name = "Chudflare, Inc.", email = "chuds@chudflare.com"}]
+keywords = ["chudflare", "chud", "parody", "looksmaxxing"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://chudflare.com"
+Documentation = "https://chudflare.com/docs"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["chudflare*"]

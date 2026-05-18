@@ -1,0 +1,13 @@
+{
+  "name": "chudflare",
+  "version": "4.0.0",
+  "description": "The chudmaxxed cloud, in Node. Parody SDK for the Chudflare ChudVerse.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "files": ["index.js", "index.d.ts", "README.md", "LICENSE"],
+  "keywords": ["chudflare", "chud", "parody", "looksmaxxing"],
+  "author": "Chudflare, Inc. <chuds@chudflare.com>",
+  "license": "MIT",
+  "homepage": "https://chudflare.com",
+  "engines": { "node": ">=14" }
+}

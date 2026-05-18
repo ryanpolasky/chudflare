@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Chudscript Playground | Chudflare</title>
+  <meta name="description" content="A real Chudscript-to-JavaScript transpiler that runs in your browser. Paste a .cs handler, get back the compiled Worker, then run it. No backend."/>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=3"/>
+  <style>
+    .pg-hero { background: var(--chud-cream); padding: 56px 0 24px; border-bottom: 1px solid var(--chud-line); }
+    .pg-hero .container { max-width: 1100px; }
+    .pg-hero .eyebrow { color: var(--chud-orange-dark); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .pg-hero h1 { font-size: clamp(36px, 4.4vw, 52px); margin: 0 0 12px; }
+    .pg-hero .lead { font-size: 18px; color: var(--chud-ink-2); max-width: 720px; margin: 0; }
+    .pg-stage { max-width: 1300px; margin: 0 auto; padding: 28px 24px 80px; }
+    .pg-toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .pg-toolbar label { font-size: 13px; color: var(--chud-ink-2); font-weight: 500; }
+    .pg-toolbar select, .pg-toolbar button {
+      font-family: inherit; font-size: 13px; padding: 8px 14px;
+      border: 1px solid var(--chud-line); border-radius: 6px; background: #fff;
+      color: var(--chud-ink); cursor: pointer; transition: all 0.15s;
+    }
+    .pg-toolbar button:hover { background: var(--chud-fog); }
+    .pg-toolbar button.primary { background: var(--chud-orange); color: #fff; border-color: var(--chud-orange-dark); font-weight: 600; }
+    .pg-toolbar button.primary:hover { background: var(--chud-orange-dark); }
+    .pg-toolbar .spacer { flex: 1; }
+    .pg-toolbar .status { font-size: 12px; color: var(--chud-ink-2); font-family: 'JetBrains Mono', monospace; }
+    .pg-toolbar .status.ok { color: #059669; }
+    .pg-toolbar .status.err { color: #dc2626; }
+
+    .pg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 980px) { .pg-grid { grid-template-columns: 1fr; } }
+
+    .pg-panel { border: 1px solid var(--chud-line); border-radius: 10px; background: #fff; display: flex; flex-direction: column; min-height: 460px; overflow: hidden; }
+    .pg-panel header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #FAF7F1; border-bottom: 1px solid var(--chud-line); font-size: 12px; }
+    .pg-panel header .title { font-weight: 600; color: var(--chud-ink); }
+    .pg-panel header .lang { color: var(--chud-ink-2); font-family: 'JetBrains Mono', monospace; }
+    .pg-panel textarea, .pg-panel pre {
+      flex: 1; margin: 0; padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.55;
+      color: var(--chud-ink); background: #fff; border: 0; outline: none; resize: none;
+      tab-size: 2; -moz-tab-size: 2;
+      white-space: pre; overflow: auto;
+    }
+    .pg-panel pre { background: #1B1F2A; color: #E8EAF1; }
+    .pg-panel pre .kw  { color: #E6A23C; }
+    .pg-panel pre .str { color: #88D67E; }
+    .pg-panel pre .num { color: #C786EB; }
+    .pg-panel pre .com { color: #6B7280; font-style: italic; }
+    .pg-panel pre .fn  { color: #61D0E8; }
+
+    .pg-output { margin-top: 16px; border: 1px solid var(--chud-line); border-radius: 10px; background: #fff; overflow: hidden; }
+    .pg-output header { padding: 10px 14px; background: #FAF7F1; border-bottom: 1px solid var(--chud-line); font-size: 12px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+    .pg-output header .req { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--chud-ink-2); font-weight: 500; }
+    .pg-output .body { padding: 16px 18px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.6; }
+    .pg-output .body .resp-status { font-size: 14px; font-weight: 700; color: var(--chud-ink); margin-bottom: 8px; }
+    .pg-output .body .resp-status .code { padding: 2px 8px; border-radius: 4px; background: #ECFDF5; color: #059669; margin-right: 6px; }
+    .pg-output .body .resp-status.s4xx .code { background: #FEF2F2; color: #DC2626; }
+    .pg-output .body .resp-status.s5xx .code { background: #FEF3C7; color: #D97706; }
+    .pg-output .body .hdrs { color: var(--chud-ink-2); margin-bottom: 10px; }
+    .pg-output .body .hdrs .h { display: block; }
+    .pg-output .body .hdrs .h .k { color: #4B5563; }
+    .pg-output .body .resp-body { background: var(--chud-fog); padding: 10px 12px; border-radius: 6px; border-left: 3px solid var(--chud-orange); white-space: pre-wrap; word-break: break-all; }
+    .pg-output .body .err-msg { color: #B91C1C; background: #FEF2F2; padding: 12px 14px; border-radius: 6px; border-left: 3px solid #DC2626; }
+
+    .pg-callout { margin: 20px 0 0; padding: 14px 16px; border-radius: 8px; background: #FFF7ED; border-left: 3px solid var(--chud-orange); font-size: 13px; color: var(--chud-ink-2); }
+    .pg-callout .lbl { font-weight: 700; color: var(--chud-orange-dark); text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; margin-right: 6px; }
+
+    .pg-quickref { margin-top: 36px; }
+    .pg-quickref h2 { font-size: 22px; margin: 0 0 12px; }
+    .pg-quickref table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .pg-quickref th, .pg-quickref td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--chud-line); vertical-align: top; }
+    .pg-quickref th { background: #FAF7F1; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--chud-ink-2); }
+    .pg-quickref code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--chud-fog); padding: 1px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="compliance" style="background:#FAF7F1;color:#5a6068;font-size:12px;line-height:1.5;text-align:center;padding:10px 24px;border-bottom:1px solid var(--chud-line)">
+    Chudflare is a parody of Cloudflare. It is not affiliated with, endorsed by, sponsored by, or in any way related to Cloudflare, Inc. Cloudflare ships excellent infrastructure that this site has nothing to do with. For real infrastructure, visit <a href="https://cloudflare.com" style="color:var(--chud-orange-dark);font-weight:600">cloudflare.com</a>.
+  </div>
+
+  <div class="bar">
+    <span class="bar-emoji">🛠️</span>
+    The Chudscript compiler runs entirely in your browser. No backend, no telemetry, no posture.
+    <a href="docs.html#chudscript">Read the language spec →</a>
+  </div>
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/>
+        <span>Chudflare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="products.html">Products</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="chud-check.html">Verify your site</a>
+        <a href="docs.html">Docs</a>
+        <a href="playground.html">Playground</a>
+        <a href="status.html">Status</a>
+        <a href="blog/index.html">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="#" class="nav-link">Contact Slop Sales</a>
+        <a href="#" class="nav-link">Log in</a>
+        <a href="pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="pg-hero">
+    <div class="container">
+      <div class="eyebrow">Chudscript Playground</div>
+      <h1>Compile <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em">.cs</code> in the browser.</h1>
+      <p class="lead">A real Chudscript-to-JavaScript transpiler. Type a handler on the left, get the compiled Worker on the right, then click <strong>Run</strong> to fire a request through it. Everything runs in your browser. We do not see your slop.</p>
+    </div>
+  </section>
+
+  <div class="pg-stage">
+    <div class="pg-toolbar">
+      <label for="example">Examples:</label>
+      <select id="example">
+        <option value="hello">Hello, chud (the canonical first program)</option>
+        <option value="multi">Multi-exit handler (slop / mog / mew / hunch)</option>
+        <option value="psl">Block visitors with good posture (PSL gate)</option>
+        <option value="cope">Cope block (try/catch)</option>
+        <option value="interp">String interpolation with $"..."</option>
+        <option value="full">The full example from the docs</option>
+        <option value="empty">Empty — write your own</option>
+      </select>
+      <span class="spacer"></span>
+      <span class="status" id="status">ready.</span>
+      <button id="compile">Compile</button>
+      <button id="run" class="primary">Run →</button>
+    </div>
+
+    <div class="pg-grid">
+      <div class="pg-panel">
+        <header><span class="title">handler.cs</span><span class="lang">chudscript</span></header>
+        <textarea id="src" spellcheck="false" wrap="off"></textarea>
+      </div>
+      <div class="pg-panel">
+        <header><span class="title">handler.js</span><span class="lang">javascript (compiled)</span></header>
+        <pre id="out"><code id="out-code">// click Compile to transpile.</code></pre>
+      </div>
+    </div>
+
+    <div class="pg-output">
+      <header><span>Simulated response</span><span class="req">GET https://my-slop-site.chuds.dev/</span></header>
+      <div class="body" id="resp">
+        <span style="color:var(--chud-ink-2);font-style:italic">Click <strong>Run</strong> to invoke the compiled handler against a fake request.</span>
+      </div>
+    </div>
+
+    <div class="pg-callout">
+      <span class="lbl">Note</span>
+      The compiler is &lt; 300 lines of vanilla JS and shipping with zero deps. It implements the subset of Chudscript we documented and nothing else. Yes, this means <code>@vibe</code> works. It does the same thing as no decorator at all.
+    </div>
+
+    <div class="pg-quickref">
+      <h2>Quick reference</h2>
+      <table>
+        <thead><tr><th>Construct</th><th>Compiles to</th></tr></thead>
+        <tbody>
+          <tr><td><code>fn name(args) { ... }</code></td><td><code>async function name(args) { ... }</code></td></tr>
+          <tr><td><code>chud expr</code></td><td><code>(await expr)</code></td></tr>
+          <tr><td><code>slop "x"</code></td><td><code>return new Response("x", { status: 200, headers: { "x-chud-status": "slop" }})</code></td></tr>
+          <tr><td><code>mog "x"</code></td><td><code>return new Response("x", { status: 403, headers: { "x-mog-status": "YOU GOT MOGGED" }})</code></td></tr>
+          <tr><td><code>mew "x"</code></td><td><code>return new Response("x".toLowerCase(), { status: 200, headers: { "x-chud-status": "mew" }})</code></td></tr>
+          <tr><td><code>hunch "x"</code></td><td><code>return new Response("x", { status: 500, headers: { "x-chud-status": "hunch" }})</code></td></tr>
+          <tr><td><code>chuddle "x"</code></td><td><code>return new Response("x", { status: 102, headers: { "x-chuddling": "true" }})</code></td></tr>
+          <tr><td><code>cope { A } else { B }</code></td><td><code>try { A } catch (e) { B }</code></td></tr>
+          <tr><td><code>$"hi, ${x}"</code></td><td><code>`hi, ${x}`</code> (template literal)</td></tr>
+          <tr><td><code>@chudder("name") fn handle(req) { ... }</code></td><td>Registers <code>handle</code> as the route entrypoint.</td></tr>
+          <tr><td><code>@psl_max(n) fn handle(req) { ... }</code></td><td>Auto-mogs requests with <code>psl &gt; n</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <section style="background:#FAF7F1;border-top:1px solid var(--chud-line);border-bottom:1px solid var(--chud-line);padding:40px 0;margin-top:48px">
+    <div class="container" style="max-width:1080px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--chud-ink-2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Related</div>
+      <h2 style="font-size:22px;margin:0 0 18px;font-weight:600">More elaborate apparatus.</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+        <a href="docs.html#chudscript" style="display:block;padding:16px 18px;background:#fff;border:1px solid var(--chud-line);border-radius:10px;text-decoration:none;color:var(--chud-ink)">
+          <div style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--chud-orange-dark);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Language spec</div>
+          <div style="font-weight:600;margin-bottom:4px">Chudscript reference</div>
+          <div style="font-size:13px;color:var(--chud-ink-2);line-height:1.5">Keyword table, decorator semantics, type rules (such as they are).</div>
+        </a>
+        <a href="actions/" style="display:block;padding:16px 18px;background:#fff;border:1px solid var(--chud-line);border-radius:10px;text-decoration:none;color:var(--chud-ink)">
+          <div style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--chud-orange-dark);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">GitHub Action</div>
+          <div style="font-weight:600;margin-bottom:4px">chudflare-verify</div>
+          <div style="font-size:13px;color:var(--chud-ink-2);line-height:1.5">Post a chud-badge comment on every PR. Zero deps, one step in your workflow.</div>
+        </a>
+        <a href="papers/" style="display:block;padding:16px 18px;background:#fff;border:1px solid var(--chud-line);border-radius:10px;text-decoration:none;color:var(--chud-ink)">
+          <div style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--chud-orange-dark);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Research pre-print</div>
+          <div style="font-weight:600;margin-bottom:4px">PSL-Based Adversarial Filtering at the CDN Edge</div>
+          <div style="font-size:13px;color:var(--chud-ink-2);line-height:1.5">3 page LaTeX paper. 310 PoPs, 98.7% TPR, 0 IRB reviews.</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="container">
+      <div style="text-align:center;padding:24px 0;color:#9CA3AF;font-size:13px;border-top:1px solid var(--chud-line);margin-top:0">
+        Chudscript is MIT licensed. The compiler runs <a href="#" style="color:var(--chud-orange-light)" onclick="event.preventDefault();alert('it is literally in the page source. view-source: this page.')">entirely in your browser</a>. &middot; <a href="index.html" style="color:var(--chud-orange-light)">chudflare.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  // ──────────────────────────────────────────────────────────────────────────
+  //  Chudscript → JavaScript transpiler.  ~250 lines, vanilla JS, no deps.
+  // ──────────────────────────────────────────────────────────────────────────
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const srcEl  = $("src");
+    const outEl  = $("out-code");
+    const respEl = $("resp");
+    const statusEl = $("status");
+
+    const EXAMPLES = {
+      hello: `// hello.cs — the canonical first program
+@chudder("hello-world")
+fn handle(req) {
+  slop "hello, chud."
+}
+`,
+      multi: `// multi-exit.cs — every response keyword in one handler
+@chudder("multi-exit")
+fn handle(req) {
+  let psl = 3.2
+
+  if psl > 8 { mog "you got mogged." }
+  if psl > 5 { mew "go outside." }
+  if psl < 1 { hunch "internal slop error" }
+
+  slop "hello, chud."
+}
+`,
+      psl: `// psl-gate.cs — block visitors above a PSL threshold
+@chudder("psl-gate")
+@psl_max(5.5)
+fn handle(req, env) {
+  let psl = 2.1   // would come from env.PSL.score(req) in prod
+  if psl > 5.5 {
+    mog "you got mogged."
+  }
+  slop "welcome, chud."
+}
+`,
+      cope: `// cope.cs — try/catch, chudflare-style
+@chudder("safe-handler")
+fn handle(req, env) {
+  cope {
+    let raw = chud fetch("/api/slop")
+    slop "fetched a slop. you may resume hunching."
+  } else {
+    hunch "couldn't slop the slop."
+  }
+}
+`,
+      interp: "// interp.cs — string interpolation with $\"...\"\n" +
+              "@chudder(\"greeter\")\n" +
+              "fn handle(req) {\n" +
+              "  let name = \"chud\"\n" +
+              "  let psl  = 2.1\n" +
+              "  slop $\"hello, ${name}. your psl is ${psl}. stay seated.\"\n" +
+              "}\n",
+      full: `// full.cs — every feature, end-to-end
+import { c2, psl } from "@chudflare/stdlib"
+
+@chudder("api")
+@psl_max(5.5)
+fn handle(req, env) {
+  let bucket = c2.bucket(env.C2_BUCKET)
+
+  cope {
+    let obj = chud bucket.get("slop.html")
+    slop mew(obj.body)
+  } else {
+    hunch "couldn't slop the slop."
+  }
+}
+`,
+      empty: ``,
+    };
+
+    // ── tokenizer ──────────────────────────────────────────────────────────
+    // We protect strings + comments by replacing them with placeholders,
+    // transform the source, then re-inject them at the end.
+    function protectStringsAndComments(src) {
+      const slots = [];
+      const place = (val) => {
+        const i = slots.length;
+        slots.push(val);
+        return "\x00SLOT" + i + "\x00";
+      };
+
+      let out = "";
+      let i = 0;
+      while (i < src.length) {
+        const c = src[i], n = src[i + 1];
+        // /* block comment */
+        if (c === "/" && n === "*") {
+          let j = src.indexOf("*/", i + 2);
+          if (j === -1) j = src.length; else j += 2;
+          out += place(src.slice(i, j));
+          i = j; continue;
+        }
+        // // line comment
+        if (c === "/" && n === "/") {
+          let j = src.indexOf("\n", i);
+          if (j === -1) j = src.length;
+          out += place(src.slice(i, j));
+          i = j; continue;
+        }
+        // $"interpolated string"
+        if (c === "$" && n === '"') {
+          let j = i + 2;
+          let str = '$"';
+          while (j < src.length && src[j] !== '"') {
+            if (src[j] === "\\" && j + 1 < src.length) { str += src[j] + src[j + 1]; j += 2; continue; }
+            if (src[j] === "$" && src[j + 1] === "{") {
+              // copy balanced braces
+              str += "${"; j += 2;
+              let depth = 1;
+              while (j < src.length && depth > 0) {
+                if (src[j] === "{") depth++;
+                else if (src[j] === "}") { depth--; if (depth === 0) { str += "}"; j++; break; } }
+                str += src[j]; j++;
+              }
+              continue;
+            }
+            str += src[j]; j++;
+          }
+          if (src[j] === '"') { str += '"'; j++; }
+          out += place(str);
+          i = j; continue;
+        }
+        // regular "string"
+        if (c === '"') {
+          let j = i + 1;
+          let str = '"';
+          while (j < src.length && src[j] !== '"') {
+            if (src[j] === "\\" && j + 1 < src.length) { str += src[j] + src[j + 1]; j += 2; continue; }
+            str += src[j]; j++;
+          }
+          if (src[j] === '"') { str += '"'; j++; }
+          out += place(str);
+          i = j; continue;
+        }
+        out += c; i++;
+      }
+      return { src: out, slots };
+    }
+
+    function restore(src, slots) {
+      return src.replace(/\x00SLOT(\d+)\x00/g, (_, idx) => slots[+idx]);
+    }
+
+    // ── transformations on the "protected" source ──────────────────────────
+    function transformBody(src) {
+      let s = src;
+
+      // `fn name(args) { ... }`  →  `async function name(args) { ... }`
+      s = s.replace(/\bfn\s+([A-Za-z_$][\w$]*)\s*\(/g, "async function $1(");
+
+      // `chud <expr>` → `(await <expr>)`
+      //  We support the common forms used in the docs:
+      //   - chud foo.bar()
+      //   - chud foo(args)
+      //   - chud (expr)
+      //   - chud identifier
+      //  Stop at end-of-line or before a `{` (block).
+      s = s.replace(/\bchud\b\s+([^\n{;]+?)(?=$|\n|;|\)|,|\}|\{)/gm, "(await $1)");
+
+      // response keywords:  slop / mog / mew / hunch / chuddle  followed by a string or expression
+      //   slop "x"      → return new Response("x", { ... })
+      //   slop expr     → return new Response(expr, { ... })
+      const RESP = {
+        slop:    { status: 200, hdr: '"x-chud-status": "slop"' },
+        mew:     { status: 200, hdr: '"x-chud-status": "mew"', wrap: (e) => `String(${e}).toLowerCase()` },
+        mog:     { status: 403, hdr: '"x-mog-status": "YOU GOT MOGGED"' },
+        hunch:   { status: 500, hdr: '"x-chud-status": "hunch"' },
+        chuddle: { status: 102, hdr: '"x-chuddling": "true"' },
+      };
+      Object.keys(RESP).forEach((kw) => {
+        const spec = RESP[kw];
+        const re = new RegExp("\\b" + kw + "\\b\\s+([^\\n;{}]+?)(?=$|\\n|;|\\}|\\{)", "gm");
+        s = s.replace(re, (_m, expr) => {
+          expr = expr.trim();
+          const body = spec.wrap ? spec.wrap(expr) : expr;
+          return `return new Response(${body}, { status: ${spec.status}, headers: { ${spec.hdr} } })`;
+        });
+      });
+
+      // `cope { A } else { B }` → `try { A } catch (e) { B }`
+      // We process by scanning for `cope {` and finding the matching close brace,
+      // then checking for `else {`.
+      s = transformCope(s);
+
+      // `if cond { ... }` → `if (cond) { ... }`
+      // Be careful: `if (cond)` may already be parenthesized.
+      s = s.replace(/\bif\s+(?!\()([^\n{]+?)\s*\{/g, "if ($1) {");
+
+      // decorator handling — collect adjacent decorators and the following fn
+      // We rewrite `@chudder("name") @psl_max(n) async function handle(req,...) {body}`
+      // into the function + a wrapping registration at the bottom.
+      const decorated = [];
+      s = s.replace(
+        /((?:@[A-Za-z_$][\w$]*\s*(?:\([^)]*\))?\s*\n?)+)(async function\s+([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{)/g,
+        (_m, decs, fn, name) => {
+          const list = [];
+          decs.replace(/@([A-Za-z_$][\w$]*)(?:\(([^)]*)\))?/g, (__, d, args) => {
+            list.push({ name: d, args: (args || "").trim() });
+          });
+          decorated.push({ name, decorators: list });
+          return fn;
+        }
+      );
+
+      // `import { x, y } from "@chudflare/stdlib"` → stubbed const
+      s = s.replace(
+        /\bimport\s*\{([^}]+)\}\s*from\s*"@chudflare\/stdlib"\s*;?/g,
+        (_m, items) => {
+          const names = items.split(",").map((x) => x.trim()).filter(Boolean);
+          return `const { ${names.join(", ")} } = __chudflareStdlib;`;
+        }
+      );
+
+      // attach decorator-driven entrypoint registration
+      if (decorated.length) {
+        s += "\n\n// — entrypoint registration (synthesized) —\n";
+        decorated.forEach(({ name, decorators }) => {
+          const psl_max = decorators.find((d) => d.name === "psl_max");
+          const route   = decorators.find((d) => d.name === "route");
+          const chudder = decorators.find((d) => d.name === "chudder");
+          if (!chudder) return;
+          let wrapper =
+            "async function __entry_" + name + "(req, env) {\n";
+          if (psl_max) {
+            wrapper +=
+              "  const __psl = env && env.PSL ? await env.PSL.score(req) : 2.1;\n" +
+              "  if (__psl > " + psl_max.args + ") {\n" +
+              "    return new Response('you got mogged.', { status: 403, headers: { 'x-mog-status': 'YOU GOT MOGGED' } });\n" +
+              "  }\n";
+          }
+          wrapper += "  return await " + name + "(req, env);\n";
+          wrapper += "}\n";
+          wrapper += "globalThis.__chudHandlers = globalThis.__chudHandlers || {};\n";
+          // chudder.args is still a SLOT placeholder; it'll be restored to the original string literal.
+          wrapper += "globalThis.__chudHandlers[" + chudder.args + "] = __entry_" + name + ";\n";
+          if (!route) wrapper += "globalThis.__chudEntry = __entry_" + name + ";\n";
+          s += wrapper;
+        });
+      }
+
+      return s;
+    }
+
+    function transformCope(s) {
+      let out = "";
+      let i = 0;
+      while (i < s.length) {
+        const idx = s.indexOf("cope", i);
+        if (idx === -1) { out += s.slice(i); break; }
+        // word boundary check on both sides
+        const before = s[idx - 1];
+        const after  = s[idx + 4];
+        if ((before && /[A-Za-z0-9_$]/.test(before)) || (after && /[A-Za-z0-9_$]/.test(after))) {
+          out += s.slice(i, idx + 4);
+          i = idx + 4; continue;
+        }
+        // look for `{`
+        let j = idx + 4;
+        while (j < s.length && /\s/.test(s[j])) j++;
+        if (s[j] !== "{") { out += s.slice(i, idx + 4); i = idx + 4; continue; }
+        // find matching close brace
+        const tryStart = j;
+        const tryEnd = matchBrace(s, j);
+        if (tryEnd === -1) { out += s.slice(i, idx + 4); i = idx + 4; continue; }
+        // look for `else {`
+        let k = tryEnd + 1;
+        while (k < s.length && /\s/.test(s[k])) k++;
+        const hasElse = s.slice(k, k + 4) === "else";
+        if (!hasElse) {
+          out += s.slice(i, idx) + "try " + s.slice(tryStart, tryEnd + 1) + " catch (e) {}";
+          i = tryEnd + 1; continue;
+        }
+        let m = k + 4;
+        while (m < s.length && /\s/.test(s[m])) m++;
+        if (s[m] !== "{") {
+          out += s.slice(i, idx) + "try " + s.slice(tryStart, tryEnd + 1) + " catch (e) {}";
+          i = tryEnd + 1; continue;
+        }
+        const elseEnd = matchBrace(s, m);
+        if (elseEnd === -1) {
+          out += s.slice(i, idx) + "try " + s.slice(tryStart, tryEnd + 1) + " catch (e) {}";
+          i = tryEnd + 1; continue;
+        }
+        out += s.slice(i, idx) + "try " + s.slice(tryStart, tryEnd + 1) + " catch (e) " + s.slice(m, elseEnd + 1);
+        i = elseEnd + 1;
+      }
+      return out;
+    }
+
+    function matchBrace(s, openIdx) {
+      let depth = 0;
+      for (let i = openIdx; i < s.length; i++) {
+        if (s[i] === "{") depth++;
+        else if (s[i] === "}") { depth--; if (depth === 0) return i; }
+      }
+      return -1;
+    }
+
+    // ── interpolated string conversion: $"...${x}..." → `...${x}...` ───────
+    function convertInterpStrings(src) {
+      return src.replace(/\$"((?:\\.|[^"\\])*)"/g, (_, body) => {
+        return "`" + body + "`";
+      });
+    }
+
+    // ── full transpile ─────────────────────────────────────────────────────
+    function transpile(src) {
+      const { src: protectedSrc, slots } = protectStringsAndComments(src);
+      let transformed = transformBody(protectedSrc);
+      // restore strings + comments
+      let restored = restore(transformed, slots);
+      // now convert $"..." (which lived inside the slots) into backticks
+      restored = convertInterpStrings(restored);
+      // tidy up: trim trailing whitespace on lines
+      restored = restored.split("\n").map((l) => l.replace(/\s+$/, "")).join("\n");
+      return restored;
+    }
+
+    // ── runtime: build a sandbox env + fake req, invoke the handler ────────
+    function makeSandbox() {
+      const C2_BUCKET = {
+        async get(key) {
+          if (key && key.indexOf("404") !== -1) return null;
+          return { body: "<html><body>slop ok.</body></html>", key };
+        },
+        async put(_k, _v) { return { ok: true }; },
+        async list() { return { objects: [] }; },
+        async sigh() { return null; },
+      };
+      const PSL = { async score(_req) { return 2.1 + Math.random() * 1.2; } };
+      const env = { C2_BUCKET, PSL };
+      const __chudflareStdlib = {
+        c2: { bucket: (b) => b },
+        psl: { score: (r) => PSL.score(r) },
+      };
+      const Request = globalThis.Request;
+      const Response = globalThis.Response;
+      const fetch = async (url) => new Response("<html>fetched from " + url + "</html>", { status: 200 });
+      return { env, __chudflareStdlib, Request, Response, fetch };
+    }
+
+    function fmtHeaders(h) {
+      const out = [];
+      try { h.forEach((v, k) => out.push({ k, v })); } catch (_) {}
+      return out;
+    }
+
+    function fakeRayId() {
+      const s = Math.random().toString(16).slice(2, 8).toUpperCase();
+      return "8c0ffee-CHUD-" + s;
+    }
+
+    async function runCompiled(jsSrc) {
+      const sandbox = makeSandbox();
+      const keys = Object.keys(sandbox);
+      const vals = keys.map((k) => sandbox[k]);
+      const wrapper =
+        "'use strict';\n" +
+        "let __chudEntry;\n" +
+        "const __chudHandlers = {};\n" +
+        "globalThis.__chudHandlers = __chudHandlers;\n" +
+        "globalThis.__chudEntry = undefined;\n" +
+        jsSrc +
+        "\nreturn (globalThis.__chudEntry || (Object.values(globalThis.__chudHandlers||{})[0]));";
+      const fn = new Function(...keys, wrapper);
+      const handler = fn(...vals);
+      if (typeof handler !== "function") {
+        throw new Error("No @chudder(...) entrypoint found. Add `@chudder(\"name\")` above your `fn handle(...)`.");
+      }
+      const req = new Request("https://my-slop-site.chuds.dev/", { method: "GET" });
+      const resp = await handler(req, sandbox.env);
+      if (!(resp instanceof Response)) {
+        throw new Error("Handler did not return a Response. (Did you forget `slop \"...\"`?)");
+      }
+      const body = await resp.text();
+      return { status: resp.status, statusText: resp.statusText, headers: fmtHeaders(resp.headers), body };
+    }
+
+    // ── tiny syntax highlight for the output JS panel ──────────────────────
+    function highlight(js) {
+      const KW = new Set([
+        "async", "function", "return", "const", "let", "var", "if", "else",
+        "try", "catch", "new", "await", "import", "from", "true", "false",
+        "null", "undefined", "globalThis",
+      ]);
+      // split into safe segments around strings & comments
+      let i = 0, out = "";
+      while (i < js.length) {
+        const c = js[i], n = js[i + 1];
+        if (c === "/" && n === "/") {
+          let j = js.indexOf("\n", i); if (j === -1) j = js.length;
+          out += '<span class="com">' + esc(js.slice(i, j)) + '</span>';
+          i = j; continue;
+        }
+        if (c === "/" && n === "*") {
+          let j = js.indexOf("*/", i + 2); if (j === -1) j = js.length; else j += 2;
+          out += '<span class="com">' + esc(js.slice(i, j)) + '</span>';
+          i = j; continue;
+        }
+        if (c === '"' || c === "'" || c === "`") {
+          const q = c; let j = i + 1;
+          while (j < js.length && js[j] !== q) { if (js[j] === "\\") j++; j++; }
+          if (js[j] === q) j++;
+          out += '<span class="str">' + esc(js.slice(i, j)) + '</span>';
+          i = j; continue;
+        }
+        // number
+        if (/[0-9]/.test(c) && (i === 0 || !/[A-Za-z_$]/.test(js[i - 1]))) {
+          let j = i; while (j < js.length && /[0-9.]/.test(js[j])) j++;
+          out += '<span class="num">' + esc(js.slice(i, j)) + '</span>';
+          i = j; continue;
+        }
+        if (/[A-Za-z_$]/.test(c)) {
+          let j = i; while (j < js.length && /[A-Za-z0-9_$]/.test(js[j])) j++;
+          const word = js.slice(i, j);
+          if (KW.has(word)) out += '<span class="kw">' + esc(word) + '</span>';
+          else if (js[j] === "(") out += '<span class="fn">' + esc(word) + '</span>';
+          else out += esc(word);
+          i = j; continue;
+        }
+        out += esc(c); i++;
+      }
+      return out;
+    }
+    function esc(s) { return s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])); }
+
+    function setStatus(msg, cls) {
+      statusEl.className = "status" + (cls ? " " + cls : "");
+      statusEl.textContent = msg;
+    }
+
+    function doCompile() {
+      try {
+        const js = transpile(srcEl.value);
+        outEl.innerHTML = highlight(js);
+        setStatus("compiled. " + js.split("\n").length + " lines.", "ok");
+        return js;
+      } catch (e) {
+        outEl.innerHTML = '<span class="com">// compile error</span>\n' + esc(String(e));
+        setStatus("compile error: " + e.message, "err");
+        return null;
+      }
+    }
+
+    async function doRun() {
+      const js = doCompile();
+      if (!js) return;
+      try {
+        const r = await runCompiled(js);
+        const sClass = r.status >= 500 ? "s5xx" : r.status >= 400 ? "s4xx" : "";
+        const hdrs = r.headers.length
+          ? r.headers.map((h) => '<span class="h"><span class="k">' + esc(h.k) + ':</span> ' + esc(h.v) + '</span>').join("")
+          : '<span class="h" style="color:#9CA3AF">(no headers set)</span>';
+        respEl.innerHTML =
+          '<div class="resp-status ' + sClass + '"><span class="code">' + r.status + '</span><span>' + (statusText(r.status)) + '</span></div>' +
+          '<div class="hdrs">' +
+            '<span class="h"><span class="k">cf-ray:</span> ' + fakeRayId() + '</span>' +
+            '<span class="h"><span class="k">cf-cache-status:</span> CHUD_HIT</span>' +
+            '<span class="h"><span class="k">cf-edge-pop:</span> DEN-CHUD-3</span>' +
+            hdrs +
+          '</div>' +
+          '<div class="resp-body">' + esc(r.body) + '</div>';
+        setStatus("ran. " + r.status + " in " + (Math.floor(Math.random() * 30) + 5) + "ms", "ok");
+      } catch (e) {
+        respEl.innerHTML = '<div class="err-msg">' + esc(String(e)) + '</div>';
+        setStatus("runtime error: " + e.message, "err");
+      }
+    }
+
+    function statusText(code) {
+      const map = { 200: "OK", 403: "Forbidden", 500: "Internal Slop Error", 102: "Processing", 404: "Not Found", 451: "Unavailable For Legal Reasons" };
+      return map[code] || "";
+    }
+
+    // ── wire up ────────────────────────────────────────────────────────────
+    $("compile").addEventListener("click", doCompile);
+    $("run").addEventListener("click", doRun);
+    $("example").addEventListener("change", (e) => {
+      srcEl.value = EXAMPLES[e.target.value] || "";
+      outEl.innerHTML = '<span class="com">// click Compile to transpile.</span>';
+      respEl.innerHTML = '<span style="color:var(--chud-ink-2);font-style:italic">Click <strong>Run</strong> to invoke the compiled handler against a fake request.</span>';
+      setStatus("ready.");
+    });
+
+    srcEl.addEventListener("keydown", (e) => {
+      // Tab inserts two spaces.
+      if (e.key === "Tab") {
+        e.preventDefault();
+        const s = srcEl.selectionStart, ee = srcEl.selectionEnd;
+        srcEl.value = srcEl.value.slice(0, s) + "  " + srcEl.value.slice(ee);
+        srcEl.selectionStart = srcEl.selectionEnd = s + 2;
+      }
+      // Ctrl/Cmd+Enter to run
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        e.preventDefault();
+        doRun();
+      }
+    });
+
+    // initial load
+    srcEl.value = EXAMPLES.hello;
+    doCompile();
+  })();
+  </script>
+</body>
+</html>

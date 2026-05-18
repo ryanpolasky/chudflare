@@ -1,0 +1,41 @@
+name: 'Chudflare Verify'
+description: 'Verify that a site is a chud by checking for the Chudflare marker. Posts a chud-badge comment on the PR.'
+author: 'Chudflare'
+branding:
+  icon: 'cloud'
+  color: 'orange'
+
+inputs:
+  url:
+    description: 'The URL of the site to verify (e.g. https://example.com).'
+    required: true
+  marker:
+    description: 'Which marker accept: "any" (default), "meta", "comment", or "well-known".'
+    required: false
+    default: 'any'
+  comment:
+    description: 'If "true" and this run is on a pull_request, post a comment with the chud-badge.'
+    required: false
+    default: 'true'
+  fail-on-unverified:
+    description: 'If "true", exit non-zero when the site is not chud-verified. Default: "false" (informational only).'
+    required: false
+    default: 'false'
+  github-token:
+    description: 'GITHUB_TOKEN with pull-requests:write. Defaults to ${{ github.token }}.'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  verified:
+    description: '"true" if the site has a valid chud marker, "false" otherwise.'
+  marker-type:
+    description: 'Which marker was found ("meta", "comment", "well-known", or "none").'
+  psl:
+    description: 'The assigned PSL score (1.0-3.5 for verified sites). Will be empty if unverified.'
+  ray:
+    description: 'The fake ray id assigned to this verification.'
+
+runs:
+  using: 'node20'
+  main: 'index.js'
