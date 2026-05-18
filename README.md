@@ -50,6 +50,7 @@ chudflare/
 │   ├── zero-chud-at-scale.html
 │   └── the-great-doordash-degradation.html
 ├── _headers                 Cloudflare Pages / Netlify response-header config
+├── _redirects               Cloudflare Pages / Netlify URL canonicalization (strips .html)
 ├── vercel.json              Vercel deploy + headers config
 ├── .htaccess                Apache header + rewrite config
 ├── README.md                This file
@@ -135,7 +136,8 @@ Every page also returns chud-flavored response headers (`CF-RAY`, `CF-Cache-Stat
 `X-Hunch-Angle`, `X-Mewing`, `X-Mog-Status`, etc.). Header configs are provided
 for the three major static hosts:
 
-- **`_headers`** for Cloudflare Pages / Netlify
+- **`_headers`** for Cloudflare Pages / Netlify (response headers)
+- **`_redirects`** for Cloudflare Pages / Netlify (canonicalize `.html` URLs)
 - **`vercel.json`** for Vercel (also includes pretty-URL rewrites)
 - **`.htaccess`** for Apache
 
