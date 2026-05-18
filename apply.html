@@ -409,19 +409,31 @@
           </div>
         </form>
 
-        <!-- Hidden until submit succeeds -->
+        <!-- Hidden until submit succeeds. the cheerful check icon is
+             intentional: real rejection emails always lead with a warm
+             "thanks for applying" subject line, this mirrors that energy. -->
         <div class="apply-success" id="apply-success" hidden>
           <div class="check" aria-hidden="true">&#10003;</div>
-          <h2>Application received.</h2>
-          <p>Your chudtern&trade; application has been delivered to our hiring lead in Discord.</p>
-          <p style="color:#6b7077">
-            You will not hear back. That is intentional. The interview process consists
-            of you continuing to exist in your current posture.
+          <h2>Thank you for your interest in Chudflare.</h2>
+          <p>
+            After careful consideration, we have decided to move forward with
+            other candidates whose hunch profile better aligns with our needs
+            for this cycle.
           </p>
-          <p class="ray">cf-ray: <span id="apply-ray">8c0ffee-CHUD-DEN</span> · chudmaxxed=yes · queued for review</p>
+          <p style="color:#6b7077">
+            We received an overwhelming number of qualified applications and
+            were unable to accommodate every chud. Your application has been
+            kept on file and will be permanently deleted in 24 hours. This
+            decision is final.
+          </p>
+          <p style="color:#6b7077;font-size:14px">
+            We wish you the best in your future endeavors, including but not
+            limited to: maintaining good posture, drinking water, and going outside.
+          </p>
+          <p class="ray">cf-ray: <span id="apply-ray">8c0ffee-CHUD-DEN</span> · chudmaxxed=yes · auto-rejected</p>
           <p style="margin-top:24px">
             <a href="index.html" class="btn btn-secondary btn-sm">Back to homepage</a>
-            <a href="chud-check.html" class="btn btn-secondary btn-sm" style="margin-left:8px">Verify your site →</a>
+            <a href="https://www.cloudflare.com/careers/" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="margin-left:8px">Apply for a real job &rarr;</a>
           </p>
         </div>
       </div>
