@@ -30,6 +30,7 @@ chudflare/
 ├── psl-detector.html        Free PSL detector (image URL or name → hash → PSL score)
 ├── status.html              Fake status page (operational dashboard + incident history)
 ├── verify.html              Cloudflare-style "checking if you're a chud" interstitial (works as a real gate via `?return=<url>`)
+├── apply.html               Chudtern™ internship application form (posts to Discord via Pages Function)
 ├── chud-gate.js             Drop-in script: gate any site behind /verify (24h pass per visitor)
 ├── 404.html / 500.html / 1020.html   Error pages
 ├── chudflare                The CLI (bash script, no extension on purpose)
@@ -51,6 +52,9 @@ chudflare/
 │   └── the-great-doordash-degradation.html
 ├── _headers                 Cloudflare Pages / Netlify response-header config
 ├── _redirects               Cloudflare Pages / Netlify URL canonicalization (strips .html)
+├── functions/
+│   └── api/
+│       └── apply.js             Cloudflare Pages Function: POST /api/apply -> Discord webhook
 ├── vercel.json              Vercel deploy + headers config
 ├── .htaccess                Apache header + rewrite config
 ├── README.md                This file
@@ -89,6 +93,7 @@ python3 -m http.server 8000
 | **Chudify** | `/chudify` | Paste any text, get it rewritten in chud-speak. Shareable URL. |
 | **PSL Detector** | `/psl-detector` | Paste an image URL or name. Deterministic hash → PSL score |
 | **Fake status page** | `/status` | Operational dashboard + 4 historical incidents + subscribe form |
+| **Chudtern™ applications** | `/apply` | Four parody internship roles; submissions POST to a Cloudflare Pages Function that forwards a formatted embed to a Discord webhook |
 
 ## Site verification (`/chud-check`)
 
@@ -118,6 +123,49 @@ chudflare hunch             # current operator hunch angle (time-varying)
 chudflare status            # chudflare system status page
 chudflare --version
 ```
+
+## Chudtern™ applications (`/apply`)
+
+The careers page (`apply.html`) collects parody intern applications and
+forwards each one to a Discord channel via a Cloudflare Pages Function
+(`functions/api/apply.js`, exposed at `POST /api/apply`).
+
+### Setup (Cloudflare Pages)
+
+1. **Create a Discord webhook** in your server:
+   `Server Settings → Integrations → Webhooks → New Webhook`. Copy the webhook URL.
+2. **Add the env var** in the Cloudflare Pages dashboard for this project:
+   `Settings → Environment variables → Add variable`
+   - Name: `DISCORD_WEBHOOK_URL`
+   - Value: the full webhook URL (looks like `https://discord.com/api/webhooks/<id>/<token>`)
+   - Optional: `APPLY_RATE_LIMIT_SECONDS` (defaults to `60`) controls the per-IP cooldown in seconds.
+3. **Redeploy** the site so the function picks up the new env vars.
+4. Visit `/apply`, submit a test application. A formatted embed should
+   appear in the Discord channel with all fields plus IP, country, and UA.
+
+### Local dev
+
+The function only runs through Cloudflare's runtime, not a plain static
+server. To test locally, install Wrangler and use `wrangler pages dev`:
+
+```bash
+echo 'DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/your/test"' > .dev.vars
+npx wrangler pages dev .
+# open http://localhost:8788/apply
+```
+
+`python3 -m http.server` will serve the page fine, but every submit
+fails with a 405 because there is no function runtime.
+
+### Defenses (built into `functions/api/apply.js`)
+
+- POST-only with `application/json` content-type required
+- 16KB body cap
+- Server-side field validation (mirrors the client-side `maxlength` / range rules)
+- Honeypot field `company_url`: silently 200s if a bot fills it, no Discord forward
+- Per-IP cooldown in an in-memory map (best-effort, not guaranteed across edge isolates)
+- All user-supplied strings are sanitized to neutralize `@everyone` / `@here` / role pings
+- Discord payload also sets `allowed_mentions: { parse: [] }` as a server-side belt-and-suspenders
 
 ## /cdn-cgi/trace + response headers
 
@@ -169,6 +217,8 @@ If your host supports clean paths, map (or use one of `_headers` / `vercel.json`
 /pricing           → pricing.html
 /chud-check        → chud-check.html
 /verify            → verify.html
+/apply             → apply.html
+/api/apply         → functions/api/apply.js  (Cloudflare Pages Function; on other hosts you need a server runtime)
 /chudify           → chudify.html
 /psl-detector      → psl-detector.html
 /status            → status.html

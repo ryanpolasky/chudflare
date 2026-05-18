@@ -130,7 +130,7 @@ p  { font-size: 17px; line-height: 1.6; color: var(--chud-ink-2); margin: 0 0 16
 .hero {
   background: linear-gradient(180deg, #FFFFFF 0%, #FAF7F1 100%);
   color: var(--chud-ink);
-  padding: 120px 0 100px;
+  padding: 56px 0 80px;
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid var(--chud-line);
