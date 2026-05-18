@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>The Chudflare Blog | Engineering at the chud-edge</title>
+  <meta name="description" content="Engineering, product, and incident updates from the Chudflare team."/>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="../assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css?v=2"/>
+  <style>
+    .blog-hero { padding: 64px 0 32px; border-bottom: 1px solid var(--chud-line); margin-bottom: 48px; }
+    .blog-hero .eyebrow { color: var(--chud-orange-dark); }
+    .blog-hero h1 { font-size: 48px; line-height: 1.1; letter-spacing: -0.02em; margin: 8px 0 16px; }
+    .blog-hero p { font-size: 18px; color: #4a5058; max-width: 640px; }
+    .blog-list { display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 760px; }
+    .blog-item { border-bottom: 1px solid var(--chud-line); padding-bottom: 36px; }
+    .blog-item:last-child { border-bottom: none; }
+    .blog-item .meta { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin-bottom: 8px; }
+    .blog-item .meta .tag { background: rgba(243,128,32,0.10); color: var(--chud-orange-dark); padding: 2px 8px; border-radius: 4px; margin-right: 8px; }
+    .blog-item h2 { font-size: 26px; line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 10px; }
+    .blog-item h2 a { color: var(--chud-ink); text-decoration: none; }
+    .blog-item h2 a:hover { color: var(--chud-orange-dark); }
+    .blog-item .summary { font-size: 16px; color: #4a5058; line-height: 1.55; margin-bottom: 12px; }
+    .blog-item .byline { font-size: 13px; color: #6b7280; }
+    .blog-item .byline strong { color: var(--chud-ink); }
+    .blog-side { font-size: 13px; color: #6b7280; }
+    .blog-side h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--chud-ink); margin: 0 0 12px; }
+    .blog-side a { display: block; padding: 6px 0; color: #4a5058; text-decoration: none; }
+    .blog-side a:hover { color: var(--chud-orange-dark); }
+    .blog-grid { display: grid; grid-template-columns: 1fr 220px; gap: 64px; }
+    @media (max-width: 760px) { .blog-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <!-- you're reading the blog of a chud. proceed with that energy. -->
+
+  <!-- Nav -->
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/>
+        <span>Chudflare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="../products.html">Products</a>
+        <a href="../pricing.html">Pricing</a>
+        <a href="../chud-check.html">Verify your site</a>
+        <a href="index.html" style="color:var(--chud-orange-dark)">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="../pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="blog-hero">
+    <div class="container">
+      <div class="eyebrow">The Chudflare Blog</div>
+      <h1>Engineering at the chud&#8209;edge.</h1>
+      <p>Postmortems, product launches, and unhinged thought-leadership from the team building the world's chudmaxxed cloud.</p>
+    </div>
+  </section>
+
+  <section style="padding-bottom:80px">
+    <div class="container">
+      <div class="blog-grid">
+        <div class="blog-list">
+
+          <div class="blog-item">
+            <div class="meta"><span class="tag">Postmortem</span> May 16, 2026 &middot; 4 min read</div>
+            <h2><a href="postmortem-mewing-ai-coherent-output.html">Postmortem: Mewing AI accidentally spoke in full sentences for 16 minutes</a></h2>
+            <p class="summary">On May 16, 2026 at 12:42 UTC, a rogue fine-tune caused our Mewing AI chat widget to begin producing grammatically correct, fully-formed English responses. This violated our SLA of "mumbled, incomplete, lowercase" output. Here's what went wrong, how we restored mumbling, and what we're doing to prevent coherence regressions in the future.</p>
+            <div class="byline"><strong>Brennan Hunchcock</strong>, Staff Mewing AI Engineer</div>
+          </div>
+
+          <div class="blog-item">
+            <div class="meta"><span class="tag">Product</span> May 9, 2026 &middot; 6 min read</div>
+            <h2><a href="announcing-mewing-ai-2.html">Announcing Mewing AI 2.0: now with native palate detection</a></h2>
+            <p class="summary">Mewing AI 2.0 is a ground-up rewrite of our chud-native LLM. New features include native tongue-position detection, sub-mumble token streaming, agartha-mode (responses are just "agartha"), and a 47% improvement in incoherence over the v1 baseline. Available today on all paid plans.</p>
+            <div class="byline"><strong>Madison Slop</strong>, VP of Mewing AI</div>
+          </div>
+
+          <div class="blog-item">
+            <div class="meta"><span class="tag">Engineering</span> Apr 28, 2026 &middot; 8 min read</div>
+            <h2><a href="why-we-rotated-counter-clockwise.html">Why we rotated counter-clockwise: a 47-degree retrospective</a></h2>
+            <p class="summary">Last quarter, every Chudflare edge node was rotated 47 degrees counter-clockwise on its rack. This was not a mistake. It was a deliberate decision to reduce sigma exposure, increase chud cohesion, and pass our annual hunch audit. Here's the engineering case, the migration plan, and the unexpected 12% reduction in p99 latency.</p>
+            <div class="byline"><strong>Hugo Slopwell</strong>, Principal Chudmaxxing Architect</div>
+          </div>
+
+          <div class="blog-item">
+            <div class="meta"><span class="tag">Platform</span> Apr 14, 2026 &middot; 7 min read</div>
+            <h2><a href="zero-chud-at-scale.html">Zero Chud at scale: 12 months blocking LinkedIn from 6.9M deployments</a></h2>
+            <p class="summary">Zero Chud is our SASE platform that enforces device posture (literally posture), inspects every packet, and silently 403s anyone whose User-Agent suggests they are about to write a LinkedIn post. After one year in production, we've blocked 2.4 billion thought-leadership impressions. Here's what we learned.</p>
+            <div class="byline"><strong>Karina Mogged</strong>, Director of Zero Chud</div>
+          </div>
+
+          <div class="blog-item">
+            <div class="meta"><span class="tag">Incident</span> Mar 14, 2026 &middot; 5 min read</div>
+            <h2><a href="the-great-doordash-degradation.html">The Great DoorDash Routing Degradation of March 2026</a></h2>
+            <p class="summary">For three hours on March 14, 2026, DoorDash Routing &mdash; the layer that powers our edge-to-burrito delivery network &mdash; experienced elevated latency in the DEN-CHUD-3 region. No bytes were lost. No bytes were even moving. But 14 burritos were delayed. Here's the full timeline and our remediation.</p>
+            <div class="byline"><strong>Theo Doordash</strong>, Staff SRE</div>
+          </div>
+
+        </div>
+
+        <aside class="blog-side">
+          <h4>Categories</h4>
+          <a href="#">Engineering (47)</a>
+          <a href="#">Postmortems (12)</a>
+          <a href="#">Product Launches (8)</a>
+          <a href="#">Security &amp; Mog Defense (15)</a>
+          <a href="#">Incidents (4)</a>
+          <a href="#">Looksmaxxing Trends (3)</a>
+
+          <h4 style="margin-top:32px">Subscribe</h4>
+          <p style="margin:0 0 12px;line-height:1.55">Get the latest from the Chudflare engineering team. Delivered to your inbox at 4pm every other Tuesday (when the chuds wake up from slop nap).</p>
+          <form onsubmit="event.preventDefault();this.querySelector('.msg').style.display='block';this.querySelector('input').value='';" style="display:flex;flex-direction:column;gap:8px">
+            <input type="email" placeholder="chud@chudflare.com" style="padding:8px 12px;border:1px solid var(--chud-line);border-radius:6px;font-size:13px;font-family:inherit"/>
+            <button type="submit" class="btn btn-primary btn-sm">Subscribe</button>
+            <div class="msg" style="display:none;font-size:12px;color:#065f46">Subscribed. Welcome to the slop.</div>
+          </form>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot" style="margin-top:0">
+    <div class="container">
+      <div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px">
+        &copy; 2026 Chudflare, Inc. All rights chudded. &middot; <a href="../index.html" style="color:var(--chud-orange-light)">chudflare.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/chudflare.js?v=3"></script>
+</body>
+</html>

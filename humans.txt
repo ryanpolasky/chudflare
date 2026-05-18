@@ -1,0 +1,43 @@
+/* TEAM */
+
+Title: Chief Chud Officer
+Name: [REDACTED, PSL too low to display]
+Contact: chud@chudflare.com
+Location: Denver, CO (hunched)
+
+Title: VP of Slop Engineering
+Name: [REDACTED, currently mid-mew]
+Contact: slop@chudflare.com
+Location: Remote (beanbag)
+
+Title: Principal Chudmaxxing Architect
+Name: [REDACTED, mouth slightly agape]
+Contact: hunch@chudflare.com
+Location: undisclosed (agartha)
+
+Title: Staff Mewing AI Trainer
+Name: [REDACTED, tongue on palate]
+Contact: mew@chudflare.com
+Location: Basement (nominal)
+
+Title: Director of Doomscrolling
+Name: [REDACTED, spiritually unavailable]
+Contact: doom@chudflare.com
+Location: Horizontal (fully chudded)
+
+/* SITE */
+
+Last update: 2026-05-18
+Standards: HTML5, CSS3, Vanilla JS
+Components: Zero frameworks. Zero build tools. Zero PSL.
+Software: Written by a chud in a hoodie indoors at 3am.
+Font: Inter (Google Fonts)
+DNS: 6.9.6.9 (Chud Name System)
+
+/* THANKS */
+
+Thanks to Cloudflare for building excellent infrastructure
+that we are lovingly parodying. This is satire.
+We are chuds. They are not. Please don't sue us.
+
+Nothing ever happens.

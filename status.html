@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Chudflare System Status</title>
+  <meta name="description" content="Real-time operational status of the Chudflare platform."/>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=2"/>
+  <style>
+    body { background: #f6f6f6; }
+    .st-wrap { max-width: 780px; margin: 0 auto; padding: 32px 20px 80px; }
+    .st-head { display: flex; align-items: center; gap: 14px; margin-bottom: 40px; }
+    .st-head img { height: 32px; }
+    .st-head span { font-size: 20px; font-weight: 700; color: var(--chud-ink); }
+    .st-head a { margin-left: auto; font-size: 13px; color: var(--chud-orange-dark); font-weight: 600; text-decoration: none; }
+    .st-head a:hover { text-decoration: underline; }
+    .st-banner { background: #d1fae5; border: 1px solid #6ee7b7; border-radius: 10px; padding: 20px 24px; display: flex; align-items: center; gap: 12px; margin-bottom: 36px; font-size: 15px; font-weight: 600; color: #065f46; }
+    .st-banner .dot { width: 12px; height: 12px; border-radius: 50%; background: #10b981; flex-shrink: 0; }
+    .st-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 24px; overflow: hidden; }
+    .st-section-head { padding: 16px 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6b7280; border-bottom: 1px solid #e5e7eb; }
+    .st-row { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
+    .st-row:last-child { border-bottom: none; }
+    .st-row .name { flex: 1; font-weight: 500; color: var(--chud-ink); }
+    .st-row .badge { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 99px; }
+    .st-row .badge.ok { background: #d1fae5; color: #065f46; }
+    .st-row .badge.warn { background: #fef3c7; color: #92400e; }
+    .st-row .badge.down { background: #fee2e2; color: #991b1b; }
+    .st-row .note { color: #9ca3af; font-size: 12px; margin-left: 12px; max-width: 200px; text-align: right; }
+    .st-incidents { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 24px; }
+    .st-incidents h3 { font-size: 14px; font-weight: 700; color: var(--chud-ink); margin: 0 0 20px; }
+    .st-incident { border-left: 3px solid #f59e0b; padding: 12px 16px; margin-bottom: 16px; background: #fffbeb; border-radius: 0 8px 8px 0; }
+    .st-incident:last-child { margin-bottom: 0; }
+    .st-incident .date { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #92400e; margin-bottom: 4px; }
+    .st-incident .title { font-size: 14px; font-weight: 600; color: var(--chud-ink); margin-bottom: 4px; }
+    .st-incident .body { font-size: 13px; color: #6b7280; line-height: 1.5; }
+    .st-incident .body strong { color: var(--chud-ink); }
+    .st-incident.resolved { border-left-color: #10b981; background: #f0fdf4; }
+    .st-incident.resolved .date { color: #065f46; }
+    .st-foot { text-align: center; margin-top: 40px; font-size: 12px; color: #9ca3af; }
+    .st-foot a { color: var(--chud-orange-dark); text-decoration: none; font-weight: 600; }
+    .st-subscribe { margin-top: 24px; text-align: center; }
+    .st-subscribe input { padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px 0 0 8px; font-size: 13px; width: 220px; outline: none; }
+    .st-subscribe input:focus { border-color: var(--chud-orange); }
+    .st-subscribe button { padding: 10px 18px; background: var(--chud-orange); color: #fff; border: none; border-radius: 0 8px 8px 0; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .st-subscribe button:hover { background: var(--chud-orange-dark); }
+    .st-subscribe .msg { display: none; margin-top: 8px; font-size: 12px; color: #065f46; }
+  </style>
+</head>
+<body>
+  <!-- if you're reading this source, you're a chud and you know it -->
+  <div class="st-wrap">
+    <div class="st-head">
+      <img src="assets/img/chudflare-mascot.png" alt="Chudflare"/>
+      <span>Chudflare Status</span>
+      <a href="index.html">&larr; Back to chudflare.com</a>
+    </div>
+
+    <div class="st-banner">
+      <span class="dot"></span>
+      All Systems Operational <span style="font-weight:400;margin-left:8px;color:#065f46;opacity:0.7">(as operational as a chud gets)</span>
+    </div>
+
+    <!-- Core Infrastructure -->
+    <div class="st-section">
+      <div class="st-section-head">Core Infrastructure</div>
+      <div class="st-row">
+        <span class="name">SDN (Slop Delivery Network)</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">310/310 PoPs operational. Posture nominal.</span>
+      </div>
+      <div class="st-row">
+        <span class="name">Chad Fight Mode&trade;</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">auto-mogging at 99.97%</span>
+      </div>
+      <div class="st-row">
+        <span class="name">CNS (6.9.6.9)</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">2ms median resolve</span>
+      </div>
+      <div class="st-row">
+        <span class="name">Sigma Status Layer (SSL)</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">TLS 1.chud</span>
+      </div>
+    </div>
+
+    <!-- Compute & Storage -->
+    <div class="st-section">
+      <div class="st-section-head">Compute &amp; Storage</div>
+      <div class="st-row">
+        <span class="name">Chudders (Serverless)</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">5ms cold start</span>
+      </div>
+      <div class="st-row">
+        <span class="name">C2 Object Storage</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">no egress fees ever</span>
+      </div>
+      <div class="st-row">
+        <span class="name">Chuds (Static Hosting)</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">Git push &rarr; slop deploy</span>
+      </div>
+      <div class="st-row">
+        <span class="name">Mewing AI</span>
+        <span class="badge warn">Mumbling</span>
+        <span class="note">partial outage in agartha</span>
+      </div>
+    </div>
+
+    <!-- Support Services -->
+    <div class="st-section">
+      <div class="st-section-head">Support Services</div>
+      <div class="st-row">
+        <span class="name">DoorDash Routing</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">2 burritos in flight</span>
+      </div>
+      <div class="st-row">
+        <span class="name">Zero Chud (SASE)</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">LinkedIn blocked globally</span>
+      </div>
+      <div class="st-row">
+        <span class="name">Chud Verification API</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">4.2K sites verified</span>
+      </div>
+      <div class="st-row">
+        <span class="name">Slop Streams (Kafka)</span>
+        <span class="badge ok">Operational</span>
+        <span class="note">0 consumer lag (no consumers)</span>
+      </div>
+    </div>
+
+    <!-- Past Incidents -->
+    <div class="st-incidents">
+      <h3>Past Incidents</h3>
+
+      <div class="st-incident resolved">
+        <div class="date">May 16, 2026 &mdash; Resolved</div>
+        <div class="title">Mewing AI responded in full sentences</div>
+        <div class="body">
+          <strong>12:42 UTC</strong> &mdash; Monitoring detected Mewing AI was outputting coherent, grammatically correct English. This violated our SLA of "mumbled, incomplete, lowercase" responses.<br/>
+          <strong>12:58 UTC</strong> &mdash; Root cause identified: a rogue fine-tune accidentally improved the model's communication skills.<br/>
+          <strong>13:14 UTC</strong> &mdash; Rolled back to the pre-improvement checkpoint. Mewing AI is once again producing incoherent output. <strong>Resolved.</strong>
+        </div>
+      </div>
+
+      <div class="st-incident resolved">
+        <div class="date">May 9, 2026 &mdash; Resolved</div>
+        <div class="title">DEN-CHUD-3 PoP temporarily achieved good posture</div>
+        <div class="body">
+          <strong>08:30 UTC</strong> &mdash; Our Denver edge node reported a hunch angle of 2deg, well below the 25deg minimum threshold.<br/>
+          <strong>08:47 UTC</strong> &mdash; Automated remediation deployed: added a 40lb weighted blanket to the rack. Hunch angle restored to 47deg. <strong>Resolved.</strong>
+        </div>
+      </div>
+
+      <div class="st-incident resolved">
+        <div class="date">Apr 28, 2026 &mdash; Resolved</div>
+        <div class="title">Chad Fight Mode accidentally allowed a gigachad through</div>
+        <div class="body">
+          <strong>16:02 UTC</strong> &mdash; A single request with PSL 8.7 bypassed Chad Fight Mode and was served a 200. Internal alarms triggered immediately.<br/>
+          <strong>16:03 UTC</strong> &mdash; The request was retroactively 403'd and the visitor was sent a strongly-worded email telling them to leave.<br/>
+          <strong>16:15 UTC</strong> &mdash; Updated classifier with an additional 400M looksmaxxing samples. False-positive rate for gigachads now at 0.0003%. <strong>Resolved.</strong>
+        </div>
+      </div>
+
+      <div class="st-incident resolved">
+        <div class="date">Apr 14, 2026 &mdash; Resolved</div>
+        <div class="title">4pm slop nap exceeded scheduled duration by 3 hours</div>
+        <div class="body">
+          <strong>16:00 UTC</strong> &mdash; The daily company-wide slop nap began as scheduled.<br/>
+          <strong>19:12 UTC</strong> &mdash; SRE team woke up. All services had continued to operate via autopilot because, frankly, the infrastructure doesn't need us. <strong>Resolved.</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscribe -->
+    <div class="st-subscribe">
+      <form onsubmit="event.preventDefault();this.querySelector('.msg').style.display='block';this.querySelector('input').value='';">
+        <input type="email" placeholder="chud@chudflare.com" aria-label="Email for status updates"/>
+        <button type="submit">Subscribe</button>
+        <div class="msg">Subscribed. You'll receive mumbled incident updates via Mewing AI.</div>
+      </form>
+    </div>
+
+    <div class="st-foot">
+      <p>Chudflare System Status &middot; Updated every 47 seconds &middot; <a href="index.html">chudflare.com</a></p>
+      <p style="margin-top:4px">Powered by hunched SREs in 122 cities. Nothing ever happens.</p>
+    </div>
+  </div>
+</body>
+</html>

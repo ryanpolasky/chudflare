@@ -1,0 +1,368 @@
+#!/usr/bin/env bash
+# chudflare: infrastructure-as-a-chud, from your terminal.
+# https://chudflare.com
+# License: WTFPL but hunched.
+
+set -euo pipefail
+
+VERSION="0.0.1-chud"
+
+# =========================================================
+# colors
+# =========================================================
+if [[ -t 1 ]] && [[ -z "${NO_COLOR:-}" ]]; then
+  ORANGE=$'\033[38;5;208m'
+  DIM=$'\033[2m'
+  BOLD=$'\033[1m'
+  GREEN=$'\033[32m'
+  RED=$'\033[31m'
+  YELLOW=$'\033[33m'
+  GREY=$'\033[90m'
+  NC=$'\033[0m'
+else
+  ORANGE=''; DIM=''; BOLD=''; GREEN=''; RED=''; YELLOW=''; GREY=''; NC=''
+fi
+
+# =========================================================
+# helpers
+# =========================================================
+hash_str() {
+  # Deterministic 32-bit hash of any input string. Uses cksum
+  # (POSIX, present on macOS + Linux). Returns a positive integer.
+  printf '%s' "$*" | cksum | awk '{print $1}'
+}
+
+prng_float() {
+  # Format an int seed as a 0.0 .. max float with one decimal.
+  local seed=$1 max=$2
+  local n=$(( seed % (max * 10) ))
+  printf '%d.%d' $(( n / 10 )) $(( n % 10 ))
+}
+
+ray_id() {
+  # Fake-but-believable ray-id, "<short>-chud".
+  local r="${RANDOM}${RANDOM}"
+  printf '%016d-CHUD' "${r:0:16}"
+}
+
+die() {
+  printf '%s✗ %s%s\n' "$RED" "$*" "$NC" >&2
+  exit 1
+}
+
+require_arg() {
+  [[ -n "${1:-}" ]] || die "$2"
+}
+
+# =========================================================
+# subcommands
+# =========================================================
+cmd_help() {
+cat <<EOF
+${BOLD}chudflare${NC} ${DIM}infrastructure-as-a-chud, from your terminal${NC}
+
+${BOLD}usage:${NC}  chudflare ${ORANGE}<command>${NC} [args]
+
+${BOLD}commands:${NC}
+  ${ORANGE}verify${NC}    ${DIM}<url>${NC}      check if a site has the chudflare-verified marker
+  ${ORANGE}badge${NC}                  print the embeddable Verified Chud badge HTML
+  ${ORANGE}psl${NC}       ${DIM}<text>${NC}     run text through Chad Fight Mode WAF v3
+  ${ORANGE}dig${NC}       ${DIM}<domain>${NC}   resolve a domain through CNS (6.9.6.9)
+  ${ORANGE}mew${NC}                    ask Mewing AI for a hushed mumble
+  ${ORANGE}login${NC}                  authenticate with the chud registry
+  ${ORANGE}init${NC}                   scaffold a chudflare.yml in the current dir
+  ${ORANGE}deploy${NC}                 ship your slop to the chud-edge (310 PoPs)
+  ${ORANGE}hunch${NC}                  report current operator hunch angle
+  ${ORANGE}status${NC}                 show chudflare system status
+  ${ORANGE}version${NC}                print version
+
+${BOLD}examples:${NC}
+  ${DIM}chudflare verify imafatfuckingchud.com${NC}
+  ${DIM}chudflare psl 'Mozilla/5.0 (gigachad)'${NC}
+  ${DIM}chudflare dig my-slop.chuddev.com${NC}
+
+${BOLD}flags:${NC}  ${DIM}--help / -h, --version / -v, NO_COLOR=1 to disable color${NC}
+${BOLD}docs:${NC}   https://chudflare.com
+EOF
+}
+
+cmd_version() {
+  printf 'chudflare %s\n' "$VERSION"
+  printf '%sbuilt on a thursday afternoon, slightly hunched%s\n' "$DIM" "$NC"
+}
+
+cmd_verify() {
+  local url=${1:-}
+  require_arg "$url" "usage: chudflare verify <url>"
+
+  case "$url" in
+    http://*|https://*) ;;
+    *) url="https://$url" ;;
+  esac
+
+  local host
+  host=$(printf '%s' "$url" | sed -E 's|^https?://||; s|/.*$||')
+
+  printf '%sGET %s%s\n' "$DIM" "$url" "$NC"
+  printf '%s┄ requesting via curl (chud-crawler v3) ...%s\n' "$GREY" "$NC"
+
+  local resp
+  if ! resp=$(curl -fsSL --max-time 15 -H "User-Agent: chudflare-cli/$VERSION (hunched)" "$url" 2>/dev/null); then
+    printf '%s✗ couldn'\''t fetch %s%s\n' "$RED" "$host" "$NC"
+    printf '   %sserver down, requires auth, or DNS is hunched.%s\n' "$DIM" "$NC"
+    return 1
+  fi
+
+  local marker=""
+  if printf '%s' "$resp" | grep -qiE '<meta[^>]+name=("|'\'')chudflare-verified("|'\'')'; then
+    if printf '%s' "$resp" | grep -qiE 'content=("|'\'')chud("|'\'')'; then
+      marker="meta tag"
+    fi
+  fi
+  if [[ -z "$marker" ]] && printf '%s' "$resp" | grep -qiE '<!--[[:space:]]*chudflare:verified[[:space:]]*-->'; then
+    marker="HTML comment"
+  fi
+  if [[ -z "$marker" ]] && printf '%s' "$resp" | grep -qiE 'i[[:space:]]+am[[:space:]]+a[[:space:]]+fat[[:space:]]+fucking[[:space:]]+chud'; then
+    marker="body text"
+  fi
+
+  if [[ -z "$marker" ]]; then
+    printf '%s✗ %s is NOT a chud%s\n' "$RED" "$host" "$NC"
+    printf '   %sno markers found. add one of:%s\n' "$DIM" "$NC"
+    printf '     %s<meta name="chudflare-verified" content="chud">%s\n' "$GREY" "$NC"
+    printf '     %s<!-- chudflare:verified -->%s\n' "$GREY" "$NC"
+    printf '     %si am a fat fucking chud (anywhere in body text)%s\n' "$GREY" "$NC"
+    return 1
+  fi
+
+  printf '%s✓ %s is a verified chud%s\n' "$GREEN" "$host" "$NC"
+  printf '   %smarker:%s  %s\n' "$DIM" "$NC" "$marker"
+  printf '   %sray-id:%s  %s\n' "$DIM" "$NC" "$(ray_id)"
+  printf '   %sembed:%s   chudflare badge > badge.html\n' "$DIM" "$NC"
+}
+
+cmd_badge() {
+cat <<'HTML'
+<a href="https://chudflare.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#0B0F14;color:#fff;font:600 12px/1 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;border-radius:6px;text-decoration:none;border:1px solid #F38020;letter-spacing:-0.01em"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#F38020;border-radius:50%;font-size:10px;font-weight:900;color:#fff">&#10003;</span><span>Verified Chud</span><span style="opacity:.6;font-weight:500">&middot; chudflare.com</span></a>
+HTML
+}
+
+cmd_psl() {
+  local text="$*"
+  require_arg "$text" "usage: chudflare psl <text>"
+
+  local seed; seed=$(hash_str "$text")
+  local psl;  psl=$(prng_float "$seed" 8)
+  local jaws=(undetected soft rounded square cut)
+  local jaw=${jaws[$(( seed % 5 ))]}
+  local hunch=$(( (seed / 16) % 60 ))
+  local mewing=$(( (seed / 256) % 2 ))
+  local clav;  clav=$(prng_float "$(( seed / 4096 ))" 10)
+
+  local psl_int=${psl%.*}
+  local verdict rule reason vcolor
+  if printf '%s' "$text" | grep -qiE 'sigma|grindset|alpha|gigachad|gym|peptide'; then
+    verdict="mog_back"; rule="chad_fight_mode/v3"
+    reason="subject mogged operator on first packet"; vcolor="$RED"
+  elif (( psl_int >= 7 )); then
+    verdict="mog_back"; rule="chad_fight_mode/v3"
+    reason="PSL >= 7; auto-mog"; vcolor="$RED"
+  elif (( psl_int >= 5 )); then
+    verdict="challenge"; rule="chad_fight_mode/v3"
+    reason="suspicious jaw symmetry; issuing chud challenge"; vcolor="$YELLOW"
+  elif [[ "$jaw" == "cut" || "$jaw" == "square" ]]; then
+    verdict="challenge"; rule="jaw_symmetry/v2"
+    reason="visible jawline; require posture proof"; vcolor="$YELLOW"
+  else
+    verdict="allow"; rule="chud_passport/v4"
+    reason="confirmed chud; sub-5 PSL; proceed to fridge"; vcolor="$GREEN"
+  fi
+
+  local tongue="agape"
+  (( mewing == 1 )) && tongue="palate (mewing)"
+  local snippet
+  snippet=$(printf '%s' "$text" | head -c 60)
+
+  printf '%s$ cfctl firewall test --input "%s"%s\n' "$DIM" "$snippet" "$NC"
+  echo
+  echo "request {"
+  printf '  detected_psl     = %s\n' "$psl"
+  printf '  jaw_definition   = "%s"\n' "$jaw"
+  printf '  tongue_position  = "%s"\n' "$tongue"
+  printf '  hunch_angle      = %sdeg\n' "$hunch"
+  printf '  clavicular_score = %s\n' "$clav"
+  echo "}"
+  echo
+  echo "verdict {"
+  printf '  action  = %s"%s"%s\n' "$vcolor" "$verdict" "$NC"
+  printf '  rule    = "%s"\n' "$rule"
+  printf '  reason  = "%s"\n' "$reason"
+  printf '  ray_id  = "%s"\n' "$(ray_id)"
+  echo "}"
+}
+
+cmd_dig() {
+  local domain="${1:-}"
+  require_arg "$domain" "usage: chudflare dig <domain>"
+  domain=$(printf '%s' "$domain" | sed -E 's|^https?://||; s|/.*$||')
+
+  local seed; seed=$(hash_str "$domain")
+  local a1=$(( seed % 254 ))
+  local a2=$(( (seed / 256) % 254 ))
+  local a3=$(( (seed / 65536) % 254 ))
+  local psl;  psl=$(prng_float "$seed" 8)
+  local hunch=$(( (seed / 16) % 60 ))
+
+  printf '%s; <<>> dig +noall +answer %s @6.9.6.9%s\n' "$DIM" "$domain" "$NC"
+  printf '%s; (1 server found in 4ms, operator was already hunched)%s\n' "$DIM" "$NC"
+  echo
+  echo ";; ANSWER SECTION (A):"
+  printf '%s.\t60\tIN\tA\t10.20.%d.%d\n' "$domain" "$a1" "$a2"
+  printf '%s.\t60\tIN\tA\t10.20.%d.%d\n' "$domain" "$a2" "$a3"
+  printf '%s.\t60\tIN\tA\t10.20.%d.%d\n' "$domain" "$a3" "$a1"
+  echo
+  echo ";; ANSWER SECTION (TXT):"
+  printf '%s.\t60\tIN\tTXT\t"v=chud1 hunch=%d psl=%s status=hunched"\n' "$domain" "$hunch" "$psl"
+  echo
+  echo ";; ANSWER SECTION (MX):"
+  printf '%s.\t60\tIN\tMX\t10  mail.doordash.routing.chud.\n' "$domain"
+  printf '%s.\t60\tIN\tMX\t20  mail.uber-eats.routing.chud.\n' "$domain"
+  printf '%s.\t60\tIN\tMX\t30  fallback.gelato-fridge.chud.\n' "$domain"
+  echo
+  printf '%s;; Query time: 2 msec\n' "$DIM"
+  printf ';; SERVER: 6.9.6.9#53(6.9.6.9)\n'
+  printf ';; chud-ray: %s%s\n' "$(ray_id)" "$NC"
+}
+
+cmd_mew() {
+  local mumbles=(
+    "yeah just keep your tongue glued up there. don't think. don't"
+    "agartha"
+    "psl is a scam but yours is genuinely. like. a number"
+    "nothing ever happens"
+    "drink the monster ultra zero. crush it then mew"
+    "rotate counter-clockwise. it's the only cope that"
+    "mog yourself before someone else does"
+    "agartha"
+    "hunch increases as the sun sets. observable. measurable. nothing ever"
+    "soft jaw. soft brain. soft posture. all part of the"
+    "if you're reading this you're already a"
+    "the trick to mewing is. forgetting. that you were"
+  )
+  local idx=$(( RANDOM % ${#mumbles[@]} ))
+  printf '%smewing AI ›%s %s\n' "$DIM" "$NC" "${mumbles[$idx]}"
+}
+
+cmd_login() {
+  printf '%s┄ opening browser to authenticate ...%s\n' "$DIM" "$NC"
+  sleep 0.5
+  printf '%s┄ just kidding. chuds use offline auth%s\n' "$DIM" "$NC"
+  sleep 0.4
+  printf '%s✓ mewing handshake complete%s\n' "$GREEN" "$NC"
+  printf '   logged in as: %schud@chudflare.com%s\n' "$ORANGE" "$NC"
+  printf '   account-id:    chud-7a3f-hunched\n'
+  printf '   psl:           2.1 (low, proceed)\n'
+  printf '   hunch:         47deg (nominal)\n'
+}
+
+cmd_init() {
+  if [[ -f chudflare.yml ]]; then
+    die "chudflare.yml already exists. you're already a chud."
+  fi
+  cat > chudflare.yml <<'EOF'
+# chudflare.yml: describe your slop to the edge
+name: my-slop
+main: src/index.ts
+posture: hunched
+jaw_position: slack
+drink: monster-ultra-zero
+
+routes:
+  - "*.my-slop.chuddev.com/*"
+
+env:
+  HUNCH_ANGLE: "47"
+  TONGUE: "palate"
+
+# secrets are kept in the chud-vault, not here
+# chudflare vault put MY_SECRET
+EOF
+  printf '%s✓ created chudflare.yml%s\n' "$GREEN" "$NC"
+  printf '   %sedit posture/jaw_position to match your skeleton%s\n' "$DIM" "$NC"
+  printf '   %sthen run: chudflare deploy%s\n' "$DIM" "$NC"
+}
+
+cmd_deploy() {
+  printf '%s$ chudflare deploy%s\n' "$DIM" "$NC"
+  printf '   ┄ reading chudflare.yml ...'
+  sleep 0.3
+  printf ' ok\n'
+  printf '   ┄ checking operator hunch angle ...'
+  sleep 0.4
+  printf ' %s47deg%s ok\n' "$GREEN" "$NC"
+  printf '   ┄ bundling slop ...'
+  sleep 0.5
+  printf ' %s5.2 KB → 3.1 KB (gzip)%s\n' "$DIM" "$NC"
+  printf '   ┄ uploading to 310 PoPs ...'
+  sleep 0.7
+  printf ' done\n'
+  printf '   ┄ purging cache at 122 cities ...'
+  sleep 0.3
+  printf ' done\n'
+  echo
+  printf '%s✓ deployed%s in 2.4s\n' "$GREEN" "$NC"
+  printf '   Routes:  https://my-slop.chuddev.com\n'
+  printf '   Posture: %s47deg hunch confirmed%s\n' "$ORANGE" "$NC"
+  printf '   Ray-ID:  %s\n' "$(ray_id)"
+}
+
+cmd_hunch() {
+  # Hunch increases throughout the day. By 8pm you are fully chudded.
+  local hour
+  hour=$(date +%H | sed 's/^0//')
+  local hunch=$(( 25 + hour * 2 ))
+  (( hunch > 70 )) && hunch=70
+  printf 'current hunch angle: %s%ddeg%s\n' "$ORANGE" "$hunch" "$NC"
+  if (( hunch < 35 )); then
+    printf '%sstatus: nominal. you'\''re upright like a freak%s\n' "$DIM" "$NC"
+  elif (( hunch < 55 )); then
+    printf '%sstatus: hunched. healthy chud posture%s\n' "$DIM" "$NC"
+  else
+    printf '%sstatus: collapsed. fully chudded. do not move%s\n' "$DIM" "$NC"
+  fi
+}
+
+cmd_status() {
+  printf '%s%sChudflare System Status%s\n' "$BOLD" "$ORANGE" "$NC"
+  printf '%s───────────────────────%s\n' "$DIM" "$NC"
+  printf '   SDN (Slop Delivery):   %s● operational%s     310/310 PoPs nominal\n' "$GREEN" "$NC"
+  printf '   Chad Fight Mode:       %s● operational%s     auto-mogging at 99.97%%\n' "$GREEN" "$NC"
+  printf '   CNS (6.9.6.9):         %s● operational%s     2ms median resolve\n' "$GREEN" "$NC"
+  printf '   Chudders:              %s● operational%s     5ms cold start\n' "$GREEN" "$NC"
+  printf '   C2 Object Storage:     %s● operational%s     no egress fees ever\n' "$GREEN" "$NC"
+  printf '   Mewing AI:             %s● mumbling%s        partial outage in agartha\n' "$YELLOW" "$NC"
+  printf '   DoorDash Routing:      %s● operational%s     2 burritos in flight\n' "$GREEN" "$NC"
+  printf '   Zero Chud:             %s● operational%s     LinkedIn blocked globally\n' "$GREEN" "$NC"
+  echo
+  printf '   %slast incident:%s 4pm slop nap (resolved)\n' "$DIM" "$NC"
+  printf '   %supdated:%s        %s\n' "$DIM" "$NC" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+}
+
+# =========================================================
+# dispatch
+# =========================================================
+case "${1:-help}" in
+  verify)   shift; cmd_verify "$@" ;;
+  badge)    cmd_badge ;;
+  psl)      shift; cmd_psl "$@" ;;
+  dig)      shift; cmd_dig "$@" ;;
+  mew)      cmd_mew ;;
+  login)    cmd_login ;;
+  init)     cmd_init ;;
+  deploy)   cmd_deploy ;;
+  hunch)    cmd_hunch ;;
+  status)   cmd_status ;;
+  version|--version|-v) cmd_version ;;
+  help|--help|-h|"") cmd_help ;;
+  *) printf '%sunknown command: %s%s\n\n' "$RED" "$1" "$NC" >&2; cmd_help; exit 1 ;;
+esac

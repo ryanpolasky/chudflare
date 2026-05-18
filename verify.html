@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Just a moment...</title>
+  <meta name="description" content="Verifying you are a chud before proceeding."/>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=2"/>
+  <style>
+    .verify-hero {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 32px;
+    }
+    .verify-hero img { width: 96px; height: auto; flex-shrink: 0; }
+    @media (max-width: 600px) {
+      .verify-hero { flex-direction: column; gap: 12px; }
+    }
+    .verify-foot {
+      border-top: 1px solid var(--chud-line);
+      padding: 20px 0;
+      text-align: center;
+      color: #5a6068;
+      font-size: 13px;
+    }
+    .verify-foot strong { color: var(--chud-ink); }
+  </style>
+</head>
+<body class="verify" data-no-ai data-no-banner>
+<!--
+  this is the chudflare interstitial. it is real.
+  you will be released to the origin when you have proven your chud-ness.
+  cf-ray: 8c0ffee-CHUD-DEN  /  challenge: pure-chud-check/v3
+-->
+  <div class="wrap">
+    <div class="verify-hero">
+      <img src="assets/img/chudflare-mascot.png" alt="Chudflare"/>
+      <div>
+        <h1>imafatfuckingchud.com needs to review the security of your connection.</h1>
+        <div class="verify-sub">Verifying you are a chud. This may take a few seconds.</div>
+      </div>
+    </div>
+
+    <div class="gate" id="chud-gate">
+      <!-- Injected by chudflare.js: checkbox + verify button -->
+    </div>
+
+    <div class="verify-card idle" id="verify-card">
+      <div class="verify-row">
+        <span class="verify-cb" id="cb1"></span>
+        <div>
+          <strong>Verifying you are a chud</strong>
+          <div class="verify-sub" id="lbl1">Awaiting consent above…</div>
+        </div>
+      </div>
+      <div class="verify-row">
+        <span class="verify-cb" id="cb2"></span>
+        <div>
+          <strong>Checking for evidence of mewing</strong>
+          <div class="verify-sub" id="lbl2">Pending the previous check.</div>
+        </div>
+      </div>
+      <div class="verify-row">
+        <span class="verify-cb" id="cb3"></span>
+        <div>
+          <strong>Scanning supplement cabinet</strong>
+          <div class="verify-sub" id="lbl3">Pending the previous check.</div>
+        </div>
+      </div>
+      <div class="verify-row">
+        <span class="verify-cb" id="cb4"></span>
+        <div>
+          <strong>Confirming Monster Energy intake</strong>
+          <div class="verify-sub" id="lbl4">Pending the previous check.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ray-id">
+      Chud Ray ID: <span id="ray">8c0ffee chud chud chud</span><br/>
+      Performance &amp; security by <strong style="color:var(--chud-ink)">Chudflare</strong>
+    </div>
+  </div>
+
+  <div class="verify-foot">
+    Privacy &nbsp;·&nbsp; Terms &nbsp;·&nbsp; <strong>Chudflare</strong> &nbsp;·&nbsp; <a href="index.html" style="color:var(--chud-orange-dark);font-weight:600">Back to Chudflare.com</a>
+  </div>
+
+  <script>
+    // Animate the cloudflare-style verification one step at a time.
+    const steps = [
+      { cb: 'cb1', lbl: 'lbl1',
+        running: 'Cross-referencing your browser fingerprint against the Chud Registry…',
+        passed:  'You have a PSL of 2.1 and a hunch angle of 47°. Confirmed chud.' },
+      { cb: 'cb2', lbl: 'lbl2',
+        running: 'Inspecting tongue position via WebRTC microphone leak…',
+        passed:  'No active mewing detected. Mouth slightly agape.' },
+      { cb: 'cb3', lbl: 'lbl3',
+        running: 'Auditing peptide receipts and supplement stack…',
+        passed:  '14 unopened bottles. Indistinguishable from a CVS clearance shelf.' },
+      { cb: 'cb4', lbl: 'lbl4',
+        running: 'Validating Monster can metadata…',
+        passed:  'Latest can crushed 14 minutes ago. Ultra Zero. Confirmed chud.' }
+    ];
+
+    const fakeRayId = () => {
+      const hex = '0123456789abcdef';
+      let s = '';
+      for (let i = 0; i < 16; i++) s += hex[Math.floor(Math.random() * 16)];
+      return s + '-CHUD';
+    };
+    document.getElementById('ray').textContent = fakeRayId();
+
+    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function runStep(step) {
+      const cb = document.getElementById(step.cb);
+      const lbl = document.getElementById(step.lbl);
+      cb.classList.add('spin');
+      lbl.textContent = step.running;
+      await delay(1600 + Math.random() * 800);
+      cb.classList.remove('spin');
+      cb.classList.add('done');
+      lbl.textContent = step.passed;
+    }
+
+    // Exposed for chudflare.js to call after the user passes the
+    // "I am a chud" gate. Kicks off the 4-step verification.
+    window.__chudVerifyStart = async function () {
+      for (let i = 0; i < steps.length; i++) {
+        await runStep(steps[i]);
+      }
+      await delay(800);
+      const wrap = document.querySelector('.verify-card');
+      const banner = document.createElement('div');
+      banner.style.cssText = 'margin-top:24px;padding:18px 20px;border-radius:8px;background:#FFF6E9;border:1px solid #F38020;color:#7a3a08;font-size:15px;line-height:1.55;';
+      banner.innerHTML = '<strong>You\'ve been verified as a chud.</strong> Proceeding to <code>imafatfuckingchud.com</code>… Just kidding. Nothing ever happens. <a href="index.html" style="color:#C25B14;font-weight:700;text-decoration:underline">Return to Chudflare →</a>';
+      wrap.appendChild(banner);
+    };
+  </script>
+  <script src="assets/js/chudflare.js?v=3"></script>
+</body>
+</html>

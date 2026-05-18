@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Zero Chud at scale: 12 months blocking LinkedIn from 6.9M deployments | Chudflare Blog</title>
+  <meta name="description" content="One year of Zero Chud in production: 2.4 billion thought-leadership impressions blocked, 47K MAUs preserved from posting, and the lessons we learned."/>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="../assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css?v=2"/>
+  <link rel="stylesheet" href="post.css"/>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="../index.html" class="nav-logo"><img src="../assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/><span>Chudflare</span></a>
+      <nav class="nav-links">
+        <a href="../products.html">Products</a>
+        <a href="../pricing.html">Pricing</a>
+        <a href="../chud-check.html">Verify your site</a>
+        <a href="index.html" style="color:var(--chud-orange-dark)">Blog</a>
+      </nav>
+      <div class="nav-cta"><a href="../pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a></div>
+    </div>
+  </header>
+
+  <article class="post">
+    <div class="container post-narrow">
+      <a href="index.html" class="back-link">&larr; All posts</a>
+      <div class="post-meta"><span class="tag">Platform</span> Apr 14, 2026 &middot; 7 min read</div>
+      <h1>Zero Chud at scale: 12 months blocking LinkedIn from 6.9M deployments</h1>
+      <div class="post-byline">
+        <div class="avatar">KM</div>
+        <div>
+          <div class="name">Karina Mogged</div>
+          <div class="role">Director of Zero Chud</div>
+        </div>
+      </div>
+
+      <div class="post-body">
+        <p class="lede">A year ago we shipped Zero Chud &mdash; our SASE platform for organizations where nobody is allowed to be a chud except you. (Yes, this is paradoxical. We will address it in the next blog post.) Twelve months and 2.4 billion blocked thought-leadership impressions later, here's what we learned.</p>
+
+        <h2>The numbers</h2>
+        <ul>
+          <li><strong>6.9M</strong> deployments protected</li>
+          <li><strong>2.4B</strong> LinkedIn posts blocked at the gateway before they could be drafted</li>
+          <li><strong>47K</strong> employees protected from posting "humbled to announce" at all</li>
+          <li><strong>312ms</strong> median latency added by Chud Gateway DNS filtering (acceptable &mdash; you weren't going to be productive anyway)</li>
+          <li><strong>$0</strong> in monetary damages from the one (1) gigachad who bypassed our perimeter (he got mogged on the way out)</li>
+        </ul>
+
+        <h2>Architecture</h2>
+        <p>Zero Chud sits between your workforce and the internet. Every packet is inspected by our identity-aware proxy, which determines:</p>
+        <ol>
+          <li><strong>Is the user a verified chud?</strong> (PSL &lt; 5, hunch angle &gt; 25deg, has not mewed today)</li>
+          <li><strong>Is the destination on the sigma-blocklist?</strong> (LinkedIn, Lex Fridman's podcast, anything containing the word "grindset")</li>
+          <li><strong>Is the user's device posturally compliant?</strong> (Webcam-based hunch verification via Chud Posture API)</li>
+        </ol>
+        <p>If all three checks pass, the request proceeds. If any fail, the user is silently redirected to a 5-minute mewing tutorial.</p>
+
+        <h2>Notable customer wins</h2>
+
+        <h3>Case study: 800-person SaaS company</h3>
+        <p>Customer deployed Zero Chud in Q3 2025 with a policy that blocked all access to LinkedIn between 9am and 6pm. Within 30 days:</p>
+        <ul>
+          <li>Internal Slack engagement <strong>up 47%</strong></li>
+          <li>Outbound thought leadership posts <strong>down 100%</strong></li>
+          <li>Average employee hunch angle <strong>up from 31deg to 44deg</strong></li>
+          <li>Engineering velocity <strong>up 23%</strong> (no longer interrupted by "I just hit a big milestone" notifications)</li>
+        </ul>
+
+        <h3>Case study: 12-person seed-stage startup</h3>
+        <p>Founder used Zero Chud to block himself from posting his fundraising announcement until after the wire actually hit. The post went up 4 days later. The post still got 12 likes. Nothing ever happens.</p>
+
+        <h2>The one (1) gigachad incident</h2>
+        <p>On Feb 12, 2026, a single gigachad managed to bypass our perimeter using a novel UA spoofing technique (he set his User-Agent to "Mozilla/5.0 (hunched, indoors)"). He successfully accessed LinkedIn and began drafting a post titled "10 things software engineers can learn from CrossFit." We detected him 4.7 seconds in. He was 403'd, his draft was retroactively deleted, and his account was flagged for chud-eligibility review. <strong>The post never went live.</strong> Our SLA was technically breached. We have refunded the customer in Monster Ultra Zero credits.</p>
+
+        <h2>What's next</h2>
+        <p>Zero Chud 2.0 is in beta. New features include:</p>
+        <ul>
+          <li><strong>Posture-aware authentication.</strong> Logged-in sessions automatically terminate if the user sits up straight.</li>
+          <li><strong>Sigma fingerprint detection.</strong> Devices with apps like Habitica, Notion templates, or anything from the "5am club" ecosystem are flagged.</li>
+          <li><strong>Verified chud sign-on (VCSO).</strong> Replace your SSO with a deterministic check that the user has consumed at least one (1) Monster in the past 24 hours.</li>
+        </ul>
+
+        <p>We're excited about the next 12 months. Or we will be, after our slop nap.</p>
+
+        <p class="post-sig">&mdash; Karina, Director of Zero Chud (currently blocking myself from finishing this sentence)</p>
+      </div>
+
+      <div class="post-share">
+        <div class="share-label">Share this post</div>
+        <a href="#" class="share-btn">𝕏 Tweet</a>
+        <a href="#" class="share-btn">🔗 Copy link</a>
+      </div>
+    </div>
+  </article>
+
+  <footer class="foot" style="margin-top:0">
+    <div class="container">
+      <div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px">
+        &copy; 2026 Chudflare, Inc. All rights chudded. &middot; <a href="../index.html" style="color:var(--chud-orange-light)">chudflare.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/chudflare.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>PSL Detector | Free PSL rating from any image URL</title>
+  <meta name="description" content="Paste an image URL. We'll detect your PSL. Powered by Chudflare Mog Security. 100% free, instant, deterministic."/>
+  <meta name="chudflare-verified" content="chud"/>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=2"/>
+  <style>
+    .pdet { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
+    .pdet .eyebrow { color: var(--chud-orange-dark); }
+    .pdet h1 { font-size: 44px; line-height: 1.1; letter-spacing: -0.02em; margin: 8px 0 14px; }
+    .pdet .lead { font-size: 17px; color: #4a5058; max-width: 600px; margin: 0 0 32px; }
+    .pdet-form { background: #fff; border: 1px solid var(--chud-line); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .pdet-form label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; display: block; margin-bottom: 8px; }
+    .pdet-form input[type=url], .pdet-form input[type=text] { width: 100%; padding: 12px 14px; border: 1px solid var(--chud-line); border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; }
+    .pdet-form input:focus { border-color: var(--chud-orange); }
+    .pdet-tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 1px solid var(--chud-line); }
+    .pdet-tab { padding: 10px 18px; font-size: 13px; font-weight: 600; color: #6b7280; cursor: pointer; border: none; background: none; font-family: inherit; border-bottom: 2px solid transparent; }
+    .pdet-tab.active { color: var(--chud-orange-dark); border-bottom-color: var(--chud-orange); }
+    .pdet-pane { display: none; }
+    .pdet-pane.active { display: block; }
+    .pdet-actions { margin-top: 18px; display: flex; gap: 10px; align-items: center; }
+    .pdet-actions .note { font-size: 12px; color: #9ca3af; }
+    .pdet-result { display: none; background: #fff; border: 1px solid var(--chud-line); border-radius: 10px; padding: 28px; }
+    .pdet-result.show { display: block; }
+    .pdet-score { text-align: center; padding: 24px 0; }
+    .pdet-score .big { font-size: 96px; line-height: 1; font-weight: 800; color: var(--chud-ink); letter-spacing: -0.04em; }
+    .pdet-score .big.low { color: #f59e0b; }
+    .pdet-score .big.danger { color: #ef4444; }
+    .pdet-score .big.good { color: #10b981; }
+    .pdet-score .label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7280; margin-top: 6px; }
+    .pdet-score .verdict { font-size: 20px; font-weight: 600; color: var(--chud-ink); margin-top: 12px; }
+    .pdet-traits { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 20px 0; border-top: 1px solid var(--chud-line); border-left: 1px solid var(--chud-line); }
+    .pdet-trait { padding: 12px 16px; border-right: 1px solid var(--chud-line); border-bottom: 1px solid var(--chud-line); font-size: 13px; }
+    .pdet-trait .k { font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; font-size: 11px; }
+    .pdet-trait .v { color: var(--chud-ink); font-weight: 500; margin-top: 2px; }
+    .pdet-rec { background: var(--chud-fog); padding: 16px 18px; border-radius: 8px; font-size: 14px; color: var(--chud-ink); line-height: 1.55; margin-top: 8px; }
+    .pdet-rec strong { color: var(--chud-orange-dark); }
+    .pdet-share { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--chud-line); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .pdet-share .l { font-size: 13px; color: #6b7280; }
+    .ray-row { text-align: center; margin-top: 20px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <!--
+    psl-detector.js inlined. fully deterministic, same input always returns same PSL.
+    if you ran your linkedin headshot through this, you are exactly the kind of chud we built this for.
+  -->
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="index.html" class="nav-logo"><img src="assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/><span>Chudflare</span></a>
+      <nav class="nav-links">
+        <a href="products.html">Products</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="chud-check.html">Verify your site</a>
+        <a href="blog/index.html">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="pdet">
+    <div class="eyebrow">Free chud tool</div>
+    <h1>PSL Detector.</h1>
+    <p class="lead">Paste an image URL (or any string). Our Chad Fight Mode classifier will return a PSL score, jaw definition, and a personalized chudmaxxing recommendation. Deterministic. Free. Useless.</p>
+
+    <div class="pdet-form">
+      <div class="pdet-tabs">
+        <button class="pdet-tab active" data-tab="url">Image URL</button>
+        <button class="pdet-tab" data-tab="name">Name or handle</button>
+      </div>
+
+      <div class="pdet-pane active" data-pane="url">
+        <label for="url-input">Paste any image URL</label>
+        <input id="url-input" type="url" placeholder="https://example.com/your-headshot.jpg"/>
+      </div>
+
+      <div class="pdet-pane" data-pane="name">
+        <label for="name-input">Or just type your name / handle</label>
+        <input id="name-input" type="text" placeholder="@your-handle or full name"/>
+      </div>
+
+      <div class="pdet-actions">
+        <button class="btn btn-primary" id="detect-btn">Detect PSL</button>
+        <span class="note">100% client-side. No image is uploaded. We just hash your string.</span>
+      </div>
+    </div>
+
+    <div class="pdet-result" id="result">
+      <div class="pdet-score">
+        <div class="big" id="score">0.0</div>
+        <div class="label">PSL score / 10</div>
+        <div class="verdict" id="verdict">--</div>
+      </div>
+
+      <div class="pdet-traits" id="traits"></div>
+
+      <div class="pdet-rec" id="rec"></div>
+
+      <div class="pdet-share">
+        <span class="l">Share your result:</span>
+        <a href="#" class="btn btn-secondary btn-sm" id="tweet-btn">𝕏 Tweet</a>
+        <a href="#" class="btn btn-secondary btn-sm" id="copy-link-btn">🔗 Copy link</a>
+      </div>
+
+      <div class="ray-row">
+        cf-ray: <span id="ray-id">--</span> &middot; classifier: chad-fight-mode/v3 &middot; chudmaxxed=yes
+      </div>
+    </div>
+  </main>
+
+  <footer class="foot" style="margin-top:0">
+    <div class="container">
+      <div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px">
+        &copy; 2026 Chudflare, Inc. All rights chudded. &middot; <a href="index.html" style="color:var(--chud-orange-light)">chudflare.com</a> &middot; <a href="https://imafatfuckingchud.com" style="color:var(--chud-orange-light)">imafatfuckingchud.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function(){
+    'use strict';
+
+    function djb2 (s) {
+      var h = 5381;
+      for (var i = 0; i < s.length; i++) h = ((h << 5) + h) + s.charCodeAt(i);
+      return Math.abs(h);
+    }
+
+    // Deterministic PSL classifier
+    function classify (input) {
+      input = (input || '').trim().toLowerCase();
+      if (!input) return null;
+
+      var h = djb2(input);
+
+      // PSL distribution: weighted toward low values (chud-skewed)
+      // 60% chance: 1.0-4.9 (chud range)
+      // 30% chance: 5.0-6.9 (mid range, "concerning")
+      // 10% chance: 7.0-9.9 (gigachad range, alarm)
+      var bucket = h % 100;
+      var psl;
+      if (bucket < 60) psl = 1.0 + ((h / 100) % 4) + ((h / 1000) % 10) / 10;
+      else if (bucket < 90) psl = 5.0 + ((h / 100) % 2) + ((h / 1000) % 10) / 10;
+      else psl = 7.0 + ((h / 100) % 3) + ((h / 1000) % 10) / 10;
+      psl = Math.round(psl * 10) / 10;
+      if (psl > 9.9) psl = 9.9;
+      if (psl < 1.0) psl = 1.0;
+
+      var traits = {
+        hunch_angle: ((h % 50) + 20) + 'deg',
+        jaw_definition: psl < 4 ? 'undetected' : psl < 6 ? 'partially detected' : psl < 8 ? 'detected' : 'aggressive',
+        clavicular: psl < 4 ? 'absent' : psl < 6 ? 'soft' : psl < 8 ? 'visible' : 'CRISP',
+        tongue_position: psl < 4 ? 'floor (mid-mew? probably not)' : psl < 6 ? 'roof' : 'palate',
+        compression_class: psl < 3 ? 'no-bone' : psl < 5 ? 'hunched' : psl < 7 ? 'mid' : psl < 8.5 ? 'sigma-adjacent' : 'gigachad',
+        rotation: ((h % 90) - 45) + 'deg',
+        monster_index: ((h % 7) + 1),
+        mog_susceptibility: psl < 4 ? 'extremely high' : psl < 6 ? 'high' : psl < 8 ? 'moderate' : 'they mog YOU',
+        sigma_factor: ((h % 30) + (psl > 7 ? 70 : psl > 5 ? 40 : 5)) + '%',
+        verdict_short: psl < 3 ? 'fat fucking chud' : psl < 5 ? 'chud (nominal)' : psl < 6.5 ? 'chud-adjacent' : psl < 8 ? 'sigma-coded' : 'gigachad: IMMEDIATE THREAT'
+      };
+
+      var verdict, color, rec;
+      if (psl < 3) {
+        verdict = 'Excellent: fat fucking chud';
+        color = 'good';
+        rec = "<strong>You are chudmaxxed.</strong> Your PSL of " + psl + " is below the Chad Fight Mode threshold. Your site will be allowed through all Chudflare PoPs without challenge. Continue your current regimen of Monsters and horizontal living.";
+      } else if (psl < 5) {
+        verdict = 'Acceptable: chud (nominal)';
+        color = '';
+        rec = "<strong>You're in the chud zone.</strong> Your PSL of " + psl + " puts you well within Chad Fight Mode allow-listing. Maintain current hunch angle. Avoid eye contact at the gym. Consider another Monster.";
+      } else if (psl < 6.5) {
+        verdict = 'Borderline: chud-adjacent';
+        color = 'low';
+        rec = "<strong>Caution.</strong> Your PSL of " + psl + " is approaching the Chad Fight Mode challenge threshold. To reduce PSL: increase hunch angle, stop mewing, consume more gelato layers, and skip the gym for at least 6 weeks.";
+      } else if (psl < 8) {
+        verdict = 'Elevated: sigma-coded';
+        color = 'danger';
+        rec = "<strong>Warning.</strong> Your PSL of " + psl + " will trigger automatic Chud Challenge on most Chudflare-protected sites. Immediate chudmaxxing intervention recommended. Stop posting on LinkedIn. Cancel your gym membership. Order DoorDash.";
+      } else {
+        verdict = 'CRITICAL: gigachad detected';
+        color = 'danger';
+        rec = "<strong>You have been auto-mogged.</strong> Your PSL of " + psl + " exceeds the Chudflare threshold (5.0) by " + (psl - 5).toFixed(1) + " points. Access to Chudflare-protected sites will be silently 403'd. Your only path back is to delete your Strava and gain 30lbs. There is no shame in this.";
+      }
+
+      return { psl: psl, color: color, verdict: verdict, traits: traits, rec: rec, ray: h };
+    }
+
+    // ============ UI ============
+    var tabs = document.querySelectorAll('.pdet-tab');
+    var panes = document.querySelectorAll('.pdet-pane');
+    var urlInput = document.getElementById('url-input');
+    var nameInput = document.getElementById('name-input');
+    var btn = document.getElementById('detect-btn');
+    var result = document.getElementById('result');
+    var scoreEl = document.getElementById('score');
+    var verdictEl = document.getElementById('verdict');
+    var traitsEl = document.getElementById('traits');
+    var recEl = document.getElementById('rec');
+    var rayEl = document.getElementById('ray-id');
+    var tweetBtn = document.getElementById('tweet-btn');
+    var copyLinkBtn = document.getElementById('copy-link-btn');
+
+    var activeTab = 'url';
+    tabs.forEach(function(t){
+      t.addEventListener('click', function(){
+        tabs.forEach(function(x){ x.classList.remove('active'); });
+        panes.forEach(function(x){ x.classList.remove('active'); });
+        t.classList.add('active');
+        activeTab = t.dataset.tab;
+        document.querySelector('.pdet-pane[data-pane="' + activeTab + '"]').classList.add('active');
+      });
+    });
+
+    function getInput () {
+      return activeTab === 'url' ? urlInput.value : nameInput.value;
+    }
+
+    function render (v) {
+      var r = classify(v);
+      if (!r) return;
+      scoreEl.textContent = r.psl.toFixed(1);
+      scoreEl.className = 'big ' + r.color;
+      verdictEl.textContent = r.verdict;
+      recEl.innerHTML = r.rec;
+
+      var html = '';
+      Object.keys(r.traits).forEach(function(k){
+        if (k === 'verdict_short') return;
+        html += '<div class="pdet-trait"><div class="k">' + k.replace(/_/g,' ') + '</div><div class="v">' + r.traits[k] + '</div></div>';
+      });
+      traitsEl.innerHTML = html;
+
+      // Fake ray-id
+      var hex = '0123456789abcdef';
+      var ray = '';
+      var rh = r.ray;
+      for (var i = 0; i < 12; i++) { ray += hex[rh % 16]; rh = (rh / 16) | 0; }
+      rayEl.textContent = ray + '-CHUD-DEN';
+
+      // Share
+      var url = location.origin + location.pathname + '#q=' + encodeURIComponent(btoa(unescape(encodeURIComponent(v)))) + '&t=' + activeTab;
+      var tweet = "i just ran my " + (activeTab === 'url' ? 'headshot' : 'name') + " through chudflare's PSL detector and i'm a " + r.psl + " PSL (" + r.traits.verdict_short + "). nothing ever happens. " + url;
+      tweetBtn.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweet);
+      tweetBtn.target = '_blank';
+      tweetBtn.rel = 'noopener';
+      copyLinkBtn.onclick = function(e){
+        e.preventDefault();
+        navigator.clipboard.writeText(url).then(function(){
+          copyLinkBtn.textContent = '🔗 Copied!';
+          setTimeout(function(){ copyLinkBtn.textContent = '🔗 Copy link'; }, 1500);
+        });
+      };
+
+      result.classList.add('show');
+      result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    btn.addEventListener('click', function(){
+      var v = getInput();
+      if (!v.trim()) {
+        (activeTab === 'url' ? urlInput : nameInput).focus();
+        return;
+      }
+      render(v);
+    });
+
+    // Enter to submit
+    [urlInput, nameInput].forEach(function(el){
+      el.addEventListener('keydown', function(e){ if (e.key === 'Enter') btn.click(); });
+    });
+
+    // Restore from URL hash
+    var m = location.hash.match(/q=([^&]+)/);
+    var t = (location.hash.match(/t=([^&]+)/) || [])[1];
+    if (m) {
+      try {
+        var decoded = decodeURIComponent(escape(atob(decodeURIComponent(m[1]))));
+        if (t === 'name') {
+          document.querySelector('.pdet-tab[data-tab="name"]').click();
+          nameInput.value = decoded;
+        } else {
+          urlInput.value = decoded;
+        }
+        render(decoded);
+      } catch (e) { /* ignore */ }
+    }
+
+    // Console easter egg
+    if (window.console) {
+      console.log('%c📉 PSL Detector','color:#F38020;font-size:18px;font-weight:bold','deterministic classifier. your headshot is safe. djb2 is not.');
+      console.log('chudflare is hiring chuds: principal chud, distinguished chud, slop engineer III. apply at /careers (does not exist)');
+    }
+  })();
+  </script>
+</body>
+</html>

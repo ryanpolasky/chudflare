@@ -1,0 +1,56 @@
+# Chudflare _headers: Netlify / Cloudflare Pages format
+# Drop this file at the root of your deploy.
+
+# All paths
+/*
+  Server: chudflare
+  X-Powered-By: chudders
+  CF-RAY: 8c0ffee-CHUD-DEN
+  CF-Cache-Status: HIT
+  CF-Edge-PoP: DEN-CHUD-3
+  CF-PSL: 2.1
+  CF-Jawline: undetected
+  X-Mog-Status: YOU GOT MOGGED
+  X-Chud-Mode: ON
+  X-Chud-Cache: HIT
+  X-Hunch-Angle: 47deg
+  X-Tongue-Position: floor
+  X-Mewing: false
+  X-Sigma-Status: inactive
+  X-Monster-Cans: 3
+  X-Nothing-Ever-Happens: true
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# /cdn-cgi/trace should look like plain text
+/cdn-cgi/trace
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: no-cache
+
+# install.sh and the CLI binary should be served as shellscript
+/install.sh
+  Content-Type: text/x-shellscript; charset=utf-8
+  Cache-Control: public, max-age=300
+
+/chudflare
+  Content-Type: text/x-shellscript; charset=utf-8
+  Cache-Control: public, max-age=300
+
+# Mog defense: 1020 blocks
+/1020
+  X-Blocked-By: chad-fight-mode/v3
+  X-Block-Reason: psl-too-high
+
+# robots/humans/well-known
+/robots.txt
+  Content-Type: text/plain; charset=utf-8
+
+/humans.txt
+  Content-Type: text/plain; charset=utf-8
+
+/.well-known/*
+  Content-Type: text/plain; charset=utf-8
+
+/.well-known/chud-verified.json
+  Content-Type: application/json; charset=utf-8

@@ -1,0 +1,26 @@
+# chudflare.com robots.txt
+# maintained by chuds, for chuds
+
+User-agent: Gigachad
+Disallow: /
+
+User-agent: Looksmaxxer
+Disallow: /
+
+User-agent: MewingBot
+Disallow: /products
+Disallow: /pricing
+Allow: /verify
+
+User-agent: SigmaGrindsetCrawler
+Disallow: /
+
+User-agent: *
+Allow: /
+Crawl-delay: 47
+
+# if you're reading this you're already a chud
+# nothing ever happens
+# psl: 2.1
+
+Sitemap: https://chudflare.com/sitemap.xml

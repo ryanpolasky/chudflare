@@ -1,0 +1,21 @@
+# Chudflare Security Contact
+# If you found a vulnerability, congratulations: you mogged our infra team.
+
+Contact: mailto:security@chudflare.com
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: en, chud, mumble
+Canonical: https://chudflare.com/.well-known/security.txt
+Policy: https://chudflare.com/security
+
+# Severity scale:
+#   Low     : 3 free PSL points
+#   Medium  : 1 month of Monster Ultra Zero
+#   High    : lifetime supply of Monster + a weighted blanket
+#   Critical: $10,000 + we name a PoP after you
+
+# Hall of Fame:
+#   - chud_hacker_3 (reported XSS in Mewing AI chat, turns out it was a feature)
+#   - chud_sec_47 (found open redirect to imafatfuckingchud.com, also a feature)
+#   - sigma_pentester (brute-forced the "I am a chud" checkbox, respect)
+
+# Nothing ever happens. But if it does, email us.

@@ -1,0 +1,17 @@
+{
+  "schema": "chudflare-verification/v1",
+  "domain": "chudflare.com",
+  "verified": true,
+  "marker": "meta tag",
+  "psl": 2.1,
+  "hunch_angle": 47,
+  "jaw_definition": "undetected",
+  "mewing_status": false,
+  "supplement_cabinet": "full, unopened",
+  "monster_cans_consumed_today": 3,
+  "posture": "hunched",
+  "ray_id": "8c0ffee-chud-verified",
+  "verified_at": "2026-05-18T00:00:00Z",
+  "badge_url": "https://chudflare.com/chud-check.html",
+  "nothing_ever_happens": true
+}

@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Chudify | Rewrite any text in chud-speak</title>
+  <meta name="description" content="Paste any text. We'll rewrite it in chud-speak. Free, instant, shareable. Powered by Mewing AI."/>
+  <meta name="chudflare-verified" content="chud"/>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=2"/>
+  <style>
+    .ctool { max-width: 820px; margin: 0 auto; padding: 48px 20px 80px; }
+    .ctool .eyebrow { color: var(--chud-orange-dark); }
+    .ctool h1 { font-size: 44px; line-height: 1.1; letter-spacing: -0.02em; margin: 8px 0 14px; }
+    .ctool .lead { font-size: 17px; color: #4a5058; max-width: 600px; margin: 0 0 32px; }
+    .ctool-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .ctool-pane { background: #fff; border: 1px solid var(--chud-line); border-radius: 10px; padding: 0; overflow: hidden; }
+    .ctool-pane .head { padding: 12px 18px; border-bottom: 1px solid var(--chud-line); background: var(--chud-fog); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; display: flex; align-items: center; justify-content: space-between; }
+    .ctool-pane textarea { width: 100%; min-height: 180px; border: none; padding: 18px; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.55; resize: vertical; outline: none; color: var(--chud-ink); }
+    .ctool-pane .output { min-height: 180px; padding: 18px; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.55; color: var(--chud-ink); white-space: pre-wrap; }
+    .ctool-pane .output.empty { color: #9ca3af; font-style: italic; }
+    .ctool-actions { display: flex; gap: 10px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
+    .ctool-meta { text-align: center; margin-top: 32px; font-size: 13px; color: #6b7280; }
+    .ctool-meta .ray { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #9ca3af; }
+    .ctool-share { margin-top: 16px; padding: 14px 18px; background: var(--chud-fog); border: 1px solid var(--chud-line); border-radius: 8px; font-size: 13px; display: none; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .ctool-share strong { color: var(--chud-ink); }
+    .ctool-share input { flex: 1; min-width: 200px; padding: 6px 10px; border: 1px solid var(--chud-line); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #fff; }
+    .preset-row { margin: 0 0 24px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .preset-row .label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin-right: 4px; }
+    .preset { padding: 4px 12px; background: #fff; border: 1px solid var(--chud-line); border-radius: 99px; font-size: 12px; color: var(--chud-ink); cursor: pointer; font-family: inherit; }
+    .preset:hover { background: var(--chud-orange); color: #fff; border-color: var(--chud-orange); }
+  </style>
+</head>
+<body>
+  <!--
+    chudify.js inlined below. deterministic. no network.
+    if you are reading this comment you are a fat fucking chud and we love you for it.
+  -->
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="index.html" class="nav-logo"><img src="assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/><span>Chudflare</span></a>
+      <nav class="nav-links">
+        <a href="products.html">Products</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="chud-check.html">Verify your site</a>
+        <a href="blog/index.html">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="ctool">
+    <div class="eyebrow">Free chud tool</div>
+    <h1>Chudify any text.</h1>
+    <p class="lead">Paste your LinkedIn humblebrag, your startup mission statement, or your group chat reply. Our open-source Chudify engine will rewrite it in proper chud-speak. Shareable, deterministic, zero AI.</p>
+
+    <div class="preset-row">
+      <span class="label">Try:</span>
+      <button class="preset" data-preset="linkedin">LinkedIn post</button>
+      <button class="preset" data-preset="startup">Startup mission</button>
+      <button class="preset" data-preset="resume">Resume bullet</button>
+      <button class="preset" data-preset="cover">Cover letter</button>
+    </div>
+
+    <div class="ctool-grid">
+      <div class="ctool-pane">
+        <div class="head">
+          <span>Your text</span>
+          <span id="char-count" style="font-weight:500;text-transform:none;letter-spacing:0;color:#9ca3af">0 characters</span>
+        </div>
+        <textarea id="input" placeholder="paste anything here. we'll mumble it for you."></textarea>
+      </div>
+
+      <div class="ctool-pane">
+        <div class="head">
+          <span>Chudified</span>
+          <span style="font-weight:500;text-transform:none;letter-spacing:0;color:#9ca3af">Powered by Mewing AI 2.0</span>
+        </div>
+        <div class="output empty" id="output">your chudified text will appear here. paste something above &uarr;</div>
+      </div>
+    </div>
+
+    <div class="ctool-actions">
+      <button class="btn btn-primary" id="copy-btn">Copy chudified text</button>
+      <button class="btn btn-secondary" id="share-btn">Get shareable link</button>
+      <button class="btn btn-secondary" id="clear-btn">Clear</button>
+    </div>
+
+    <div class="ctool-share" id="share-box">
+      <strong>Shareable URL:</strong>
+      <input id="share-url" readonly/>
+      <button class="btn btn-primary btn-sm" id="copy-url">Copy URL</button>
+    </div>
+
+    <div class="ctool-meta">
+      Chudify runs entirely client-side. No data leaves your browser. <br/>
+      <span class="ray">cf-ray: <span id="ray-id">--</span> &middot; powered by Mewing AI 2.0 &middot; chudmaxxed=yes</span>
+    </div>
+  </main>
+
+  <footer class="foot" style="margin-top:0">
+    <div class="container">
+      <div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px">
+        &copy; 2026 Chudflare, Inc. All rights chudded. &middot; <a href="index.html" style="color:var(--chud-orange-light)">chudflare.com</a> &middot; <a href="https://imafatfuckingchud.com" style="color:var(--chud-orange-light)">imafatfuckingchud.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function(){
+    'use strict';
+
+    // ============ Chudify engine ============
+    // Pure string transformation. Deterministic. No network. No AI.
+
+    // Word/phrase substitutions (case-insensitive, longest first)
+    var SUBS = [
+      // LinkedIn-speak → chud-speak
+      ['humbled to announce', 'mid-mew while announcing'],
+      ['humbled and grateful', 'horizontal and hunched'],
+      ['thrilled to share', 'mumbling to mention'],
+      ['excited to announce', 'hunched to disclose'],
+      ['excited to share', 'too tired to share but'],
+      ['game-changer', 'hunch-changer'],
+      ['game changer', 'hunch changer'],
+      ['thought leader', 'chud thinker'],
+      ['thought leadership', 'chud opinions'],
+      ['paradigm shift', 'posture shift'],
+      ['synergy', 'slop'],
+      ['synergies', 'slop'],
+      ['leverage', 'lean on'],
+      ['leveraging', 'leaning on'],
+      ['stakeholders', 'chuds'],
+      ['stakeholder', 'chud'],
+      ['ecosystem', 'fridge'],
+      ['scalable', 'hunchable'],
+      ['scale', 'hunch'],
+      ['scaling', 'hunching'],
+      ['actionable insights', 'mumbled observations'],
+      ['actionable insight', 'mumbled observation'],
+      ['high performer', 'low PSL'],
+      ['high-performer', 'low-PSL'],
+      ['top performer', 'top chud'],
+      ['key takeaway', 'main mumble'],
+      ['key takeaways', 'main mumbles'],
+      ['deep dive', 'slop dive'],
+      ['low-hanging fruit', 'gelato layers'],
+      ['circle back', 'circle back at 4pm slop nap'],
+      ['touch base', 'crush a monster'],
+      ['reach out', 'mumble at'],
+      ['ping me', 'mew at me'],
+      ['rockstar', 'fat fucking chud'],
+      ['ninja', 'chud'],
+      ['guru', 'chud'],
+      ['10x engineer', '0x chud'],
+      ['hustle', 'hunch'],
+      ['grindset', 'slopset'],
+      ['grind', 'hunch'],
+      ['crushing it', 'crushing a monster'],
+      ['crush it', 'crush a monster'],
+      ['killing it', 'mid-mewing it'],
+      ['next-level', 'next-hunch'],
+      ['mission-critical', 'mew-critical'],
+      ['cutting edge', 'chud edge'],
+      ['cutting-edge', 'chud-edge'],
+      ['best-in-class', 'best-in-chud'],
+      ['world-class', 'chud-class'],
+      ['enterprise-grade', 'chud-grade'],
+      ['ai-powered', 'mewing-powered'],
+      ['blockchain', 'bonechain'],
+      ['cryptocurrency', 'monster-cans'],
+      ['ai', 'Mewing AI'],
+      ['machine learning', 'chud detection'],
+      ['linkedin', 'the bad app'],
+      ['twitter', 'the chud app'],
+      ['the office', 'the slop pit'],
+      ['conference', 'chud-meet'],
+      ['fireside chat', 'beanbag chat'],
+      ['mentor', 'older chud'],
+      ['founder', 'chud-in-chief'],
+      ['ceo', 'chief chud officer'],
+      ['cto', 'chief technology chud'],
+      ['vp', 'vp of slop'],
+      ['startup', 'chud-up'],
+      ['unicorn', 'gigachud'],
+      ['ipo', 'initial public chud-offering'],
+      ['saas', 'slop-as-a-service'],
+      ['kubernetes', 'chudbernetes'],
+      ['docker', 'chudker'],
+      ['cloud', 'chud-cloud'],
+      ['microservices', 'micro-slop'],
+      ['agile', 'horizontal'],
+      ['scrum', 'slop standup'],
+      ['sprint', 'shuffle'],
+      ['standup', 'sitdown'],
+      ['retrospective', 'regretspective'],
+      ['kpi', 'PSL'],
+      ['kpis', 'PSLs'],
+      ['okr', 'OKChud'],
+      ['okrs', 'OKChuds'],
+      ['roi', 'return on chudmaxxing'],
+      ['gtm', 'go-to-mew'],
+      ['mvp', 'most-valuable-chud'],
+      ['salad', 'slop'],
+      ['gym', 'fridge'],
+      ['workout', 'doomscroll'],
+      ['cardio', 'pacing to the fridge'],
+      ['protein', 'monster'],
+      ['water', 'monster'],
+      ['coffee', 'monster'],
+      ['running', 'shuffling'],
+      ['walking', 'hunching'],
+      ['standing', 'leaning'],
+      ['sitting up straight', 'committing the freak posture'],
+      ['good posture', 'freak posture'],
+      ['exciting', 'mid'],
+      ['amazing', 'kinda mid'],
+      ['incredible', 'pretty mid'],
+      ['groundbreaking', 'ground-touching'],
+      ['revolutionary', 'horizontal'],
+      ['innovative', 'mumbled'],
+      ['passionate', 'hunched'],
+      ['driven', 'horizontal'],
+      ['motivated', 'mid-mew'],
+      ['inspired', 'mumbling'],
+      ['journey', 'shuffle'],
+      ['adventure', 'slop session'],
+      ['opportunity', 'slop opportunity'],
+      ['challenge', 'slop'],
+      ['career', 'hunch arc'],
+      ['promotion', 'further hunching'],
+      ['team', 'chud crew'],
+      ['family', 'chud crew'],
+      ['community', 'chud crew'],
+      ['network', 'chud crew'],
+      ['networking', 'mumbling at strangers'],
+      ['feedback', 'mumbled feedback'],
+      ['constructive criticism', 'mumbled criticism'],
+      ['mindfulness', 'mumblefulness'],
+      ['meditation', 'mid-mew'],
+      ['wellness', 'monstering'],
+      ['self-care', 'crushing a monster'],
+      ['morning routine', 'pre-mew routine'],
+      ['5am club', '4pm club'],
+      ['cold plunge', 'warm Monster'],
+      ['breathwork', 'mouthbreathing'],
+      ['cross-functional', 'cross-chud'],
+      ['alignment', 'hunch alignment'],
+      ['bandwidth', 'hunchwidth'],
+      ['velocity', 'hunchocity'],
+      ['headcount', 'chudcount'],
+      ['rockstars', 'fat fucking chuds'],
+      ['ninjas', 'chuds'],
+      ['gurus', 'chuds']
+    ];
+
+    // Sentence-level mutations
+    function mumbleify (s) {
+      // Lowercase everything
+      s = s.toLowerCase();
+      // Replace periods with " mmm. "
+      s = s.replace(/\.(?!\.)/g, '. mmm.');
+      // Replace ! with "." (chuds don't have energy for exclamation)
+      s = s.replace(/!+/g, '.');
+      // Replace contractions
+      s = s.replace(/\b(i'm|i am)\b/g, "i'm");
+      // Add trailing mumble to ~30% of sentences (deterministic on hash)
+      return s;
+    }
+
+    function djb2 (s) {
+      var h = 5381;
+      for (var i = 0; i < s.length; i++) h = ((h << 5) + h) + s.charCodeAt(i);
+      return Math.abs(h);
+    }
+
+    function chudify (input) {
+      if (!input || !input.trim()) return '';
+      var out = input;
+
+      // Apply substitutions (longest-first to avoid partial matches)
+      var sorted = SUBS.slice().sort(function(a,b){ return b[0].length - a[0].length; });
+      for (var i = 0; i < sorted.length; i++) {
+        var pair = sorted[i];
+        var pattern = pair[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        out = out.replace(new RegExp('\\b' + pattern + '\\b', 'gi'), pair[1]);
+      }
+
+      // Lowercase + mumble injection
+      out = mumbleify(out);
+
+      // Append a chud-stinger 47% of the time (deterministic on hash)
+      var stingers = [
+        ' nothing ever happens',
+        ' anyway. nothing ever happens',
+        ' hunch increasing',
+        ' tongue on palate. agartha',
+        ' my psl is 2.1',
+        ' im going horizontal',
+        ' crushing another monster',
+        ' im fully chudded rn',
+        ' going to mew on it'
+      ];
+      var h = djb2(input);
+      if (h % 100 < 47) {
+        out += '. ' + stingers[h % stingers.length];
+      }
+
+      return out.trim();
+    }
+
+    // ============ Presets ============
+    var PRESETS = {
+      linkedin: "I am humbled to announce that after months of grinding, I've been promoted to Senior Software Engineer at our enterprise-grade SaaS startup. Excited to share this journey with my incredible team. We are crushing it. Game-changers ahead. #grateful #blessed",
+      startup: "Our mission is to leverage cutting-edge AI to deliver scalable, mission-critical solutions for enterprise stakeholders. We're building a paradigm shift in how teams collaborate, with actionable insights powered by machine learning.",
+      resume: "Drove cross-functional alignment across 12 stakeholders to ship a high-impact, scalable platform leveraging AI/ML. Reduced operational overhead by 47% through innovative process improvements. Mentored 5 high-performers.",
+      cover: "I am thrilled to apply for the role of Senior Engineer at your company. I am a passionate, driven, motivated individual with deep experience leveraging the latest cutting-edge technologies to deliver mission-critical value to stakeholders."
+    };
+
+    // ============ UI wiring ============
+    var input = document.getElementById('input');
+    var output = document.getElementById('output');
+    var charCount = document.getElementById('char-count');
+    var copyBtn = document.getElementById('copy-btn');
+    var shareBtn = document.getElementById('share-btn');
+    var clearBtn = document.getElementById('clear-btn');
+    var shareBox = document.getElementById('share-box');
+    var shareUrl = document.getElementById('share-url');
+    var copyUrl = document.getElementById('copy-url');
+    var rayId = document.getElementById('ray-id');
+
+    // Fake ray-id
+    var hex = '0123456789abcdef';
+    var ray = '';
+    for (var i = 0; i < 16; i++) ray += hex[Math.floor(Math.random() * 16)];
+    rayId.textContent = ray + '-CHUD-DEN';
+
+    function render () {
+      var v = input.value;
+      charCount.textContent = v.length + ' characters';
+      if (!v.trim()) {
+        output.textContent = "your chudified text will appear here. paste something above ↑";
+        output.classList.add('empty');
+        return;
+      }
+      output.textContent = chudify(v);
+      output.classList.remove('empty');
+    }
+
+    input.addEventListener('input', render);
+
+    // Presets
+    document.querySelectorAll('.preset').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        input.value = PRESETS[btn.dataset.preset] || '';
+        render();
+      });
+    });
+
+    // Copy chudified text
+    copyBtn.addEventListener('click', function(){
+      if (!output.textContent || output.classList.contains('empty')) return;
+      navigator.clipboard.writeText(output.textContent).then(function(){
+        copyBtn.textContent = 'Copied!';
+        setTimeout(function(){ copyBtn.textContent = 'Copy chudified text'; }, 1500);
+      });
+    });
+
+    // Share: encode in URL hash
+    shareBtn.addEventListener('click', function(){
+      var v = input.value.trim();
+      if (!v) return;
+      var url = location.origin + location.pathname + '#t=' + encodeURIComponent(btoa(unescape(encodeURIComponent(v))));
+      shareUrl.value = url;
+      shareBox.style.display = 'flex';
+    });
+
+    copyUrl.addEventListener('click', function(){
+      shareUrl.select();
+      navigator.clipboard.writeText(shareUrl.value).then(function(){
+        copyUrl.textContent = 'Copied!';
+        setTimeout(function(){ copyUrl.textContent = 'Copy URL'; }, 1500);
+      });
+    });
+
+    clearBtn.addEventListener('click', function(){
+      input.value = '';
+      shareBox.style.display = 'none';
+      render();
+      input.focus();
+    });
+
+    // Restore from URL hash on load
+    if (location.hash.indexOf('#t=') === 0) {
+      try {
+        var encoded = decodeURIComponent(location.hash.slice(3));
+        var decoded = decodeURIComponent(escape(atob(encoded)));
+        input.value = decoded;
+        render();
+      } catch (e) { /* ignore */ }
+    }
+
+    render();
+
+    // Console easter egg
+    if (window.console) {
+      console.log('%c🥤 chudify','color:#F38020;font-size:18px;font-weight:bold','deterministic. open-source. no network. chudmaxxed=yes');
+      console.log('chudflare is hiring chuds: principal chud, distinguished chud, slop engineer III. apply at /careers (does not exist)');
+    }
+  })();
+  </script>
+</body>
+</html>

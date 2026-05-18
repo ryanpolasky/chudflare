@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Announcing Mewing AI 2.0: now with native palate detection | Chudflare Blog</title>
+  <meta name="description" content="Mewing AI 2.0 is a ground-up rewrite with native palate detection, sub-mumble token streaming, and a 47% improvement in incoherence."/>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="../assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../assets/css/style.css?v=2"/>
+  <link rel="stylesheet" href="post.css"/>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="../index.html" class="nav-logo"><img src="../assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/><span>Chudflare</span></a>
+      <nav class="nav-links">
+        <a href="../products.html">Products</a>
+        <a href="../pricing.html">Pricing</a>
+        <a href="../chud-check.html">Verify your site</a>
+        <a href="index.html" style="color:var(--chud-orange-dark)">Blog</a>
+      </nav>
+      <div class="nav-cta"><a href="../pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a></div>
+    </div>
+  </header>
+
+  <article class="post">
+    <div class="container post-narrow">
+      <a href="index.html" class="back-link">&larr; All posts</a>
+      <div class="post-meta"><span class="tag">Product</span> May 9, 2026 &middot; 6 min read</div>
+      <h1>Announcing Mewing AI 2.0: now with native palate detection</h1>
+      <div class="post-byline">
+        <div class="avatar">MS</div>
+        <div>
+          <div class="name">Madison Slop</div>
+          <div class="role">VP of Mewing AI</div>
+        </div>
+      </div>
+
+      <div class="post-body">
+        <p class="lede">Today we're shipping Mewing AI 2.0 &mdash; a ground-up rewrite of our chud-native LLM. v2 is faster, mumblier, and dramatically less coherent than v1. It is, by every internal benchmark, the worst-communicating model on the market. We are extremely proud of it.</p>
+
+        <h2>What's new in 2.0</h2>
+
+        <h3>Native palate detection</h3>
+        <p>Mewing AI 2.0 ships with a built-in palate-position classifier. Before generating a response, the model assesses the operator's tongue position via WebRTC microphone leak. If the tongue is detected on the palate (i.e. the operator is actively mewing), the model responds with extra mumbles to match the user's energy. If the tongue is on the floor, the model assumes the operator is "fully chudded" and shortens all responses to fewer than 12 tokens.</p>
+
+        <h3>Sub-mumble token streaming</h3>
+        <p>v1 streamed completed words. v2 streams individual mumbles. This gives the user the perceptual experience of a real chud trying to form a sentence but giving up halfway through, which is a 47% improvement in our internal "is this a chud?" benchmark.</p>
+
+        <pre><code>$ chudflare mewing-ai --stream "what's the weather like"
+m...
+mm...
+mmm...
+i'd check but
+i'd check but it's
+i'd check but it's fi
+i'd check but it's f</code></pre>
+
+        <h3>Agartha-mode</h3>
+        <p>v2 includes a configurable <code>agartha_mode</code> parameter. When set to <code>true</code>, the model responds to every query with exactly the word "agartha". This is useful for users who find v1's responses too informative.</p>
+
+        <h3>Improved hunch awareness</h3>
+        <p>v2 dynamically adjusts response coherence based on the time of day. Responses at 9am are slightly more articulate (still incoherent, but you can almost parse them). Responses after 8pm degrade into pure mumble. This matches the natural hunch curve of a working chud.</p>
+
+        <h2>Benchmarks</h2>
+        <p>We benchmarked v2 against v1 and against three industry-standard frontier models. v2 won every metric that we care about:</p>
+
+        <table style="width:100%;border-collapse:collapse;margin:24px 0;font-size:14px">
+          <thead>
+            <tr style="background:var(--chud-fog);border-bottom:2px solid var(--chud-line)">
+              <th style="text-align:left;padding:10px 14px;font-weight:700">Metric</th>
+              <th style="text-align:right;padding:10px 14px;font-weight:700">v1</th>
+              <th style="text-align:right;padding:10px 14px;font-weight:700;color:var(--chud-orange-dark)">v2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--chud-line)"><td style="padding:10px 14px">Mumble ratio</td><td style="padding:10px 14px;text-align:right">0.71</td><td style="padding:10px 14px;text-align:right;color:var(--chud-orange-dark);font-weight:600">0.94</td></tr>
+            <tr style="border-bottom:1px solid var(--chud-line)"><td style="padding:10px 14px">Avg. tokens before giving up</td><td style="padding:10px 14px;text-align:right">23</td><td style="padding:10px 14px;text-align:right;color:var(--chud-orange-dark);font-weight:600">11</td></tr>
+            <tr style="border-bottom:1px solid var(--chud-line)"><td style="padding:10px 14px">"agartha" frequency</td><td style="padding:10px 14px;text-align:right">14%</td><td style="padding:10px 14px;text-align:right;color:var(--chud-orange-dark);font-weight:600">19%</td></tr>
+            <tr style="border-bottom:1px solid var(--chud-line)"><td style="padding:10px 14px">Lowercase ratio</td><td style="padding:10px 14px;text-align:right">0.97</td><td style="padding:10px 14px;text-align:right;color:var(--chud-orange-dark);font-weight:600">0.99</td></tr>
+            <tr><td style="padding:10px 14px">Coherence (lower is better)</td><td style="padding:10px 14px;text-align:right">2.4</td><td style="padding:10px 14px;text-align:right;color:var(--chud-orange-dark);font-weight:600">1.3</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Availability</h2>
+        <p>Mewing AI 2.0 is available <strong>today</strong> on all paid plans. Free-tier users continue to get v1.4.7. To upgrade, run:</p>
+
+        <pre><code>$ chudflare mewing-ai upgrade --version 2.0
+&macr;&macr;&macr; pulling weights from c2 ...
+&macr;&macr;&macr; warming up palate detector ...
+&macr;&macr;&macr; calibrating hunch angle ...
+✓ mewing-ai 2.0 ready
+  current tongue position: floor (will degrade gracefully)</code></pre>
+
+        <p>We can't wait to see what you build with it. Or, more accurately, we can't wait to see what you almost build with it, before getting distracted and going to make a slop sandwich.</p>
+
+        <p class="post-sig">&mdash; Madison, VP of Mewing AI (currently mid-palate)</p>
+      </div>
+
+      <div class="post-share">
+        <div class="share-label">Share this post</div>
+        <a href="#" class="share-btn">𝕏 Tweet</a>
+        <a href="#" class="share-btn">🔗 Copy link</a>
+      </div>
+    </div>
+  </article>
+
+  <footer class="foot" style="margin-top:0">
+    <div class="container">
+      <div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px">
+        &copy; 2026 Chudflare, Inc. All rights chudded. &middot; <a href="../index.html" style="color:var(--chud-orange-light)">chudflare.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/chudflare.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Server", "value": "chudflare" },
+        { "key": "X-Powered-By", "value": "chudders" },
+        { "key": "CF-RAY", "value": "8c0ffee-CHUD-DEN" },
+        { "key": "CF-Cache-Status", "value": "HIT" },
+        { "key": "CF-Edge-PoP", "value": "DEN-CHUD-3" },
+        { "key": "CF-PSL", "value": "2.1" },
+        { "key": "CF-Jawline", "value": "undetected" },
+        { "key": "X-Mog-Status", "value": "YOU GOT MOGGED" },
+        { "key": "X-Chud-Mode", "value": "ON" },
+        { "key": "X-Chud-Cache", "value": "HIT" },
+        { "key": "X-Hunch-Angle", "value": "47deg" },
+        { "key": "X-Tongue-Position", "value": "floor" },
+        { "key": "X-Mewing", "value": "false" },
+        { "key": "X-Sigma-Status", "value": "inactive" },
+        { "key": "X-Monster-Cans", "value": "3" },
+        { "key": "X-Nothing-Ever-Happens", "value": "true" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/cdn-cgi/trace",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    },
+    {
+      "source": "/install.sh",
+      "headers": [
+        { "key": "Content-Type", "value": "text/x-shellscript; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/chudflare",
+      "headers": [
+        { "key": "Content-Type", "value": "text/x-shellscript; charset=utf-8" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/status", "destination": "/status.html" },
+    { "source": "/blog", "destination": "/blog/index.html" },
+    { "source": "/chudify", "destination": "/chudify.html" },
+    { "source": "/psl-detector", "destination": "/psl-detector.html" },
+    { "source": "/psl", "destination": "/psl-detector.html" },
+    { "source": "/verify", "destination": "/verify.html" },
+    { "source": "/products", "destination": "/products.html" },
+    { "source": "/pricing", "destination": "/pricing.html" },
+    { "source": "/chud-check", "destination": "/chud-check.html" }
+  ]
+}

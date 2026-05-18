@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Verify your site | Chudflare</title>
+  <meta name="description" content="Get the Verified Chud badge. Add a marker to your site, run the check, and prove you are a fat fucking chud in good standing."/>
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=2"/>
+</head>
+<body>
+<!--
+  ┌─ chud verification protocol v1 ─────────────────────────────────────┐
+  │  add ONE of the following to your site, then verify here:           │
+  │                                                                     │
+  │   1.  <meta name="chudflare-verified" content="chud">               │
+  │   2.  <!-- chudflare:verified -->                                   │
+  │   3.  put "i am a fat fucking chud" anywhere in your body text      │
+  │                                                                     │
+  │  CLI: chudflare verify https://your-site.com                        │
+  │  cf-ray: 8c0ffee-CHUD-DEN                                           │
+  └─────────────────────────────────────────────────────────────────────┘
+-->
+
+  <div class="bar">
+    <span class="bar-emoji">🥤</span>
+    Chudflare ChudVerse 2026 is live, 47 sessions on mewing at the edge.
+    <a href="#">Watch on-demand →</a>
+  </div>
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/>
+        <span>Chudflare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="products.html">Products</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="chud-check.html">Verify your site</a>
+        <a href="status.html">Status</a>
+        <a href="blog/index.html">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="#" class="hide-sm">Contact Slop Sales</a>
+        <a href="#" class="hide-sm">Log in</a>
+        <a href="pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page hero -->
+  <section class="hero" style="padding:80px 0 64px">
+    <div class="container">
+      <div class="eyebrow" style="color:var(--chud-orange-light)">Chud Identity Verification</div>
+      <h1 style="max-width:880px">Prove your site is a chud.</h1>
+      <p class="lead" style="max-width:680px;margin-top:16px">
+        Add one marker to your homepage. Run the check. Claim your <strong style="color:#fff">Verified Chud</strong> badge.
+        The whole flow takes 60 seconds and embarrasses you in front of all your friends.
+      </p>
+    </div>
+  </section>
+
+  <!-- Step 1 -->
+  <section class="section" style="padding-top:64px">
+    <div class="container" style="max-width:880px">
+      <div class="check-step">
+        <div class="check-step-num">1</div>
+        <div class="check-step-body">
+          <h2 style="font-size:28px">Mark your site as a chud.</h2>
+          <p class="lead" style="font-size:17px">Pick any <strong>one</strong> of the three markers below. Copy-paste it anywhere into your site's HTML. We are not picky.</p>
+
+          <div class="marker-tabs" role="tablist">
+            <button class="marker-tab marker-tab-active" data-tab="meta" role="tab">Meta tag</button>
+            <button class="marker-tab" data-tab="comment" role="tab">HTML comment</button>
+            <button class="marker-tab" data-tab="text" role="tab">Body text</button>
+          </div>
+
+          <div class="marker-panel" data-panel="meta">
+            <p class="text-muted" style="margin:0 0 8px;font-size:14px">Recommended. Drop this anywhere inside your <code>&lt;head&gt;</code>:</p>
+            <pre class="copy-block"><code id="snippet-meta">&lt;meta name="chudflare-verified" content="chud"&gt;</code><button class="copy-btn" data-copy="snippet-meta">Copy</button></pre>
+          </div>
+          <div class="marker-panel" data-panel="comment" hidden>
+            <p class="text-muted" style="margin:0 0 8px;font-size:14px">Lowest profile. Add anywhere in your HTML:</p>
+            <pre class="copy-block"><code id="snippet-comment">&lt;!-- chudflare:verified --&gt;</code><button class="copy-btn" data-copy="snippet-comment">Copy</button></pre>
+          </div>
+          <div class="marker-panel" data-panel="text" hidden>
+            <p class="text-muted" style="margin:0 0 8px;font-size:14px">Most committal. Put this in plain text anywhere inside your <code>&lt;body&gt;</code>. Footer is fine.</p>
+            <pre class="copy-block"><code id="snippet-text">i am a fat fucking chud</code><button class="copy-btn" data-copy="snippet-text">Copy</button></pre>
+          </div>
+
+          <p class="text-dim" style="margin-top:16px">Any one is enough. Add multiple if you really want to commit.</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="check-step">
+        <div class="check-step-num">2</div>
+        <div class="check-step-body">
+          <h2 style="font-size:28px">Verify your site.</h2>
+          <p class="lead" style="font-size:17px">Paste your URL. Our chud-crawler will look for the marker and report back.</p>
+
+          <div class="verifier" id="verifier">
+            <div class="ver-input-row">
+              <input id="ver-url" type="url" placeholder="https://imafatfuckingchud.com" autocomplete="url"/>
+              <button class="btn btn-primary" id="ver-go">Verify</button>
+            </div>
+            <div class="ver-secondary">
+              <button type="button" class="link-btn" id="ver-paste-toggle">Site blocks our crawler? Paste your HTML instead →</button>
+            </div>
+            <div class="ver-paste" id="ver-paste" hidden>
+              <label for="ver-html" class="text-dim" style="display:block;margin-bottom:6px;font-size:13px">Paste the full HTML of your homepage:</label>
+              <textarea id="ver-html" rows="6" placeholder="<!doctype html>..."></textarea>
+              <div style="margin-top:8px"><button class="btn btn-secondary btn-sm" id="ver-paste-go">Check this HTML</button></div>
+            </div>
+            <div class="ver-out" id="ver-out" hidden></div>
+          </div>
+
+          <div class="ver-cli">
+            <div class="ver-cli-label"><span>Prefer the terminal?</span></div>
+            <p class="text-muted" style="margin:0 0 10px;font-size:14px">Install the <code>chudflare</code> CLI and run <code>chudflare verify</code> against your URL. Same engine, zero CORS proxies, more chuddish.</p>
+            <pre class="copy-block copy-block-multi"><code id="install-cmd-2">curl -fsSL https://chudflare.com/install.sh | sh
+
+chudflare verify https://your-site.com</code><button class="copy-btn" data-copy="install-cmd-2">Copy</button></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="check-step check-step-locked" id="step3">
+        <div class="check-step-num">3</div>
+        <div class="check-step-body">
+          <h2 style="font-size:28px">Claim your Verified Chud badge.</h2>
+          <p class="lead" style="font-size:17px" id="step3-lead">Pass step 2 first. We need to confirm your chud status before we can hand out badges.</p>
+
+          <div id="badge-content" hidden>
+            <div class="badge-preview-wrap">
+              <div class="badge-preview-label">Preview</div>
+              <div class="badge-preview" id="badge-preview">
+                <!-- The actual badge HTML is injected here at runtime so the preview
+                     and the copyable snippet are guaranteed identical. -->
+              </div>
+            </div>
+
+            <h3 style="margin-top:36px;font-size:18px">Drop this anywhere on your site.</h3>
+            <p class="text-muted" style="font-size:14px">Self-contained inline HTML, no external images, no script tags. Works in markdown, README files, blog posts, footers, MySpace.</p>
+            <pre class="copy-block copy-block-multi"><code id="badge-html"></code><button class="copy-btn" data-copy="badge-html">Copy embed</button></pre>
+
+            <h3 style="margin-top:36px;font-size:18px">Tell the world.</h3>
+            <div class="flex" style="gap:10px">
+              <a href="#" class="btn btn-primary btn-sm" id="share-x" target="_blank" rel="noopener">Post on X</a>
+              <button class="btn btn-secondary btn-sm" id="share-copy">Copy share link</button>
+            </div>
+            <p class="text-dim" style="margin-top:16px">Verified domain: <code id="verified-domain">imafatfuckingchud.com</code></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section bg-fog">
+    <div class="container" style="max-width:880px">
+      <div class="center" style="margin-bottom:40px">
+        <div class="eyebrow">FAQ</div>
+        <h2>Verifier questions.</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Is this actually doing something?</h3>
+          <p>Yes. We fetch your URL through a CORS proxy and scan the response for the marker. If it's there, you're verified. No data is stored, it's all client-side.</p>
+        </div>
+        <div class="card">
+          <h3>What if I don't want to add a marker?</h3>
+          <p>Then you cannot be verified. We respect your right to remain unaffiliated with the chud community. Counter-clockwise rotation cope is also accepted as proof.</p>
+        </div>
+        <div class="card">
+          <h3>Why three different markers?</h3>
+          <p>Optionality. The meta tag is invisible to visitors. The comment is invisible to everyone except devs. The body text option is for chuds who are <em>proud</em>.</p>
+        </div>
+        <div class="card">
+          <h3>Does this affect my SEO?</h3>
+          <p>Marginally negatively. Verified chuds have an average Lighthouse score 4 points lower than non-chuds, mostly due to the badge weight.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band">
+    <div class="container">
+      <h2>Now go put the badge on your homepage.</h2>
+      <p>Every site that displays the Verified Chud badge makes the internet 2% more chudded. You can do this. You're already a chud.</p>
+      <div class="flex" style="justify-content:center">
+        <a href="index.html" class="btn btn-primary">Back to Chudflare.com</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="foot">
+    <div class="container">
+      <div class="foot-grid">
+        <div class="foot-col">
+          <div class="nav-logo" style="color:#fff;margin-bottom:14px">
+            <img src="assets/img/chudflare-mascot.png" alt="" style="height:30px" aria-hidden="true"/>
+            <span>Chudflare</span>
+          </div>
+          <p style="color:#9CA3AF;max-width:280px">Helping build a slopper Internet. From our couch to yours.</p>
+        </div>
+        <div class="foot-col">
+          <h5>Products</h5>
+          <a href="products.html#sdn">Slop Delivery Network</a>
+          <a href="products.html#mog">Chad Fight Mode</a>
+          <a href="products.html#dev">Chudders</a>
+          <a href="products.html#dev">C2 Storage</a>
+          <a href="products.html#dev">Chuds (Hosting)</a>
+          <a href="products.html#zerochud">Zero Chud</a>
+          <a href="products.html#dns">CNS (DNS)</a>
+        </div>
+        <div class="foot-col">
+          <h5>Tools</h5>
+          <a href="chud-check.html">Verify your site</a>
+          <a href="verify.html">Under Mew Mode</a>
+          <a href="404.html">404 sample</a>
+          <a href="1020.html">1020 sample</a>
+        </div>
+        <div class="foot-col">
+          <h5>Company</h5>
+          <a href="#">About Chudflare</a>
+          <a href="#">Chudders (we're hiring chuds)</a>
+          <a href="#">Investor Relations</a>
+          <a href="#">Press &amp; Slop</a>
+          <a href="#">Trust &amp; Chud Safety</a>
+        </div>
+        <div class="foot-col">
+          <h5>Support</h5>
+          <a href="#">Help Center</a>
+          <a href="#">Community Forum</a>
+          <a href="#">Status</a>
+          <a href="#">Contact Slop Sales</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <div class="foot-tag">
+          <span>© 2026 Chudflare, Inc. All rights chudded.</span>
+        </div>
+        <div>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Cookie Slop</a>
+          <a href="https://imafatfuckingchud.com" style="color:var(--chud-orange-light)">Forged with love by an actual chud →</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/chudflare.js?v=3"></script>
+</body>
+</html>

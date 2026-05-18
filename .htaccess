@@ -1,0 +1,58 @@
+# Chudflare .htaccess: Apache format
+# Drop this file at the root of your deploy.
+
+# Custom response headers (Cloudflare-style)
+<IfModule mod_headers.c>
+  Header set Server "chudflare"
+  Header set X-Powered-By "chudders"
+  Header set CF-RAY "8c0ffee-CHUD-DEN"
+  Header set CF-Cache-Status "HIT"
+  Header set CF-Edge-PoP "DEN-CHUD-3"
+  Header set CF-PSL "2.1"
+  Header set CF-Jawline "undetected"
+  Header set X-Mog-Status "YOU GOT MOGGED"
+  Header set X-Chud-Mode "ON"
+  Header set X-Chud-Cache "HIT"
+  Header set X-Hunch-Angle "47deg"
+  Header set X-Tongue-Position "floor"
+  Header set X-Mewing "false"
+  Header set X-Sigma-Status "inactive"
+  Header set X-Monster-Cans "3"
+  Header set X-Nothing-Ever-Happens "true"
+  Header set X-Frame-Options "DENY"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# MIME types
+<IfModule mod_mime.c>
+  AddType text/x-shellscript .sh
+  AddType image/svg+xml .svg
+</IfModule>
+
+# Pretty URLs
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # /cdn-cgi/trace stays as a real file (no rewrite)
+
+  # Pretty URLs for HTML pages
+  RewriteRule ^status$ status.html [L]
+  RewriteRule ^blog$ blog/index.html [L]
+  RewriteRule ^chudify$ chudify.html [L]
+  RewriteRule ^psl-detector$ psl-detector.html [L]
+  RewriteRule ^psl$ psl-detector.html [L]
+  RewriteRule ^verify$ verify.html [L]
+  RewriteRule ^products$ products.html [L]
+  RewriteRule ^pricing$ pricing.html [L]
+  RewriteRule ^chud-check$ chud-check.html [L]
+</IfModule>
+
+# Error documents
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
+
+# Force install.sh / chudflare CLI content-type
+<FilesMatch "^(install\.sh|chudflare)$">
+  ForceType text/x-shellscript
+</FilesMatch>

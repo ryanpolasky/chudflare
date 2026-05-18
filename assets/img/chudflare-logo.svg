@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" role="img" aria-label="Chudflare logo">
+  <defs>
+    <linearGradient id="chudOrange" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FBAD41"/>
+      <stop offset="60%" stop-color="#F38020"/>
+      <stop offset="100%" stop-color="#C25B14"/>
+    </linearGradient>
+    <pattern id="stubble" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.6" fill="#3a1d04" opacity="0.55"/>
+    </pattern>
+  </defs>
+
+  <!-- Cloud / chud silhouette: pointy receding hairline on top, weak chin bottom -->
+  <path d="
+    M 30 78
+    Q 30 50 58 47
+    Q 60 30 80 30
+    L 92 28
+    L 88 38
+    L 102 30
+    L 100 42
+    Q 122 28 142 46
+    Q 168 44 172 70
+    Q 178 72 178 82
+    Q 178 96 162 96
+    L 70 96
+    Q 56 96 50 88
+    Q 40 92 34 86
+    Q 28 84 30 78 Z"
+    fill="url(#chudOrange)"
+    stroke="#7a3a08"
+    stroke-width="1.2"/>
+
+  <!-- Stubble layer on lower half -->
+  <path d="
+    M 38 80
+    L 170 80
+    Q 178 82 178 90
+    Q 178 96 162 96
+    L 70 96
+    Q 56 96 50 88
+    Q 40 92 34 86
+    Q 28 84 30 78 Z"
+    fill="url(#stubble)" opacity="0.85"/>
+
+  <!-- Angry eyebrows -->
+  <path d="M 72 56 L 96 62 L 92 66 L 74 62 Z" fill="#2a1503"/>
+  <path d="M 140 62 L 116 56 L 118 62 L 142 66 Z" fill="#2a1503"/>
+
+  <!-- Squinting eyes (slit pupils) -->
+  <ellipse cx="86" cy="70" rx="6" ry="2.2" fill="#fff"/>
+  <ellipse cx="126" cy="70" rx="6" ry="2.2" fill="#fff"/>
+  <circle cx="86" cy="70" r="1.6" fill="#0a0a0a"/>
+  <circle cx="126" cy="70" r="1.6" fill="#0a0a0a"/>
+
+  <!-- Scowling mouth -->
+  <path d="M 90 86 Q 106 78 122 86" stroke="#2a1503" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <!-- Single tooth -->
+  <rect x="103" y="84" width="3" height="4" fill="#f4ead2" stroke="#2a1503" stroke-width="0.4"/>
+</svg>
