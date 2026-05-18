@@ -47,20 +47,20 @@
       </div>
 
       <div class="post-body">
-        <p class="lede">For three hours on March 14, 2026, DoorDash Routing &mdash; the layer that powers our edge-to-burrito delivery network &mdash; experienced elevated latency in the DEN-CHUD-3 region. No bytes were lost. No bytes were even moving. But 14 burritos were delayed. This is their story.</p>
+        <p class="lede">For three hours on March 14, 2026, DoorDash Routing (the layer that powers our edge-to-burrito delivery network) experienced elevated latency in the DEN-CHUD-3 region. No bytes were lost. No bytes were even moving. But 14 burritos were delayed. This is their story.</p>
 
         <h2>Background</h2>
         <p>DoorDash Routing is one of Chudflare's most critical internal services. When a chud at one of our PoPs hits a configurable hunger threshold (set per-employee, defaults to 47/100), DoorDash Routing automatically dispatches a burrito via the optimal route from the nearest Mexican restaurant. Average delivery time: 23 minutes. SLA: 47 minutes. Burrito-to-byte ratio: 1 burrito per 100M requests served.</p>
 
         <h2>Incident timeline (UTC)</h2>
         <ul>
-          <li><strong>15:47</strong> &mdash; First alert fires. Burrito P95 delivery time exceeds 47 minutes for the third consecutive measurement.</li>
-          <li><strong>15:52</strong> &mdash; SRE on-call investigates. DoorDash Routing API is healthy. All upstream restaurants are reachable. The routes themselves look fine.</li>
-          <li><strong>16:14</strong> &mdash; Escalated to me. I check the dashboard. Every burrito in DEN-CHUD-3 is stuck in the "out for delivery" state for 90+ minutes.</li>
-          <li><strong>16:23</strong> &mdash; Investigated the actual delivery driver layer. Found that <strong>three Dashers were stuck in our office lobby, unable to reach the chud team because the elevator was broken.</strong></li>
-          <li><strong>16:31</strong> &mdash; Filed a ticket with building management.</li>
-          <li><strong>17:15</strong> &mdash; Elevator restored. Dashers ascended. Burritos delivered.</li>
-          <li><strong>17:42</strong> &mdash; Backfill complete. All 14 delayed burritos delivered. Service restored.</li>
+          <li><strong>15:47:</strong> First alert fires. Burrito P95 delivery time exceeds 47 minutes for the third consecutive measurement.</li>
+          <li><strong>15:52:</strong> SRE on-call investigates. DoorDash Routing API is healthy. All upstream restaurants are reachable. The routes themselves look fine.</li>
+          <li><strong>16:14:</strong> Escalated to me. I check the dashboard. Every burrito in DEN-CHUD-3 is stuck in the "out for delivery" state for 90+ minutes.</li>
+          <li><strong>16:23:</strong> Investigated the actual delivery driver layer. Found that <strong>three Dashers were stuck in our office lobby, unable to reach the chud team because the elevator was broken.</strong></li>
+          <li><strong>16:31:</strong> Filed a ticket with building management.</li>
+          <li><strong>17:15:</strong> Elevator restored. Dashers ascended. Burritos delivered.</li>
+          <li><strong>17:42:</strong> Backfill complete. All 14 delayed burritos delivered. Service restored.</li>
         </ul>
 
         <h2>Root cause</h2>
@@ -83,11 +83,11 @@
         </ul>
 
         <h2>Customer impact</h2>
-        <p>No external customers were impacted. This incident was entirely internal &mdash; the only people affected were 14 Chudflare employees who had to wait an extra hour for lunch. They have been compensated with Monster Ultra Zero credits.</p>
+        <p>No external customers were impacted. This incident was entirely internal: the only people affected were 14 Chudflare employees who had to wait an extra hour for lunch. They have been compensated with Monster Ultra Zero credits.</p>
 
         <p>We take burrito-delivery reliability extremely seriously. We are sorry to the chuds we kept hungry. It will not happen again. At least not until the elevator breaks again. Which it will. Nothing ever happens.</p>
 
-        <p class="post-sig">&mdash; Theo, Staff SRE (now keeping a granola bar in my desk drawer at all times)</p>
+        <p class="post-sig">Theo, Staff SRE (now keeping a granola bar in my desk drawer at all times)</p>
       </div>
 
       <div class="post-share">

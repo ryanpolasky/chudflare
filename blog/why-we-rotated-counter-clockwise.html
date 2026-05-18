@@ -50,12 +50,12 @@
         <p class="lede">In Q1 2026, we physically rotated every Chudflare edge node 47 degrees counter-clockwise on its rack. This was not a thermal optimization. It was not a cable-routing concern. It was a deliberate alignment decision rooted in the foundational chud principle: <em>the only way out is counter-clockwise</em>. Twelve weeks in, the results are in. p99 latency is down 12%. We did not see this coming.</p>
 
         <h2>Background</h2>
-        <p>At Chudflare, we operate under a posture-first design philosophy. Every layer of our stack &mdash; from kernel scheduling to BGP route selection &mdash; is informed by the operator's posture. When the operator is hunched (the canonical chud state), the system is optimized for slop throughput. When the operator is upright (a degraded state we call "freak posture"), the system is conservative.</p>
+        <p>At Chudflare, we operate under a posture-first design philosophy. Every layer of our stack, from kernel scheduling to BGP route selection, is informed by the operator's posture. When the operator is hunched (the canonical chud state), the system is optimized for slop throughput. When the operator is upright (a degraded state we call "freak posture"), the system is conservative.</p>
 
         <p>Until Q1, our edge nodes were rack-mounted in standard orientation: 0deg of rotation, perpendicular to the operator. This is fine for sigma-aligned providers. It is not fine for us.</p>
 
         <h2>The hypothesis</h2>
-        <p>Our hypothesis was straightforward: if the operator must be hunched at 47deg, the infrastructure should be hunched with them. Specifically, every rack should be rotated 47deg counter-clockwise &mdash; matching the natural slumping direction of the modal chud spine.</p>
+        <p>Our hypothesis was straightforward: if the operator must be hunched at 47deg, the infrastructure should be hunched with them. Specifically, every rack should be rotated 47deg counter-clockwise, matching the natural slumping direction of the modal chud spine.</p>
 
         <p>Counter-clockwise rotation was the obvious choice. Clockwise rotation is sigma. We do not do sigma here.</p>
 
@@ -78,7 +78,7 @@
         <h2>What's next</h2>
         <p>We are now exploring a follow-up rotation to 67deg, which our biomechanics team believes is the angle of "full hunch." If p99 falls further, we will continue rotating. If p99 rises, we will roll back. Either outcome is fine. <strong>Nothing ever happens.</strong></p>
 
-        <p class="post-sig">&mdash; Hugo, Principal Chudmaxxing Architect (currently rotated 47deg counter-clockwise in my chair, by company policy)</p>
+        <p class="post-sig">Hugo, Principal Chudmaxxing Architect (currently rotated 47deg counter-clockwise in my chair, by company policy)</p>
       </div>
 
       <div class="post-share">

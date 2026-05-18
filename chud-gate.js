@@ -1,5 +1,5 @@
 /*!
- * chud-gate.js — drop-in script that gates a site behind chudflare.com/verify
+ * chud-gate.js: drop-in script that gates a site behind chudflare.com/verify
  * usage: <script src="https://chudflare.com/chud-gate.js"></script>
  *        <script src="https://chudflare.com/chud-gate.js" data-manual></script>
  *

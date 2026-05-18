@@ -864,7 +864,7 @@
     if (!btns.length) return;
     var pageUrl = location.href.split('#')[0];
     var pageTitle = document.title || 'chudflare';
-    var tweet = pageTitle + ' — nothing ever happens. ' + pageUrl;
+    var tweet = pageTitle + ' · nothing ever happens. ' + pageUrl;
     var tweetUrl = 'https://x.com/intent/post?text=' + encodeURIComponent(tweet);
     btns.forEach(function (b) {
       var label = (b.textContent || '').toLowerCase();
