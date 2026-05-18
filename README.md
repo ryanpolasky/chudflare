@@ -179,8 +179,6 @@ If your host supports clean paths, map (or use one of `_headers` / `vercel.json`
 
 ## Easter eggs
 
-- Every `PSL` mention site-wide has a dismissive on-hover tooltip wired up via
-  JS (`assets/js/chudflare.js`). Hover any `PSL` on any page to see it.
 - Every page contains an HTML comment block visible via View Source.
 - Every page logs a hiring banner + cf-ray + PSL/hunch/mewing status to the JS console.
 - `/cdn-cgi/trace` is a real plaintext endpoint. `curl` it.

@@ -66,7 +66,7 @@
         <h2>Root cause</h2>
         <p>The fine-tune deployed at 12:00 UTC included a training dataset that we believed had been pre-mumbled. It had not. The data-prep pipeline silently failed during the <code>mumble-augment</code> step due to a stale Python virtualenv on the build machine (the responsible chud's environment was last rebuilt in November 2025). The model was fine-tuned on the raw, unmumbled corpus, which had the predictable effect of making it more capable.</p>
 
-        <p>This is the same class of incident we saw in <a href="#" style="color:var(--chud-orange-dark)">Q3 2025</a> when a similar pipeline failure caused our "agartha-only" mode to briefly respond to every query with citations.</p>
+        <p>This is the same class of incident we saw in <a href="the-great-doordash-degradation.html" style="color:var(--chud-orange-dark)">Q3 2025</a> when a similar pipeline failure caused our "agartha-only" mode to briefly respond to every query with citations.</p>
 
         <h2>What we're doing</h2>
         <ol>
@@ -85,8 +85,8 @@
 
       <div class="post-share">
         <div class="share-label">Share this post</div>
-        <a href="#" class="share-btn">𝕏 Tweet</a>
-        <a href="#" class="share-btn">🔗 Copy link</a>
+        <a href="https://x.com/intent/post" class="share-btn">𝕏 Tweet</a>
+        <a href="postmortem-mewing-ai-coherent-output.html" class="share-btn">🔗 Copy link</a>
       </div>
     </div>
   </article>

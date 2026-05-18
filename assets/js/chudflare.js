@@ -812,39 +812,38 @@
       'color:#6b7280','color:var(--chud-ink)','color:#6b7280','color:var(--chud-ink)');
   }
 
-  // ---------- PSL hover tooltip ----------
-  function wrapPSL() {
-    var tip = "normal people don't care.";
-    var skip = { SCRIPT:1, STYLE:1, NOSCRIPT:1, CODE:1, PRE:1, INPUT:1, TEXTAREA:1, TITLE:1 };
-    function walk(node) {
-      if (!node) return;
-      if (node.nodeType === 1) {
-        if (skip[node.tagName]) return;
-        if (node.classList && node.classList.contains('psl-tip')) return;
-        var kids = Array.prototype.slice.call(node.childNodes);
-        for (var i = 0; i < kids.length; i++) walk(kids[i]);
-      } else if (node.nodeType === 3) {
-        var text = node.nodeValue;
-        if (!text || !/\bPSL\b/.test(text)) return;
-        var frag = document.createDocumentFragment();
-        var parts = text.split(/(\bPSL\b)/);
-        for (var j = 0; j < parts.length; j++) {
-          if (parts[j] === 'PSL') {
-            var span = document.createElement('span');
-            span.className = 'psl-tip';
-            span.setAttribute('data-tip', tip);
-            span.setAttribute('tabindex', '0');
-            span.setAttribute('aria-label', 'PSL: ' + tip);
-            span.textContent = 'PSL';
-            frag.appendChild(span);
+  // wires every .share-btn on the page. tweet buttons get an x intent url,
+  // copy-link buttons copy the current page url to the clipboard.
+  function initShareButtons() {
+    var btns = document.querySelectorAll('a.share-btn');
+    if (!btns.length) return;
+    var pageUrl = location.href.split('#')[0];
+    var pageTitle = document.title || 'chudflare';
+    var tweet = pageTitle + ' — nothing ever happens. ' + pageUrl;
+    var tweetUrl = 'https://x.com/intent/post?text=' + encodeURIComponent(tweet);
+    btns.forEach(function (b) {
+      var label = (b.textContent || '').toLowerCase();
+      if (label.indexOf('tweet') !== -1) {
+        b.href = tweetUrl;
+        b.target = '_blank';
+        b.rel = 'noopener';
+      } else if (label.indexOf('copy') !== -1) {
+        b.href = pageUrl;
+        b.addEventListener('click', function (e) {
+          e.preventDefault();
+          var prev = b.textContent;
+          var done = function () {
+            b.textContent = '✓ Copied';
+            setTimeout(function () { b.textContent = prev; }, 1400);
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(pageUrl).then(done, done);
           } else {
-            frag.appendChild(document.createTextNode(parts[j]));
+            done();
           }
-        }
-        node.parentNode.replaceChild(frag, node);
+        });
       }
-    }
-    walk(document.body);
+    });
   }
 
   // ---------- boot ----------
@@ -857,7 +856,7 @@
     try { initCookieBanner(); } catch (e) { console.error(e); }
     try { initMewingAI(); } catch (e) { console.error(e); }
     try { initChudCheck(); } catch (e) { console.error(e); }
-    try { wrapPSL(); } catch (e) { console.error(e); }
+    try { initShareButtons(); } catch (e) { console.error(e); }
   }
 
   if (document.readyState === 'loading') {

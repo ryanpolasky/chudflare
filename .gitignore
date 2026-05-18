@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+._*
+
+# editors / IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.#*
+
+# logs
+*.log
+npm-debug.log*
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# local deploy/build artifacts (if anyone ever adds tooling)
+node_modules/
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# host CLIs
+.vercel/
+.netlify/
+.wrangler/
+
+# python venv (in case someone runs `python3 -m http.server` with a venv next to it)
+.venv/
+__pycache__/
