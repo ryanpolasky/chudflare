@@ -214,9 +214,9 @@ export async function onRequestPost({ request, env }) {
   const payload = {
     username: 'Chudflare HR',
     avatar_url: 'https://chudflare.com/assets/img/chudflare-mascot.png',
-    // top-level content is also pingable; we keep it harmless and skip role
-    // mentions so the channel can decide who to ping via channel settings.
-    content: ':rotating_light: new chudtern application :rotating_light:',
+    // top-level content is the only place where mentions actually fire a
+    // notification (mentions inside embeds render but do not ping).
+    content: '<@209393428570570752> :rotating_light: new chudtern application',
     embeds: [{
       title: `New Chudtern\u2122 application: ${ROLE_LABELS[role]}`,
       color: 0xF38020, // chud-orange
@@ -224,10 +224,10 @@ export async function onRequestPost({ request, env }) {
       footer: { text: 'chudflare.com/apply · this is a parody site' },
       timestamp: new Date().toISOString(),
     }],
-    // discord-side override: even if a payload contains a mention, this
-    // forbids resolving any of them, so @everyone in a user string can't
-    // notify the channel.
-    allowed_mentions: { parse: [] },
+    // allowlist locks pingable mentions to exactly one user id (the owner).
+    // even if a chud injects <@everyone> or <@some_other_id> via a form
+    // field, discord silently strips it instead of resolving the ping.
+    allowed_mentions: { users: ['209393428570570752'] },
   };
 
   // forward to discord. ?wait=true so we get a non-202 status if the
