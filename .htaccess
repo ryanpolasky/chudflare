@@ -36,6 +36,10 @@
 
   # /cdn-cgi/trace stays as a real file (no rewrite)
 
+  # Canonical: strip .html from incoming URLs so we never expose them
+  RewriteCond %{THE_REQUEST} \s/+([^?\s]+?)\.html(\s|\?)
+  RewriteRule ^ /%1 [R=301,L]
+
   # Pretty URLs for HTML pages
   RewriteRule ^status$ status.html [L]
   RewriteRule ^blog$ blog/index.html [L]
@@ -46,6 +50,7 @@
   RewriteRule ^products$ products.html [L]
   RewriteRule ^pricing$ pricing.html [L]
   RewriteRule ^chud-check$ chud-check.html [L]
+  RewriteRule ^1020$ 1020.html [L]
 </IfModule>
 
 # Error documents

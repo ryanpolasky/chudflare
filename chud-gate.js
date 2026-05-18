@@ -8,10 +8,10 @@
  *                after verification. otherwise we auto-redirect after 2s.
  *
  * how it works:
- *   1. if the user just got back from verify.html with #chud-verified in
+ *   1. if the user just got back from /verify with #chud-verified in
  *      the URL, we stash the timestamp in localStorage and let them through.
  *   2. if a fresh verification is on file (<24h old), let them through.
- *   3. otherwise, redirect to chudflare.com/verify.html?return=<this page>
+ *   3. otherwise, redirect to chudflare.com/verify?return=<this page>
  *      so they have to prove they are a chud before continuing.
  *
  * the site owner gets the bit, the visitor gets verified, nothing ever happens.
@@ -21,7 +21,7 @@
 
   var KEY = 'chudflare-verified-chud';
   var TTL = 24 * 60 * 60 * 1000; // 24h
-  var GATE_URL = 'https://chudflare.com/verify.html';
+  var GATE_URL = 'https://chudflare.com/verify';
 
   // read script-tag options. document.currentScript works in modern browsers;
   // for older ones we fall back to the last <script src="chud-gate.js"> on the page.

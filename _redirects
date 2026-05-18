@@ -1,0 +1,31 @@
+# Chudflare _redirects: Netlify / Cloudflare Pages format
+# Drop this file at the root of your deploy alongside _headers.
+#
+# Maps clean URLs (no .html) to their actual files so visitors see
+# chudflare.com/verify instead of chudflare.com/verify.html.
+# 200 = serve from this path without changing the URL bar (rewrite).
+# 301 = permanent redirect for the inverse (canonical pretty URL).
+
+# pretty path -> actual file (rewrite, keep clean URL)
+/products       /products.html       200
+/pricing        /pricing.html        200
+/chud-check     /chud-check.html     200
+/chudify        /chudify.html        200
+/psl-detector   /psl-detector.html   200
+/psl            /psl-detector.html   200
+/status         /status.html         200
+/verify         /verify.html         200
+/blog           /blog/index.html     200
+/1020           /1020.html           200
+
+# canonical: strip .html from incoming URLs so we never expose them
+/index.html              /            301
+/products.html           /products    301
+/pricing.html            /pricing     301
+/chud-check.html         /chud-check  301
+/chudify.html            /chudify     301
+/psl-detector.html       /psl-detector 301
+/status.html             /status      301
+/verify.html             /verify      301
+/blog/index.html         /blog        301
+/1020.html               /1020        301
