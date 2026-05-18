@@ -29,7 +29,8 @@ chudflare/
 ├── chudify.html             Free chud-speak text rewriter (deterministic, shareable URLs)
 ├── psl-detector.html        Free PSL detector (image URL or name → hash → PSL score)
 ├── status.html              Fake status page (operational dashboard + incident history)
-├── verify.html              Cloudflare-style "checking if you're a chud" interstitial
+├── verify.html              Cloudflare-style "checking if you're a chud" interstitial (works as a real gate via `?return=<url>`)
+├── chud-gate.js             Drop-in script: gate any site behind /verify (24h pass per visitor)
 ├── 404.html / 500.html / 1020.html   Error pages
 ├── chudflare                The CLI (bash script, no extension on purpose)
 ├── install.sh               curl-installable installer for the CLI
@@ -43,7 +44,7 @@ chudflare/
 ├── blog/
 │   ├── index.html           Blog landing
 │   ├── post.css             Shared blog post styles
-│   ├── postmortem-mewing-ai-coherent-output.html
+│   ├── postmortem-chud-ai-coherent-output.html
 │   ├── announcing-mewing-ai-2.html
 │   ├── why-we-rotated-counter-clockwise.html
 │   ├── zero-chud-at-scale.html
@@ -80,8 +81,9 @@ python3 -m http.server 8000
 | Chad Fight Mode WAF tester | `/products#mog` | Paste any string → fake PSL detection + verdict |
 | CNS resolver | `/products#dns` | Type any domain → fake A/TXT/MX records via `dig @6.9.6.9` |
 | Verify gate | `/verify` | Real "I am a chud" checkbox CAPTCHA before the auto-verify runs |
+| **Gate your own site** | `chud-gate.js` | Drop `<script src="https://chudflare.com/chud-gate.js"></script>` in your `<head>`. Visitors get bounced to `/verify`, prove chud-ness, and return with a 24h pass in `localStorage`. |
 | Cookie Slop banner | every page | "Accept all slop" / "Refuse (chud)", persists in localStorage |
-| Mewing AI chat | every page (floating, bottom-right) | Keyword-aware mumble engine |
+| Chud chat | every page (floating, bottom-right) | Keyword-aware mumble engine |
 | Site verification | `/chud-check` | The virality flywheel, see below |
 | **Chudify** | `/chudify` | Paste any text, get it rewritten in chud-speak. Shareable URL. |
 | **PSL Detector** | `/psl-detector` | Paste an image URL or name. Deterministic hash → PSL score |

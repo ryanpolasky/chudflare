@@ -110,7 +110,10 @@
       setTimeout(function () {
         gate.classList.add('gate-done');
         var card = document.getElementById('verify-card');
-        if (card) card.classList.add('running');
+        if (card) {
+          card.classList.remove('idle');
+          card.classList.add('running');
+        }
         if (typeof window.__chudVerifyStart === 'function') {
           window.__chudVerifyStart();
         }
@@ -311,7 +314,7 @@
           'We do not sell your data, as we haven&rsquo;t found a buyer yet.' +
         '</div>' +
         '<div class="cookie-banner-actions">' +
-          '<button class="btn btn-secondary btn-sm" id="cookie-refuse">Refuse (chud)</button>' +
+          '<button class="btn btn-secondary btn-sm" id="cookie-refuse" style="background:#000;color:#fff;border-color:#000">Refuse (chud)</button>' +
           '<button class="btn btn-primary btn-sm" id="cookie-accept">Accept all slop</button>' +
         '</div>' +
       '</div>';
@@ -322,16 +325,56 @@
       banner.classList.add('cookie-banner-gone');
       setTimeout(function () { banner.remove(); }, 280);
     }
+    var refuseBtn = document.getElementById('cookie-refuse');
+    if (refuseBtn) {
+      refuseBtn.style.transition = 'transform 0.15s cubic-bezier(0.2, 0, 0.2, 1)';
+      var tx = 0, ty = 0;
+
+      function runAway() {
+        var rect = refuseBtn.getBoundingClientRect();
+        var baseL = rect.left - tx;
+        var baseT = rect.top - ty;
+        var w = rect.width;
+        var h = rect.height;
+
+        var minTx = 20 - baseL;
+        var maxTx = window.innerWidth - w - 20 - baseL;
+        var minTy = 20 - baseT;
+        var maxTy = window.innerHeight - h - 20 - baseT;
+
+        if (maxTx < minTx) maxTx = minTx;
+        if (maxTy < minTy) maxTy = minTy;
+
+        var jumpX = (Math.random() > 0.5 ? 1 : -1) * (150 + Math.random() * 250);
+        var jumpY = (Math.random() > 0.5 ? 1 : -1) * (150 + Math.random() * 250);
+
+        var nextTx = tx + jumpX;
+        var nextTy = ty + jumpY;
+
+        // if it hits a wall, bounce it hard the other way
+        if (nextTx < minTx) nextTx = minTx + Math.random() * 100;
+        if (nextTx > maxTx) nextTx = maxTx - Math.random() * 100;
+        if (nextTy < minTy) nextTy = minTy + Math.random() * 100;
+        if (nextTy > maxTy) nextTy = maxTy - Math.random() * 100;
+
+        tx = nextTx;
+        ty = nextTy;
+        refuseBtn.style.transform = 'translate(' + tx + 'px, ' + ty + 'px)';
+      }
+
+      refuseBtn.addEventListener('mouseover', runAway);
+      refuseBtn.addEventListener('focus', runAway); // trap tab-focus too
+      refuseBtn.addEventListener('click', function (e) {
+        e.preventDefault(); 
+        runAway();
+      });
+    }
+
     document.getElementById('cookie-accept').addEventListener('click', function () { dismiss('all'); });
-    document.getElementById('cookie-refuse').addEventListener('click', function () {
-      var t = banner.querySelector('.cookie-banner-text');
-      t.innerHTML = '<strong>okay, chud.</strong> we will note your refusal in the chud registry. nothing ever happens.';
-      setTimeout(function () { dismiss('refused'); }, 1400);
-    });
   }
 
   // =========================================================
-  // 6. Mewing AI floating chat widget
+  // 6. Chud floating chat widget
   //    Bottom-right launcher on every page that includes the
   //    script (unless body has data-no-ai).
   // =========================================================
@@ -341,24 +384,24 @@
     var wrap = document.createElement('div');
     wrap.className = 'mai';
     wrap.innerHTML = '' +
-      '<button class="mai-launcher" id="mai-launcher" aria-label="Open Mewing AI">' +
-        '<span class="mai-launcher-ico" aria-hidden="true">🥤</span>' +
-        '<span class="mai-launcher-text">Ask Mewing AI</span>' +
+      '<button class="mai-launcher" id="mai-launcher" aria-label="Ask Chud">' +
+        '<span class="mai-launcher-ico" aria-hidden="true">🧠</span>' +
+        '<span class="mai-launcher-text">Ask Chud</span>' +
       '</button>' +
       '<div class="mai-panel" id="mai-panel" hidden>' +
         '<div class="mai-head">' +
           '<div class="mai-head-l">' +
             '<span class="mai-dot"></span>' +
             '<div>' +
-              '<div class="mai-title">Mewing AI <span class="mai-tag">beta</span></div>' +
-              '<div class="mai-sub">whispering at the chud-edge · 1.2T params</div>' +
+              '<div class="mai-title">Chud <span class="mai-tag">beta</span></div>' +
+              '<div class="mai-sub">whispering at the chud-edge · about 3 params</div>' +
             '</div>' +
           '</div>' +
           '<button class="mai-close" id="mai-close" aria-label="Close">×</button>' +
         '</div>' +
         '<div class="mai-msgs" id="mai-msgs"></div>' +
         '<form class="mai-form" id="mai-form" autocomplete="off">' +
-          '<input class="mai-input" id="mai-input" placeholder="ask Mewing AI anything…" autocomplete="off"/>' +
+          '<input class="mai-input" id="mai-input" placeholder="ask Chud anything…" autocomplete="off"/>' +
           '<button class="mai-send" type="submit" aria-label="Send">↑</button>' +
         '</form>' +
       '</div>';
@@ -377,7 +420,7 @@
       panel.classList.add('mai-open');
       if (!seeded) {
         seeded = true;
-        addMsg('bot', "mmm hi. i'm mewing ai. tongue on palate. ask me anything but i probably won't finish my sent");
+        addMsg('bot', "mmm hi. i'm chud. tongue on palate. ask me anything but i probably won't finish my sent");
       }
       setTimeout(function () { input.focus(); }, 100);
     }
@@ -573,7 +616,7 @@
   function buildBadgeHtml(host) {
     // Inline-style, no external assets. Single-line for easy copy.
     var safeHost = String(host).replace(/[<>"'&]/g, '');
-    return '<a href="https://chudflare.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#0B0F14;color:#fff;font:600 12px/1 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;border-radius:6px;text-decoration:none;border:1px solid #F38020;letter-spacing:-0.01em"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#F38020;border-radius:50%;font-size:10px;font-weight:900;color:#fff">&#10003;</span><span>Verified Chud</span><span style="opacity:.6;font-weight:500">&middot; chudflare.com</span></a>';
+    return '<a href="https://chudflare.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#0B0F14;color:#fff;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;font-size:12px;font-weight:600;line-height:1;border-radius:6px;text-decoration:none;border:1px solid #F38020;letter-spacing:-0.01em"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#F38020;border-radius:50%;font-size:10px;font-weight:900;color:#fff">&#10003;</span><span>Verified Chud</span><span style="opacity:.6;font-weight:500">&middot; chudflare.com</span></a>';
   }
 
   function copyToClipboard(text) {
@@ -597,6 +640,8 @@
 
   function initCopyButtons() {
     $$('.copy-btn').forEach(function (btn) {
+      if (btn.dataset.copyBound === '1') return;
+      btn.dataset.copyBound = '1';
       btn.addEventListener('click', function () {
         var targetId = btn.getAttribute('data-copy');
         var target = document.getElementById(targetId);
@@ -846,6 +891,7 @@
     });
   }
 
+
   // ---------- boot ----------
   function init() {
     try { bootConsole(); } catch (e) {}
@@ -856,6 +902,7 @@
     try { initCookieBanner(); } catch (e) { console.error(e); }
     try { initMewingAI(); } catch (e) { console.error(e); }
     try { initChudCheck(); } catch (e) { console.error(e); }
+    try { initCopyButtons(); } catch (e) { console.error(e); }
     try { initShareButtons(); } catch (e) { console.error(e); }
   }
 

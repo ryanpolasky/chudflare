@@ -9,7 +9,7 @@
   <url><loc>https://chudflare.com/psl-detector</loc><priority>0.8</priority></url>
   <url><loc>https://chudflare.com/verify</loc><priority>0.7</priority></url>
   <url><loc>https://chudflare.com/blog</loc><priority>0.7</priority></url>
-  <url><loc>https://chudflare.com/blog/postmortem-mewing-ai-coherent-output</loc><priority>0.6</priority></url>
+  <url><loc>https://chudflare.com/blog/postmortem-chud-ai-coherent-output</loc><priority>0.6</priority></url>
   <url><loc>https://chudflare.com/blog/announcing-mewing-ai-2</loc><priority>0.6</priority></url>
   <url><loc>https://chudflare.com/blog/why-we-rotated-counter-clockwise</loc><priority>0.6</priority></url>
   <url><loc>https://chudflare.com/blog/zero-chud-at-scale</loc><priority>0.6</priority></url>

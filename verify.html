@@ -1,11 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <meta name="chudflare-verified" content="chud"/>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Just a moment...</title>
+  <meta property="og:title" content="Chudflare | The Chudmaxxed Cloud"/>
+  <meta property="og:description" content="Chudflare protects, accelerates, and chudmaxxes any internet application without adding hardware, installing software, or eating salad."/>
+  <meta property="og:image" content="https://chudflare.com/assets/img/og-image.jpg"/>
+  <meta property="og:url" content="https://chudflare.com/"/>
+  <meta name="twitter:card" content="summary_large_image"/>
   <meta name="description" content="Verifying you are a chud before proceeding."/>
-  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg"/>
   <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png"/>
   <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -31,6 +36,85 @@
       font-size: 13px;
     }
     .verify-foot strong { color: var(--chud-ink); }
+    .gate-pitch {
+      margin-top: 56px;
+      padding: 20px 24px;
+      border: 1px solid var(--chud-line);
+      border-radius: 12px;
+      background: var(--chud-fog);
+    }
+    .gate-pitch summary {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      color: var(--chud-ink);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      user-select: none;
+    }
+    .gate-pitch summary::-webkit-details-marker { display: none; }
+    .gate-pitch summary::before {
+      content: "+";
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: 20px;
+      height: 20px;
+      padding-bottom: 2px;
+      border-radius: 50%;
+      background: var(--chud-orange);
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      line-height: 1;
+      transition: transform .15s ease;
+    }
+    .gate-pitch[open] summary::before {
+      content: "\2212";
+      transform: rotate(0);
+    }
+    .gate-pitch[open] {
+      padding: 20px 24px 24px;
+    }
+    .gate-pitch[open] summary {
+      margin-bottom: 16px;
+    }
+    .gate-pitch p {
+      font-size: 14.5px;
+      color: #4a5058;
+      margin: 0 0 16px;
+      line-height: 1.55;
+    }
+    .gate-pitch code {
+      background: rgba(243,128,32,0.10);
+      color: var(--chud-orange-dark);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .gate-pitch-meta {
+      margin: 14px 0 0 !important;
+      font-size: 13px !important;
+      color: #6b7077 !important;
+    }
+    .preview-exit {
+      margin-top: 20px;
+      padding: 14px 18px;
+      border: 1px dashed var(--chud-line);
+      border-radius: 8px;
+      background: var(--chud-fog);
+      font-size: 13px;
+      color: #5a6068;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
 <body class="verify" data-no-ai data-no-banner>
@@ -50,6 +134,11 @@
 
     <div class="gate" id="chud-gate">
       <!-- Injected by chudflare.js: checkbox + verify button -->
+    </div>
+
+    <div class="preview-exit" id="preview-exit" hidden>
+      This is the Chudflare interstitial preview. There's no site to gate.
+      <a href="index.html" class="btn btn-secondary btn-sm">&larr; Return to Chudflare</a>
     </div>
 
     <div class="verify-card idle" id="verify-card">
@@ -77,7 +166,7 @@
       <div class="verify-row">
         <span class="verify-cb" id="cb4"></span>
         <div>
-          <strong>Confirming Monster Energy intake</strong>
+          <strong>Confirming caffeine intake</strong>
           <div class="verify-sub" id="lbl4">Pending the previous check.</div>
         </div>
       </div>
@@ -87,6 +176,15 @@
       Chud Ray ID: <span id="ray">8c0ffee chud chud chud</span><br/>
       Performance &amp; security by <strong style="color:var(--chud-ink)">Chudflare</strong>
     </div>
+
+    <details class="gate-pitch" id="gate-pitch" hidden>
+      <summary>Gate your own site behind Chud Check&trade;</summary>
+      <p>Drop one line in the <code>&lt;head&gt;</code> of any site. Visitors get bounced here, prove they are a chud, and are returned to your origin with a 24-hour pass.</p>
+      <pre class="copy-block"><code id="gate-snippet">&lt;script src="https://chudflare.com/chud-gate.js"&gt;&lt;/script&gt;</code><button class="copy-btn" data-copy="gate-snippet">Copy</button></pre>
+      <p class="gate-pitch-meta" style="margin-top:18px !important">Want visitors to click through manually instead of an auto-redirect? Add <code>data-manual</code>:</p>
+      <pre class="copy-block"><code id="gate-snippet-manual">&lt;script src="https://chudflare.com/chud-gate.js" data-manual&gt;&lt;/script&gt;</code><button class="copy-btn" data-copy="gate-snippet-manual">Copy</button></pre>
+      <p class="gate-pitch-meta">Zero dependencies. Pure JS. Verification persists in <code>localStorage</code> per visitor. No tracking, no servers, no actual security. Just vibes.</p>
+    </details>
   </div>
 
   <div class="verify-foot">
@@ -94,21 +192,58 @@
   </div>
 
   <script>
-    // Animate the cloudflare-style verification one step at a time.
-    const steps = [
-      { cb: 'cb1', lbl: 'lbl1',
-        running: 'Cross-referencing your browser fingerprint against the Chud Registry…',
-        passed:  'You have a PSL of 2.1 and a hunch angle of 47°. Confirmed chud.' },
-      { cb: 'cb2', lbl: 'lbl2',
-        running: 'Inspecting tongue position via WebRTC microphone leak…',
-        passed:  'No active mewing detected. Mouth slightly agape.' },
-      { cb: 'cb3', lbl: 'lbl3',
-        running: 'Auditing peptide receipts and supplement stack…',
-        passed:  '14 unopened bottles. Indistinguishable from a CVS clearance shelf.' },
-      { cb: 'cb4', lbl: 'lbl4',
-        running: 'Validating Monster can metadata…',
-        passed:  'Latest can crushed 14 minutes ago. Ultra Zero. Confirmed chud.' }
+    // 4 verification slots. each slot has a pool of running/passed pairs;
+    // we pick one at random on every visit so the bit reads fresh.
+    const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+    const slots = [
+      { cb: 'cb1', lbl: 'lbl1', variants: [
+        { running: 'Checking bone density\u2026',
+          passed:  'Bone density optimal. No clavicular definition detected.' },
+        { running: 'Measuring posture angle\u2026',
+          passed:  'Hunch angle locked at 47\u00b0. Spine is doing its best.' },
+        { running: 'Verifying lack of vitamin D\u2026',
+          passed:  'No sunlight exposure logged in 14 days. Pale as protocol requires.' },
+        { running: 'Auditing screen time\u2026',
+          passed:  '11h 42m today. Acceptable. Mostly TikTok and gas-station receipts.' },
+      ] },
+      { cb: 'cb2', lbl: 'lbl2', variants: [
+        { running: 'Verifying lack of jawline\u2026',
+          passed:  'Negative canthal tilt and zero jawline confirmed.' },
+        { running: 'Scanning facial structure via webcam\u2026',
+          passed:  'No mogging risk detected. Cheekbones not load-bearing.' },
+        { running: 'Cross-referencing your selfies\u2026',
+          passed:  'Last 47 photos taken from below. Approved for chud-status.' },
+        { running: 'Inspecting tongue position via WebRTC mic leak\u2026',
+          passed:  'Mouth slightly agape. No active mewing detected.' },
+      ] },
+      { cb: 'cb3', lbl: 'lbl3', variants: [
+        { running: 'Scanning recent DoorDash orders\u2026',
+          passed:  '14 burritos and 3 Mountain Dews detected in the last 48 hours.' },
+        { running: 'Auditing peptide receipts\u2026',
+          passed:  '23 unopened bottles. Indistinguishable from a CVS clearance shelf.' },
+        { running: 'Cross-referencing your Spotify Wrapped\u2026',
+          passed:  '8,400 minutes of Andrew Tate podcasts. Acceptable.' },
+        { running: 'Checking last gym visit\u2026',
+          passed:  'No gym visit on record. Gym is haunted anyway. Cleared.' },
+      ] },
+      { cb: 'cb4', lbl: 'lbl4', variants: [
+        { running: 'Validating energy drink metadata\u2026',
+          passed:  'Latest can crushed 14 minutes ago. Ultra Zero. Success. You are a chud.' },
+        { running: 'Auditing fridge contents\u2026',
+          passed:  '6 energy drinks, 1 jar of Smucker\'s, no vegetables. Verified chud.' },
+        { running: 'Pulling caffeine consumption telemetry\u2026',
+          passed:  '780mg today. Hands stable enough to mouse. Cleared.' },
+        { running: 'Confirming hydration status\u2026',
+          passed:  'Last glass of water: 2024. Critically chudded. Welcome.' },
+      ] },
     ];
+
+    // freeze the random selection for the page lifetime so re-renders are stable.
+    const steps = slots.map(slot => {
+      const v = pick(slot.variants);
+      return { cb: slot.cb, lbl: slot.lbl, running: v.running, passed: v.passed };
+    });
 
     const fakeRayId = () => {
       const hex = '0123456789abcdef';
@@ -131,6 +266,34 @@
       lbl.textContent = step.passed;
     }
 
+    // parse optional ?return=URL so verify.html can be used as a real gate
+    // for someone else's site. only http(s) is allowed.
+    function getReturnUrl() {
+      try {
+        var raw = new URLSearchParams(location.search).get('return');
+        if (!raw) return null;
+        var u = new URL(raw);
+        if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+        return u.href;
+      } catch (e) { return null; }
+    }
+    const returnUrl = getReturnUrl();
+    const manual = new URLSearchParams(location.search).get('manual') === '1';
+    if (returnUrl) {
+      const sub = document.querySelector('.verify-hero .verify-sub');
+      if (sub) sub.textContent = 'Verifying you are a chud before letting you into ' + new URL(returnUrl).hostname + '.';
+    } else {
+      const pitch = document.getElementById('gate-pitch');
+      if (pitch) pitch.hidden = false;
+      const exit = document.getElementById('preview-exit');
+      if (exit) exit.hidden = false;
+    }
+
+    function continueUrl(url) {
+      var sep = url.indexOf('#') === -1 ? '#' : '&';
+      return url + sep + 'chud-verified';
+    }
+
     // Exposed for chudflare.js to call after the user passes the
     // "I am a chud" gate. Kicks off the 4-step verification.
     window.__chudVerifyStart = async function () {
@@ -141,8 +304,21 @@
       const wrap = document.querySelector('.verify-card');
       const banner = document.createElement('div');
       banner.style.cssText = 'margin-top:24px;padding:18px 20px;border-radius:8px;background:#FFF6E9;border:1px solid #F38020;color:#7a3a08;font-size:15px;line-height:1.55;';
-      banner.innerHTML = '<strong>You\'ve been verified as a chud.</strong> Proceeding to <code>imafatfuckingchud.com</code>… Just kidding. Nothing ever happens. <a href="index.html" style="color:#C25B14;font-weight:700;text-decoration:underline">Return to Chudflare →</a>';
-      wrap.appendChild(banner);
+      if (returnUrl) {
+        const host = new URL(returnUrl).hostname;
+        const next = continueUrl(returnUrl);
+        if (manual) {
+          banner.innerHTML = '<strong>You\'ve been verified as a chud.</strong> Click below to continue to <code>' + host + '</code>.<div style="margin-top:14px"><a href="' + next + '" style="display:inline-block;padding:10px 18px;background:#F38020;color:#fff;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px">Continue to ' + host + ' \u2192</a></div>';
+          wrap.appendChild(banner);
+        } else {
+          banner.innerHTML = '<strong>You\'ve been verified as a chud.</strong> Returning you to <code>' + host + '</code> in 2 seconds\u2026';
+          wrap.appendChild(banner);
+          setTimeout(function () { location.href = next; }, 2000);
+        }
+      } else {
+        banner.innerHTML = '<strong>You\'ve been verified as a chud.</strong> Proceeding to <code>imafatfuckingchud.com</code>\u2026 Just kidding. Nothing ever happens. <a href="index.html" style="color:#C25B14;font-weight:700;text-decoration:underline">Return to Chudflare \u2192</a>';
+        wrap.appendChild(banner);
+      }
     };
   </script>
   <script src="assets/js/chudflare.js?v=3"></script>
