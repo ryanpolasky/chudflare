@@ -718,6 +718,18 @@ chudflare hunch   <span class="c-com"># current operator hunch angle (time-varyi
 <span class="c-com">;; ANSWER SECTION:</span>
 chudflare.com.    300    IN    A    6.9.6.9
 <span class="c-com">;; QUERY TIME: 73 msec (mewing latency, nominal)</span></pre></div>
+
+        <h3 id="cns-doh">DNS-over-HTTPS (this one is real)</h3>
+        <p>CNS exposes a genuine DoH resolver at <code>/dns-query</code> &mdash; JSON DoH <em>and</em> RFC 8484 wire format. Every record is deterministic chud nonsense, but the protocol is real, so actual DoH clients (curl, browsers' Secure DNS, <code>kdig +https</code>) work.</p>
+        <div class="codeblock"><span class="lang">bash</span><pre><span class="c-com"># JSON DoH</span>
+curl -s <span class="c-str">'https://chudflare.com/dns-query?name=imafatfuckingchud.com&amp;type=A'</span> \
+  -H <span class="c-str">'accept: application/dns-json'</span>
+
+<span class="c-com"># human-readable dig output (same engine as `chudflare dig`)</span>
+curl -s <span class="c-str">'https://chudflare.com/dns-query?name=imafatfuckingchud.com&amp;type=ANY&amp;format=dig'</span>
+
+<span class="c-com"># or set it as your browser's Secure DNS resolver (wire format):</span>
+<span class="c-com">#   https://chudflare.com/dns-query</span></pre></div>
       </section>
 
       <!-- 8. Chad Fight Mode -->
@@ -1009,7 +1021,10 @@ unzip chudflare-go.zip
           <a href="docs.html">Chud Docs</a>
           <a href="#">Slop Hub</a>
           <a href="status.html">Slop Status</a>
-          <a href="psl-detector.html">PSL Radar</a>
+          <a href="psl-detector.html">PSL Detector</a>
+          <a href="radar.html">Chud Radar</a>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="registrar.html">Chud Registrar</a>
           <a href="verify.html">Under Mew Mode</a>
           <a href="404.html">404 sample</a>
           <a href="1020.html">1020 sample</a>

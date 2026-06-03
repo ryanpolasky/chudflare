@@ -102,9 +102,15 @@
       btn.disabled = !cb.checked;
     });
 
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', async function () {
       if (!cb.checked) return;
       btn.disabled = true;
+      var note = gate.querySelector('.gate-note');
+      // ChudPoW: real proof-of-work before the gate opens ("prove you're chud enough").
+      if (typeof window.__chudPow === 'function') {
+        btn.textContent = 'Proving…';
+        try { await window.__chudPow(function (msg) { if (note) note.textContent = msg; }); } catch (e) {}
+      }
       btn.textContent = 'Verifying…';
       // Hide the gate, reveal the running animation.
       setTimeout(function () {
@@ -241,7 +247,7 @@
       '</div>' +
       '<pre class="wid-out" id="cns-out"># enter a domain and hit Resolve</pre>';
 
-    function resolve(domain) {
+    function resolveLocal(domain) {
       var d = domain.toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
       if (!d || !/^[a-z0-9.\-]+\.[a-z]{2,}$/i.test(d)) {
         return '; ERROR: not a valid domain. did you fall asleep mid-type?';
@@ -285,10 +291,35 @@
     var go = document.getElementById('cns-go');
     var out = document.getElementById('cns-out');
 
+    function fmtDoh(d, j) {
+      var TYPE = { 1: 'A', 2: 'NS', 5: 'CNAME', 6: 'SOA', 15: 'MX', 16: 'TXT', 28: 'AAAA' };
+      var lines = [
+        '; <<>> chudflare DoH <<>> ' + d + ' ANY @6.9.6.9',
+        '; (resolved live over /dns-query, operator still hunched)',
+        ';; ->>HEADER<<- status: ' + (j.Status === 0 ? 'NOERROR' : 'NXCHUD') + ', records: ' + ((j.Answer && j.Answer.length) || 0),
+        ''
+      ];
+      if (j.Answer && j.Answer.length) {
+        lines.push(';; ANSWER SECTION:');
+        j.Answer.forEach(function (a) {
+          lines.push(a.name + '\t' + a.TTL + '\tIN\t' + (TYPE[a.type] || a.type) + '\t' + a.data);
+        });
+      } else {
+        lines.push(';; no records. ' + (j.Comment || ''));
+      }
+      lines.push('', ';; SERVER: 6.9.6.9#443(6.9.6.9) (DoH)', ';; ' + (j.Comment || 'nothing ever happens.'));
+      return lines.join('\n');
+    }
+
     function fire() {
       var v = input.value.trim();
       if (!v) { v = 'imafatfuckingchud.com'; input.value = v; }
-      out.textContent = resolve(v);
+      var d = v.toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+      out.textContent = '; querying 6.9.6.9 over DoH (/dns-query)\u2026';
+      fetch('/dns-query?name=' + encodeURIComponent(d) + '&type=ANY', { headers: { accept: 'application/dns-json' } })
+        .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+        .then(function (j) { out.textContent = fmtDoh(d, j); })
+        .catch(function () { out.textContent = resolveLocal(v); });
     }
     go.addEventListener('click', fire);
     input.addEventListener('keydown', function (e) {

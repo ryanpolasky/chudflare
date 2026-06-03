@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="chudflare-verified" content="chud"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Chud Radar | A bird&rsquo;s-eye view of the chud-native internet</title>
+  <meta name="description" content="Chud Radar shows network-wide trends across the chud-native internet: global slop traffic, the most-mogged domains, PSL over time, mog vectors, and edge PoP health. All figures fabricated. A parody of Cloudflare Radar."/>
+  <meta property="og:title" content="Chud Radar | The chud-native internet, charted"/>
+  <meta property="og:description" content="Global slop traffic, the most-mogged domains, network-wide PSL over time, and edge PoP health. A parody of Cloudflare Radar. Nothing ever happens."/>
+  <meta property="og:image" content="https://chudflare.com/assets/img/og-image.png?v=3"/>
+  <meta property="og:image:width" content="1366"/>
+  <meta property="og:image:height" content="617"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Chudflare"/>
+  <meta property="og:url" content="https://chudflare.com/radar"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:image" content="https://chudflare.com/assets/img/og-image.png?v=3"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=3"/>
+  <style>
+    /* ===== Chud Radar page styles (scoped: .rad-) ===== */
+    .rad-hero { background: linear-gradient(180deg, #FFFFFF 0%, #FAF7F1 100%); border-bottom: 1px solid var(--chud-line); padding: 48px 0 36px; }
+    .rad-hero h1 { font-size: clamp(34px, 4.2vw, 50px); margin-bottom: 12px; }
+    .rad-hero .lead { font-size: 18px; color: var(--chud-ink-2); max-width: 720px; margin: 0; }
+    .rad-controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 26px; }
+    .rad-select { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--chud-line); background: #fff; border-radius: 8px; padding: 9px 13px; font-size: 14px; font-weight: 600; color: var(--chud-ink); }
+    .rad-select select { border: 0; background: none; font: inherit; color: inherit; outline: none; cursor: pointer; }
+    .rad-tabs { display: inline-flex; border: 1px solid var(--chud-line); border-radius: 8px; overflow: hidden; background: #fff; }
+    .rad-tab { padding: 9px 16px; font-size: 13px; font-weight: 600; color: var(--chud-ink-2); background: none; border: 0; cursor: pointer; font-family: inherit; border-left: 1px solid var(--chud-line); }
+    .rad-tab:first-child { border-left: 0; }
+    .rad-tab.active { background: var(--chud-orange); color: #fff; }
+    .rad-updated { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #8a8e95; display: flex; align-items: center; gap: 8px; }
+    .rad-live { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 0 0 rgba(16,185,129,.6); animation: rad-pulse 1.8s infinite; }
+    @keyframes rad-pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)} 70%{box-shadow:0 0 0 7px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
+
+    .rad-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 24px 90px; }
+    .rad-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
+    @media (max-width: 1000px){ .rad-kpis { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px){ .rad-kpis { grid-template-columns: 1fr; } }
+    .rad-kpi { border: 1px solid var(--chud-line); border-radius: 12px; background: #fff; padding: 16px 18px; }
+    .rad-kpi .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; font-weight: 700; }
+    .rad-kpi .v { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: var(--chud-ink); margin-top: 6px; font-variant-numeric: tabular-nums; }
+    .rad-kpi .d { font-size: 12px; font-weight: 600; margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; }
+    .rad-kpi .d.up { color: #dc2626; } .rad-kpi .d.down { color: #059669; } .rad-kpi .d.flat { color: #8a8e95; }
+
+    .rad-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 880px){ .rad-grid2 { grid-template-columns: 1fr; } }
+    .rad-card { border: 1px solid var(--chud-line); border-radius: 12px; background: #fff; padding: 20px 22px; margin-bottom: 16px; }
+    .rad-card h2 { font-size: 18px; margin: 0 0 2px; letter-spacing: -0.01em; }
+    .rad-card .sub { font-size: 13px; color: #8a8e95; margin: 0 0 16px; }
+
+    /* line chart */
+    .rad-chart { width: 100%; height: 220px; display: block; }
+    .rad-chart .grid { stroke: #eceef0; stroke-width: 1; }
+    .rad-chart .area { fill: rgba(243,128,32,0.10); }
+    .rad-chart .line { fill: none; stroke: var(--chud-orange); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+    .rad-chart .dot { fill: #fff; stroke: var(--chud-orange); stroke-width: 2; }
+    .rad-chart .axis { fill: #9aa0a6; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+
+    /* region bars */
+    .rad-bars { display: flex; flex-direction: column; gap: 13px; }
+    .rad-bar .top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+    .rad-bar .top .name { font-weight: 600; color: var(--chud-ink); }
+    .rad-bar .top .pct { font-family: 'JetBrains Mono', monospace; color: var(--chud-ink-2); }
+    .rad-bar .track { height: 9px; border-radius: 6px; background: var(--chud-fog); overflow: hidden; }
+    .rad-bar .fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--chud-orange-light), var(--chud-orange)); width: 0; transition: width .9s cubic-bezier(.22,.61,.36,1); }
+
+    /* leaderboard table */
+    .rad-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .rad-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; font-weight: 700; padding: 0 12px 10px; border-bottom: 1px solid var(--chud-line); }
+    .rad-table th.num, .rad-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .rad-table td { padding: 12px; border-bottom: 1px solid #f1f2f3; vertical-align: middle; }
+    .rad-table tr:last-child td { border-bottom: 0; }
+    .rad-rank { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; background: var(--chud-fog); font-weight: 800; font-size: 12px; color: var(--chud-ink-2); }
+    .rad-rank.top { background: rgba(243,128,32,0.14); color: var(--chud-orange-dark); }
+    .rad-dom { font-weight: 600; color: var(--chud-ink); }
+    .rad-mono { font-family: 'JetBrains Mono', monospace; color: var(--chud-ink-2); }
+    .rad-trend { font-weight: 700; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+    .rad-trend.up { color: #dc2626; } .rad-trend.down { color: #059669; }
+    .rad-spark { vertical-align: middle; }
+
+    /* pop tiles */
+    .rad-pops { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    @media (max-width: 880px){ .rad-pops { grid-template-columns: repeat(2, 1fr); } }
+    .rad-pop { border: 1px solid var(--chud-line); border-radius: 10px; padding: 12px 14px; background: #fff; }
+    .rad-pop .code { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: var(--chud-ink); display: flex; align-items: center; gap: 7px; }
+    .rad-pop .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .rad-pop .dot.ok { background: #10b981; } .rad-pop .dot.warn { background: #f59e0b; } .rad-pop .dot.down { background: #ef4444; }
+    .rad-pop .meta { font-size: 12px; color: #8a8e95; margin-top: 6px; display: flex; justify-content: space-between; }
+
+    .rad-note { font-size: 12px; color: #9aa0a6; line-height: 1.6; margin-top: 8px; }
+    .rad-note code { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body>
+  <div class="compliance" style="background:#FAF7F1;color:#5a6068;font-size:12px;line-height:1.5;text-align:center;padding:10px 24px;border-bottom:1px solid var(--chud-line)">
+    Chudflare is a parody of Cloudflare. It is not affiliated with, endorsed by, sponsored by, or in any way related to Cloudflare, Inc. Cloudflare ships excellent infrastructure that this site has nothing to do with. For real internet trends, visit <a href="https://radar.cloudflare.com" style="color:var(--chud-orange-dark);font-weight:600">radar.cloudflare.com</a>.
+  </div>
+
+  <div class="bar">
+    <span class="bar-emoji">📡</span>
+    Chud Radar now tracks 6.9M chuds across 310 PoPs in real time. Every number on this page is fabricated.
+    <a href="#domains">See the most-mogged domains →</a>
+  </div>
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/>
+        <span>Chudflare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="products.html">Products</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="chud-check.html">Verify your site</a>
+        <a href="docs.html">Docs</a>
+        <a href="playground.html">Playground</a>
+        <a href="radar.html" style="color:var(--chud-orange-dark)" aria-current="page">Radar</a>
+        <a href="status.html">Status</a>
+        <a href="blog/index.html">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="dashboard.html" class="hide-sm">Dashboard</a>
+        <a href="verify.html" class="hide-sm">Log in</a>
+        <a href="pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero + controls -->
+  <section class="rad-hero">
+    <div class="container">
+      <div class="eyebrow" style="color:var(--chud-orange-dark)">Chud Radar</div>
+      <h1>A bird&rsquo;s-eye view of the chud-native internet.</h1>
+      <p class="lead">Network-wide trends across every byte of slop Chudflare carries: global traffic, the most-mogged domains, PSL over time, mog vectors, and edge health. Updated continuously by a hunched SRE who refuses to stand.</p>
+      <div class="rad-controls">
+        <span class="rad-select">📍 <select id="rad-loc">
+          <option>Worldwide (Hunched)</option>
+          <option>The Fridge</option>
+          <option>Mom&rsquo;s Basement</option>
+          <option>DEN-CHUD-3</option>
+          <option>Agartha</option>
+        </select></span>
+        <div class="rad-tabs" id="rad-tabs">
+          <button class="rad-tab active" data-range="24h">24h</button>
+          <button class="rad-tab" data-range="7d">7d</button>
+          <button class="rad-tab" data-range="30d">30d</button>
+        </div>
+        <span class="rad-updated"><span class="rad-live"></span> updated <span id="rad-ago">0s</span> ago &middot; cf-ray <span id="rad-ray">8c0ffee-CHUD</span></span>
+      </div>
+    </div>
+  </section>
+
+  <main class="rad-wrap">
+    <!-- KPI cards -->
+    <div class="rad-kpis" id="rad-kpis">
+      <div class="rad-kpi"><div class="k">Global slop traffic</div><div class="v" id="kpi-slop">320 Tbps</div><div class="d up" id="kpi-slop-d">▲ 4.2%</div></div>
+      <div class="rad-kpi"><div class="k">Mogs blocked / sec</div><div class="v" id="kpi-mogs">112,400</div><div class="d up" id="kpi-mogs-d">▲ 1.9%</div></div>
+      <div class="rad-kpi"><div class="k">Network avg PSL</div><div class="v" id="kpi-psl">2.1</div><div class="d down" id="kpi-psl-d">▼ 0.3%</div></div>
+      <div class="rad-kpi"><div class="k">Avg hunch angle</div><div class="v" id="kpi-hunch">47&deg;</div><div class="d up" id="kpi-hunch-d">▲ 0.6%</div></div>
+      <div class="rad-kpi"><div class="k">Currently mewing</div><div class="v" id="kpi-mew">11.4%</div><div class="d flat" id="kpi-mew-d">— 0.0%</div></div>
+    </div>
+
+    <div class="rad-grid2">
+      <!-- PSL over time -->
+      <section class="rad-card">
+        <h2>Network PSL over time</h2>
+        <p class="sub" id="rad-psl-sub">Network-wide average PSL, last 24 hours. Lower is more chudded.</p>
+        <svg class="rad-chart" id="rad-line" viewBox="0 0 600 220" preserveAspectRatio="none" role="img" aria-label="Network PSL over time chart"></svg>
+      </section>
+
+      <!-- Region bars -->
+      <section class="rad-card">
+        <h2>Slop traffic by region</h2>
+        <p class="sub">Share of total slop egress by Chudflare region.</p>
+        <div class="rad-bars" id="rad-regions"></div>
+      </section>
+    </div>
+
+    <!-- Top mogged domains -->
+    <section class="rad-card" id="domains">
+      <h2>Top mogged domains</h2>
+      <p class="sub">Domains taking the most mog events across the network. A high PSL is a liability.</p>
+      <table class="rad-table">
+        <thead>
+          <tr>
+            <th style="width:42px">#</th>
+            <th>Domain</th>
+            <th class="num">Mog events (24h)</th>
+            <th class="num">Avg PSL</th>
+            <th style="width:90px">24h</th>
+            <th class="num" style="width:70px">Trend</th>
+          </tr>
+        </thead>
+        <tbody id="rad-domains"></tbody>
+      </table>
+    </section>
+
+    <div class="rad-grid2">
+      <!-- Mog vectors -->
+      <section class="rad-card">
+        <h2>Top mog vectors</h2>
+        <p class="sub">What got people mogged this period. Defend accordingly.</p>
+        <div class="rad-bars" id="rad-vectors"></div>
+      </section>
+
+      <!-- PoP health -->
+      <section class="rad-card">
+        <h2>Edge PoP health</h2>
+        <p class="sub">Hunch angle and status across selected points of presence.</p>
+        <div class="rad-pops" id="rad-pops"></div>
+      </section>
+    </div>
+
+    <p class="rad-note">
+      All figures on this page are fabricated and deterministic per period. Public resolver: <code>6.9.6.9</code>.
+      Source data is one (1) hunched SRE in <code>DEN-CHUD-3</code> reading a thermometer. Nothing ever happens.
+    </p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="foot">
+    <div class="container">
+      <div class="foot-grid">
+        <div class="foot-col">
+          <div class="nav-logo" style="color:#fff;margin-bottom:14px">
+            <img src="assets/img/chudflare-mascot.png" alt="" style="height:30px" aria-hidden="true"/>
+            <span>Chudflare</span>
+          </div>
+          <p style="color:#9CA3AF;max-width:280px">Helping build a slopper Internet. From our couch to yours.</p>
+        </div>
+        <div class="foot-col">
+          <h5>Products</h5>
+          <a href="products.html#sdn">Slop Delivery Network</a>
+          <a href="products.html#mog">Chad Fight Mode</a>
+          <a href="products.html#dev">Chudders</a>
+          <a href="products.html#dev">C2 Storage</a>
+          <a href="products.html#zerochud">Zero Chud</a>
+          <a href="products.html#dns">CNS (DNS)</a>
+        </div>
+        <div class="foot-col">
+          <h5>Solutions</h5>
+          <a href="products.html#sdn">Doomscrolling Platforms</a>
+          <a href="products.html#dev">DTC Slop &amp; eCommerce</a>
+          <a href="pricing.html">Looksminned Enterprises</a>
+          <a href="chudify.html">Method-Content Creators</a>
+          <a href="products.html#zerochud">Sigma SaaS</a>
+        </div>
+        <div class="foot-col">
+          <h5>Resources</h5>
+          <a href="docs.html">Chud Docs</a>
+          <a href="radar.html">Chud Radar</a>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="psl-detector.html">PSL Detector</a>
+          <a href="status.html">Slop Status</a>
+          <a href="verify.html">Under Mew Mode</a>
+        </div>
+        <div class="foot-col">
+          <h5>Company</h5>
+          <a href="humans.txt">About Chudflare</a>
+          <a href="apply.html">Chudterns&trade; (we're hiring chuds)</a>
+          <a href="blog/index.html">Press &amp; Slop</a>
+          <a href=".well-known/security.txt">Trust &amp; Chud Safety</a>
+        </div>
+        <div class="foot-col">
+          <h5>Support</h5>
+          <a href="blog/index.html">Help Center</a>
+          <a href="status.html">Status</a>
+          <a href="https://www.cloudflarestatus.com/" target="_blank" rel="noopener">Real System Status</a>
+          <a href="pricing.html">Contact Slop Sales</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <div class="foot-tag">
+          <span>© 2026 Chudflare, Inc. All rights chudded.</span>
+        </div>
+        <div>
+          <a href="1020.html">Privacy</a>
+          <a href="404.html">Terms</a>
+          <a href="https://imafatfuckingchud.com" style="color:var(--chud-orange-light)">Forged with love by an actual chud →</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/chudflare.js?v=3"></script>
+  <script>
+  (function () {
+    'use strict';
+    function $(s){ return document.querySelector(s); }
+    function hash32(str){ var h=2166136261; for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=(h*16777619)>>>0; } return h>>>0; }
+    function mulberry32(a){ return function(){ var t=(a+=0x6D2B79F5); t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
+    function fmt(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+    function rayId(){ var hex='0123456789abcdef', s=''; for(var i=0;i<7;i++) s+=hex[(Math.random()*16)|0]; return s+'-CHUD'; }
+
+    var RANGE = '24h';
+    var SEEDS = { '24h': 'chud-radar-24h', '7d': 'chud-radar-7d', '30d': 'chud-radar-30d' };
+    var POINTS = { '24h': 24, '7d': 28, '30d': 30 };
+    var SUBS = {
+      '24h': 'Network-wide average PSL, last 24 hours. Lower is more chudded.',
+      '7d':  'Network-wide average PSL, last 7 days. Lower is more chudded.',
+      '30d': 'Network-wide average PSL, last 30 days. Lower is more chudded.'
+    };
+
+    var DOMAINS = [
+      'imafatfuckingchud.com','doordash.com','agartha.gov','monsterenergy.com',
+      'looksmax.org','mewing.io','sigma-grindset.net','your-mom-basement.local',
+      'gigachad.fit','psl-cope.com','no-bone.dev','hunched.app'
+    ];
+    var REGIONS = ['The Fridge','Mom\u2019s Basement','DEN-CHUD-3','Agartha','The Couch','Gas Station'];
+    var VECTORS = ['Visible jawline','Sharp cheekbones','Unprompted sigma posting','Gym selfie','Clear skin','Good posture'];
+    var POPS = ['DEN-CHUD-3','FRIDGE-1','BASEMENT-7','AGARTHA-0','COUCH-2','GASSTN-4','LAX-MOG-9','NYC-SLOP-1'];
+
+    // ---------- line chart ----------
+    function drawLine(jitter) {
+      var svg = $('#rad-line'); if (!svg) return;
+      var W=600, H=220, padL=34, padR=10, padT=14, padB=22;
+      var n = POINTS[RANGE];
+      var rng = mulberry32(hash32(SEEDS[RANGE]));
+      var vals=[], base=2.0;
+      for (var i=0;i<n;i++){
+        base += (rng()-0.5)*0.6; if(base<1.2)base=1.2; if(base>4.2)base=4.2;
+        var v = base + (jitter ? (Math.random()-0.5)*0.08 : 0);
+        vals.push(Math.max(1.0, Math.min(5.0, v)));
+      }
+      var min=1.0, max=5.0;
+      function x(i){ return padL + (W-padL-padR) * (i/(n-1)); }
+      function y(v){ return padT + (H-padT-padB) * (1-(v-min)/(max-min)); }
+      var pts = vals.map(function(v,i){ return x(i)+','+y(v); });
+      var line = 'M'+pts.join(' L');
+      var area = line + ' L'+x(n-1)+','+(H-padB)+' L'+x(0)+','+(H-padB)+' Z';
+      var grid='';
+      for (var g=1;g<=4;g++){ var gv=1+g; var gy=y(gv); grid += '<line class="grid" x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'"/>' + '<text class="axis" x="4" y="'+(gy+3)+'">'+gv.toFixed(0)+'</text>'; }
+      var dotI = n-1;
+      svg.innerHTML = grid +
+        '<path class="area" d="'+area+'"/>' +
+        '<path class="line" d="'+line+'"/>' +
+        '<circle class="dot" cx="'+x(dotI)+'" cy="'+y(vals[dotI])+'" r="4"/>';
+    }
+
+    // ---------- region bars ----------
+    function drawRegions() {
+      var rng = mulberry32(hash32(SEEDS[RANGE]+'-regions'));
+      var raw = REGIONS.map(function(r){ return { name:r, w: 8+rng()*40 }; });
+      var total = raw.reduce(function(s,r){ return s+r.w; },0);
+      raw.sort(function(a,b){ return b.w-a.w; });
+      var html = raw.map(function(r){
+        var pct = (r.w/total*100);
+        return '<div class="rad-bar"><div class="top"><span class="name">'+r.name+'</span><span class="pct">'+pct.toFixed(1)+'%</span></div><div class="track"><div class="fill" data-w="'+pct.toFixed(1)+'"></div></div></div>';
+      }).join('');
+      $('#rad-regions').innerHTML = html;
+      requestAnimationFrame(function(){ document.querySelectorAll('#rad-regions .fill').forEach(function(f){ f.style.width=f.getAttribute('data-w')+'%'; }); });
+    }
+
+    // ---------- mog vectors ----------
+    function drawVectors() {
+      var rng = mulberry32(hash32(SEEDS[RANGE]+'-vectors'));
+      var raw = VECTORS.map(function(v){ return { name:v, w: 5+rng()*45 }; });
+      raw.sort(function(a,b){ return b.w-a.w; });
+      var max = raw[0].w;
+      var html = raw.map(function(r){
+        var pct = r.w/max*100;
+        return '<div class="rad-bar"><div class="top"><span class="name">'+r.name+'</span><span class="pct">'+(r.w).toFixed(1)+'%</span></div><div class="track"><div class="fill" data-w="'+pct.toFixed(1)+'"></div></div></div>';
+      }).join('');
+      $('#rad-vectors').innerHTML = html;
+      requestAnimationFrame(function(){ document.querySelectorAll('#rad-vectors .fill').forEach(function(f){ f.style.width=f.getAttribute('data-w')+'%'; }); });
+    }
+
+    // ---------- domains leaderboard ----------
+    function sparkline(seed) {
+      var rng = mulberry32(seed), n=12, W=80, H=22, pts=[], v=H/2;
+      for (var i=0;i<n;i++){ v += (rng()-0.5)*10; if(v<3)v=3; if(v>H-3)v=H-3; pts.push((W*(i/(n-1))).toFixed(1)+','+v.toFixed(1)); }
+      var up = parseFloat(pts[n-1].split(',')[1]) < parseFloat(pts[0].split(',')[1]);
+      return '<svg class="rad-spark" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'"><polyline points="'+pts.join(' ')+'" fill="none" stroke="'+(up?'#dc2626':'#059669')+'" stroke-width="1.6"/></svg>';
+    }
+    function drawDomains() {
+      var rows = DOMAINS.map(function(d){
+        var h = hash32(d+RANGE), rng = mulberry32(h);
+        var mogs = Math.floor(1000 + rng()*980000);
+        var psl = (2.0 + rng()*7.5);
+        var trend = (rng()*30 - 12);
+        return { d:d, mogs:mogs, psl:psl, trend:trend, h:h };
+      });
+      rows.sort(function(a,b){ return b.mogs-a.mogs; });
+      var html = rows.map(function(r,i){
+        var tcls = r.trend>=0?'up':'down';
+        var tarrow = r.trend>=0?'▲':'▼';
+        return '<tr>' +
+          '<td><span class="rad-rank'+(i<3?' top':'')+'">'+(i+1)+'</span></td>' +
+          '<td><span class="rad-dom">'+r.d+'</span></td>' +
+          '<td class="num rad-mono">'+fmt(r.mogs)+'</td>' +
+          '<td class="num rad-mono">'+r.psl.toFixed(1)+'</td>' +
+          '<td>'+sparkline(r.h)+'</td>' +
+          '<td class="num"><span class="rad-trend '+tcls+'">'+tarrow+' '+Math.abs(r.trend).toFixed(1)+'%</span></td>' +
+          '</tr>';
+      }).join('');
+      $('#rad-domains').innerHTML = html;
+    }
+
+    // ---------- pop health ----------
+    function drawPops() {
+      var html = POPS.map(function(p){
+        var rng = mulberry32(hash32(p+RANGE));
+        var hunch = Math.floor(25 + rng()*45);
+        var roll = rng();
+        var st = roll<0.12?'down':(roll<0.3?'warn':'ok');
+        var label = st==='down'?'mewing':(st==='warn'?'degraded':'operational');
+        var psl = (2.0+rng()*3).toFixed(1);
+        return '<div class="rad-pop"><div class="code"><span class="dot '+st+'"></span>'+p+'</div><div class="meta"><span>'+label+'</span><span>'+hunch+'&deg; &middot; PSL '+psl+'</span></div></div>';
+      }).join('');
+      $('#rad-pops').innerHTML = html;
+    }
+
+    function renderAll() {
+      $('#rad-psl-sub').textContent = SUBS[RANGE];
+      drawLine(false); drawRegions(); drawVectors(); drawDomains(); drawPops();
+    }
+
+    // tabs
+    document.getElementById('rad-tabs').addEventListener('click', function(e){
+      var b = e.target.closest('.rad-tab'); if(!b) return;
+      document.querySelectorAll('.rad-tab').forEach(function(t){ t.classList.toggle('active', t===b); });
+      RANGE = b.getAttribute('data-range');
+      renderAll();
+    });
+
+    // KPI live tickers
+    var kpi = { slop:320, mogs:112400, psl:2.1, hunch:47.0, mew:11.4 };
+    function renderKpis(){
+      $('#kpi-slop').textContent = kpi.slop.toFixed(1)+' Tbps';
+      $('#kpi-mogs').textContent = fmt(Math.round(kpi.mogs));
+      $('#kpi-psl').textContent = kpi.psl.toFixed(1);
+      $('#kpi-hunch').innerHTML = kpi.hunch.toFixed(0)+'&deg;';
+      $('#kpi-mew').textContent = kpi.mew.toFixed(1)+'%';
+    }
+    setInterval(function(){
+      kpi.slop = 320 + (Math.random()-0.4)*3;
+      kpi.mogs += (Math.random()-0.3)*800;
+      kpi.psl = Math.max(1.8, Math.min(2.6, kpi.psl + (Math.random()-0.5)*0.05));
+      kpi.hunch = Math.min(70, Math.max(40, kpi.hunch + (Math.random()-0.5)*0.4));
+      kpi.mew = Math.max(8, Math.min(16, kpi.mew + (Math.random()-0.5)*0.3));
+      renderKpis();
+      drawLine(true);
+    }, 2200);
+
+    // "updated Xs ago" + ray rotation
+    var ago = 0;
+    setInterval(function(){ ago = (ago+1)%48; $('#rad-ago').textContent = ago+'s'; if(ago===0) $('#rad-ray').textContent = rayId(); }, 1000);
+    $('#rad-ray').textContent = rayId();
+
+    renderKpis();
+    renderAll();
+  })();
+  </script>
+</body>
+</html>

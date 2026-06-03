@@ -86,7 +86,8 @@
             <li style="padding:6px 0">✓ &nbsp;Argo-Slop Routing: re-routes packets around healthy people</li>
             <li style="padding:6px 0">✓ &nbsp;Image Slopping API (re-encodes selfies into chudjak format)</li>
           </ul>
-          <a href="blog/zero-chud-at-scale.html" class="more text-orange">Read the SDN docs →</a>
+          <a href="slop.html" class="more text-orange">Feel the SDN at dial-up speed →</a>
+          <div style="margin-top:6px"><a href="blog/zero-chud-at-scale.html" class="more text-orange">Read the SDN docs →</a></div>
         </div>
         <div class="pillar-art"><span class="c-com"># curl https://chudflare.com/cdn-cgi/trace</span>
 <span class="c-key">fl</span>=11lhc12
@@ -249,8 +250,20 @@ imafatfuckingchud.com.   60   IN   A   <span class="c-str">10.20.30.42</span>
 <span class="c-key">10</span>  mail.doordash.routing.chud.</div>
       </div>
 
-      <!-- Interactive: live CNS resolver lookup -->
+      <!-- Interactive: live CNS resolver lookup (hits the real /dns-query DoH endpoint) -->
       <div class="wid" id="cns-resolver"></div>
+
+      <!-- This resolver is real: it's a DNS-over-HTTPS server (Pages Function) -->
+      <div class="wid" style="margin-top:16px">
+        <div class="wid-head">
+          <div class="wid-eyebrow">this resolver is real</div>
+          <div class="wid-title">Point any DoH client at CNS over HTTPS</div>
+        </div>
+        <p style="font-size:14px;color:#4a5058;margin:0 0 14px">The resolver above isn&rsquo;t faking it &mdash; it queries the live <code>/dns-query</code> endpoint, a real DNS-over-HTTPS server (JSON DoH <em>and</em> RFC 8484 wire format). Try it from your terminal:</p>
+        <pre class="copy-block"><code id="doh-json">curl -s 'https://chudflare.com/dns-query?name=imafatfuckingchud.com&amp;type=A' -H 'accept: application/dns-json'</code><button class="copy-btn" data-copy="doh-json">Copy</button></pre>
+        <p style="font-size:13px;color:#6b7280;margin:14px 0 6px">Or set it as your browser&rsquo;s Secure DNS resolver (wire format):</p>
+        <pre class="copy-block"><code id="doh-wire">https://chudflare.com/dns-query</code><button class="copy-btn" data-copy="doh-wire">Copy</button></pre>
+      </div>
     </div>
   </section>
 
@@ -357,6 +370,12 @@ verdict {
           <p>S3-compatible. No egress fees on Monster cans, peptide receipts, or gas-station chicken-strip metadata.</p>
           <a href="blog/index.html" class="more">Learn more</a>
         </div>
+        <div class="card">
+          <div class="ico">🌐</div>
+          <h3>Chud Registrar</h3>
+          <p>Register a real subdomain for $5/yr, settled in USDC on Solana. No banks, no Visa, no card fees, and $5 keeps the spammers out.</p>
+          <a href="registrar.html" class="more">Register a name</a>
+        </div>
       </div>
     </div>
   </section>
@@ -405,7 +424,10 @@ verdict {
           <a href="blog/index.html">Chud Docs</a>
           <a href="chudify.html">Slop Hub</a>
           <a href="status.html">Slop Status</a>
-          <a href="psl-detector.html">PSL Radar</a>
+          <a href="psl-detector.html">PSL Detector</a>
+          <a href="radar.html">Chud Radar</a>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="registrar.html">Chud Registrar</a>
           <a href="verify.html">Under Mew Mode</a>
           <a href="404.html">404 sample</a>
           <a href="1020.html">1020 sample</a>

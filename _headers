@@ -1,5 +1,6 @@
-# Chudflare _headers: Netlify / Cloudflare Pages format
-# Drop this file at the root of your deploy.
+# Chudflare _headers: Cloudflare Pages format
+# Cloudflare Pages reads this file natively (same syntax Netlify uses).
+# Drop this file at the root of your deploy alongside _redirects.
 
 # All paths
 /*

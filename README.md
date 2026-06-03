@@ -29,9 +29,14 @@ chudflare/
 ├── chudify.html             Free chud-speak text rewriter (deterministic, shareable URLs)
 ├── psl-detector.html        Free PSL detector (image URL or name → hash → PSL score)
 ├── status.html              Fake status page (operational dashboard + incident history)
+├── radar.html               Chud Radar: network-wide trends dashboard (parody of radar.cloudflare.com)
+├── dashboard.html           Chud Dashboard: logged-in zone view + editable CNS records (parody of dash.cloudflare.com)
+├── slop.html                Dial-up SDN demo (streams an asset at a chosen baud via /cdn-cgi/slop)
+├── registrar.html           Chud Registrar: $5/yr subdomains paid in USDC on Solana
 ├── verify.html              Cloudflare-style "checking if you're a chud" interstitial (works as a real gate via `?return=<url>`)
 ├── apply.html               Chudtern™ internship application form (posts to Discord via Pages Function)
 ├── chud-gate.js             Drop-in script: gate any site behind /verify (24h pass per visitor)
+├── chud-pow.js              ChudPoW: client SHA-256 hashcash solver for the /verify gate
 ├── 404.html / 500.html / 1020.html   Error pages
 ├── chudflare                The CLI (bash script, no extension on purpose)
 ├── install.sh               curl-installable installer for the CLI
@@ -50,13 +55,17 @@ chudflare/
 │   ├── why-we-rotated-counter-clockwise.html
 │   ├── zero-chud-at-scale.html
 │   └── the-great-doordash-degradation.html
-├── _headers                 Cloudflare Pages / Netlify response-header config
-├── _redirects               Cloudflare Pages / Netlify URL canonicalization (strips .html)
-├── functions/
-│   └── api/
-│       └── apply.js             Cloudflare Pages Function: POST /api/apply -> Discord webhook
-├── vercel.json              Vercel deploy + headers config
-├── .htaccess                Apache header + rewrite config
+├── _headers                 Cloudflare Pages response-header config
+├── _redirects               Cloudflare Pages URL canonicalization (strips .html)
+├── functions/                  Cloudflare Pages Functions (real serverless endpoints)
+│   ├── dns-query.js            DoH resolver: /dns-query (JSON + RFC 8484 wire + dig text)
+│   ├── cdn-cgi/
+│   │   └── slop.js             Dial-up SDN: /cdn-cgi/slop streams an asset throttled to baud
+│   ├── api/
+│   │   ├── apply.js            POST /api/apply -> Discord webhook
+│   │   ├── challenge.js        ChudPoW: /api/challenge (HMAC-signed proof-of-work)
+│   │   └── registrar.js        Chud Registrar: /api/registrar (Solana USDC verify + KV ledger)
+│   └── _middleware.js          Optional per-subdomain pages for registered names (env-gated, OFF)
 ├── README.md                This file
 └── assets/
     ├── css/style.css        Full design system
@@ -66,9 +75,11 @@ chudflare/
 
 ## How to serve it
 
-Drop the folder onto any static host (Netlify, Vercel, S3+CloudFront, Caddy,
-nginx, GitHub Pages, Cloudflare Pages, your favorite shared host, etc.) and
-you're done.
+This is a Cloudflare Pages site. Push the repo (or drag the folder into the
+Pages dashboard) and you're done: Pages reads `_headers` and `_redirects`
+natively and runs `functions/api/apply.js` at `POST /api/apply`. A plain
+static host will serve the pages fine, but the response headers, clean-URL
+redirects, and the apply endpoint are Cloudflare Pages-specific.
 
 To preview locally:
 
@@ -80,20 +91,26 @@ python3 -m http.server 8000
 
 ## Interactive features
 
-| Feature | Page | What it does |
-|---|---|---|
-| Live stat tickers | `/` | 6.9M chuds, 320 Tbps slop, 9.8B requests, animate in real time |
-| Chad Fight Mode WAF tester | `/products#mog` | Paste any string → fake PSL detection + verdict |
-| CNS resolver | `/products#dns` | Type any domain → fake A/TXT/MX records via `dig @6.9.6.9` |
-| Verify gate | `/verify` | Real "I am a chud" checkbox CAPTCHA before the auto-verify runs |
-| **Gate your own site** | `chud-gate.js` | Drop `<script src="https://chudflare.com/chud-gate.js"></script>` in your `<head>`. Visitors get bounced to `/verify`, prove chud-ness, and return with a 24h pass in `localStorage`. |
-| Cookie Slop banner | every page | "Accept all slop" / "Refuse (chud)", persists in localStorage |
-| Chud chat | every page (floating, bottom-right) | Keyword-aware mumble engine |
-| Site verification | `/chud-check` | The virality flywheel, see below |
-| **Chudify** | `/chudify` | Paste any text, get it rewritten in chud-speak. Shareable URL. |
-| **PSL Detector** | `/psl-detector` | Paste an image URL or name. Deterministic hash → PSL score |
-| **Fake status page** | `/status` | Operational dashboard + 4 historical incidents + subscribe form |
-| **Chudtern™ applications** | `/apply` | Four parody internship roles; submissions POST to a Cloudflare Pages Function that forwards a formatted embed to a Discord webhook |
+| Feature                    | Page                                | What it does                                                                                                                                                                          |
+|----------------------------|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Live stat tickers          | `/`                                 | 6.9M chuds, 320 Tbps slop, 9.8B requests, animate in real time                                                                                                                        |
+| Chad Fight Mode WAF tester | `/products#mog`                     | Paste any string → fake PSL detection + verdict                                                                                                                                       |
+| CNS resolver               | `/products#dns`                     | Type any domain → fake A/TXT/MX records via `dig @6.9.6.9`                                                                                                                            |
+| Verify gate                | `/verify`                           | Real "I am a chud" checkbox CAPTCHA before the auto-verify runs                                                                                                                       |
+| **Gate your own site**     | `chud-gate.js`                      | Drop `<script src="https://chudflare.com/chud-gate.js"></script>` in your `<head>`. Visitors get bounced to `/verify`, prove chud-ness, and return with a 24h pass in `localStorage`. |
+| Cookie Slop banner         | every page                          | "Accept all slop" / "Refuse (chud)", persists in localStorage                                                                                                                         |
+| Chud chat                  | every page (floating, bottom-right) | Keyword-aware mumble engine                                                                                                                                                           |
+| Site verification          | `/chud-check`                       | The virality flywheel, see below                                                                                                                                                      |
+| **Chudify**                | `/chudify`                          | Paste any text, get it rewritten in chud-speak. Shareable URL.                                                                                                                        |
+| **PSL Detector**           | `/psl-detector`                     | Paste an image URL or name. Deterministic hash → PSL score                                                                                                                            |
+| **Fake status page**       | `/status`                           | Operational dashboard + 4 historical incidents + subscribe form                                                                                                                       |
+| **Chudtern™ applications** | `/apply`                            | Four parody internship roles; submissions POST to a Cloudflare Pages Function that forwards a formatted embed to a Discord webhook                                                    |
+| **Chud Radar**             | `/radar`                            | Network-wide trend dashboard: live KPIs, PSL-over-time chart, top mogged domains, region/vector bars, PoP health                                                                      |
+| **Chud Dashboard**         | `/dashboard`                        | Fake logged-in zone view: live tiles, 24h traffic chart, security events, and an editable CNS records table with proxy toggles                                                        |
+| **Chud DNS (DoH)**         | `/dns-query`                        | A real DNS-over-HTTPS resolver (JSON + RFC 8484 wire). The CNS widget and `chudflare dig` query it live; point a browser's Secure DNS at it.                                          |
+| **Dial-up SDN**            | `/slop`                             | Streams a real asset back at a chosen baud (110–56k) through a throttled edge stream. The CDN you can feel.                                                                           |
+| **ChudPoW**                | `/verify`                           | Real HMAC-signed hashcash; the gate makes you "prove you're chud enough" (`/api/challenge`) before opening.                                                                           |
+| **Chud Registrar**         | `/registrar`                        | Buy a real subdomain for $5/yr; pay in USDC on Solana, verified on-chain (`/api/registrar`), recorded in a KV ledger.                                                                 |
 
 ## Site verification (`/chud-check`)
 
@@ -167,6 +184,37 @@ fails with a 405 because there is no function runtime.
 - All user-supplied strings are sanitized to neutralize `@everyone` / `@here` / role pings
 - Discord payload also sets `allowed_mentions: { parse: [] }` as a server-side belt-and-suspenders
 
+## Chud Registrar (`/registrar`)
+
+Sells real **subdomains** of a domain you own (e.g. `bob.imafatfuckingchud.com`)
+for $5/yr, settled in **USDC on Solana** (cheap fees, and $5 deters spam).
+`functions/api/registrar.js` verifies payment on-chain: the buyer sends USDC with
+a memo binding the payment to the requested name, then submits the transaction
+signature; we verify amount + memo via RPC, dedupe the signature, run a
+reserved/abuse filter, and write the registration to KV.
+
+### Setup (Cloudflare Pages)
+
+1. **Bind a KV namespace** called `CHUD_REGISTRY` (Settings → Functions → KV bindings).
+2. **Environment variables:**
+   - `CHUD_PAY_ADDRESS` — your Solana wallet holding the receiving USDC token account
+   - `SOLANA_RPC` — an RPC endpoint (Helius/QuickNode; public RPCs rate-limit)
+   - `USDC_MINT` *(optional)* — defaults to mainnet USDC `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`
+   - `CHUD_PRICE_USDC` *(optional)* — defaults to `5`
+   - `CHUD_PARENTS` *(optional)* — comma-separated sellable parents (default `imafatfuckingchud.com`)
+3. **(Optional) live subdomains:** point a wildcard DNS record `*.imafatfuckingchud.com`
+   at this Pages project and set `REGISTRAR_WILDCARD=on`. `functions/_middleware.js`
+   then renders a "verified chud" page per registered name; it is a no-op otherwise.
+
+### Abuse / moderation (read this)
+
+Selling public subdomains under your domain **will** attract phishing, slurs, and
+worse. `registrar.js` ships a `RESERVED` set and a starter `BLOCK` list, but that
+is a **floor, not a shield**. Keep a manual-review + takedown path (delete the
+`name:<fqdn>` KV key), expand the lists, and act on `security@chudflare.com`
+reports. At $5 (minus trivial Solana fees) this is still mostly the bit, not a profit center — don't
+take on liability you aren't willing to police.
+
 ## /cdn-cgi/trace + response headers
 
 ```bash
@@ -181,35 +229,39 @@ curl -s https://chudflare.com/cdn-cgi/trace
 ```
 
 Every page also returns chud-flavored response headers (`CF-RAY`, `CF-Cache-Status`,
-`X-Hunch-Angle`, `X-Mewing`, `X-Mog-Status`, etc.). Header configs are provided
-for the three major static hosts:
+`X-Hunch-Angle`, `X-Mewing`, `X-Mog-Status`, etc.). These are configured for
+Cloudflare Pages, which reads two files at the deploy root:
 
-- **`_headers`** for Cloudflare Pages / Netlify (response headers)
-- **`_redirects`** for Cloudflare Pages / Netlify (canonicalize `.html` URLs)
-- **`vercel.json`** for Vercel (also includes pretty-URL rewrites)
-- **`.htaccess`** for Apache
+- **`_headers`** — response headers (`CF-RAY`, `X-Hunch-Angle`, the `/1020` block headers, `.well-known` content-types)
+- **`_redirects`** — canonicalizes `.html` URLs to clean paths and aliases `/psl`
 
 ## Tier 1 features at a glance
 
 The whole point of the v2 update was to match every layer of real Cloudflare
 corporate apparatus:
 
-| Real Cloudflare | Chudflare |
-|---|---|
-| `cloudflarestatus.com` | `/status` |
-| `cf-ray:` header | `cf-ray: 8c0ffee-CHUD-DEN` |
-| `/cdn-cgi/trace` | `/cdn-cgi/trace` (real plaintext endpoint) |
-| `robots.txt` / `humans.txt` | same, but chud-flavored |
-| `/.well-known/security.txt` | same, with chud-bounty severity scale |
-| The Cloudflare Blog | `/blog` with 5 engineering posts |
-| Cloudflare Radar / Speed | `/psl-detector` |
-| Cloudflare Workers playground | `/chudify` |
-| View-source easter eggs | every page has a chud comment block |
-| Console branding | every page logs hiring + cf-ray + psl |
+| Real Cloudflare                              | Chudflare                                          |
+|----------------------------------------------|----------------------------------------------------|
+| `cloudflarestatus.com`                       | `/status`                                          |
+| `cf-ray:` header                             | `cf-ray: 8c0ffee-CHUD-DEN`                         |
+| `/cdn-cgi/trace`                             | `/cdn-cgi/trace` (real plaintext endpoint)         |
+| `robots.txt` / `humans.txt`                  | same, but chud-flavored                            |
+| `/.well-known/security.txt`                  | same, with chud-bounty severity scale              |
+| The Cloudflare Blog                          | `/blog` with 5 engineering posts                   |
+| Cloudflare Radar                             | `/radar`                                           |
+| Cloudflare dashboard (`dash.cloudflare.com`) | `/dashboard`                                       |
+| Cloudflare Speed / scan                      | `/psl-detector`                                    |
+| Cloudflare Workers playground                | `/playground`                                      |
+| `1.1.1.1` DNS-over-HTTPS                     | `/dns-query` (real DoH: JSON + RFC 8484 wire)      |
+| The Cloudflare CDN                           | `/slop` (real, but dial-up speed)                  |
+| Turnstile / managed challenge                | `/verify` + ChudPoW (`/api/challenge`)             |
+| Cloudflare Registrar                         | `/registrar` (subdomains, $5/yr in USDC on Solana) |
+| View-source easter eggs                      | every page has a chud comment block                |
+| Console branding                             | every page logs hiring + cf-ray + psl              |
 
 ## Hosting notes
 
-If your host supports clean paths, map (or use one of `_headers` / `vercel.json` / `.htaccess`):
+Cloudflare Pages serves `/foo` from `foo.html` automatically and applies `_headers` + `_redirects`. Route map:
 
 ```
 /                  → index.html
@@ -222,6 +274,8 @@ If your host supports clean paths, map (or use one of `_headers` / `vercel.json`
 /chudify           → chudify.html
 /psl-detector      → psl-detector.html
 /status            → status.html
+/radar             → radar.html
+/dashboard         → dashboard.html
 /blog              → blog/index.html
 /install.sh        → install.sh     (Content-Type: text/x-shellscript)
 /chudflare         → chudflare      (Content-Type: text/x-shellscript)

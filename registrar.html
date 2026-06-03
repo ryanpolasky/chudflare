@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="chudflare-verified" content="chud"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Chud Registrar | Own a piece of the chud-native internet for $5/yr</title>
+  <meta name="description" content="The Chud Registrar sells real subdomains of imafatfuckingchud.com for $5/year, settled in USDC on Solana. No banks, no Visa, no fees. A parody of Cloudflare Registrar."/>
+  <meta property="og:title" content="Chud Registrar — $5/yr subdomains, paid in USDC"/>
+  <meta property="og:description" content="Search a name, pay $5 in USDC on Solana, get a Certificate of Chudation. We don't take Visa. Nothing ever happens."/>
+  <meta property="og:image" content="https://chudflare.com/assets/img/og-image.png?v=3"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:site_name" content="Chudflare"/>
+  <meta property="og:url" content="https://chudflare.com/registrar"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:image" content="https://chudflare.com/assets/img/og-image.png?v=3"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/style.css?v=4"/>
+  <style>
+    .reg-wrap { max-width: 760px; margin: 0 auto; padding: 44px 24px 90px; }
+    .reg-wrap h1 { font-size: clamp(32px, 4vw, 48px); margin-bottom: 10px; }
+    .reg-wrap .lead { font-size: 18px; color: var(--chud-ink-2); margin: 0 0 28px; }
+    .reg-search { display: flex; gap: 0; border: 1px solid var(--chud-line); border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+    .reg-search input { flex: 1; border: 0; padding: 16px 18px; font: inherit; font-size: 16px; outline: none; min-width: 0; }
+    .reg-search .suffix { display: flex; align-items: center; padding: 0 12px; color: #9aa0a6; font-family: 'JetBrains Mono', monospace; font-size: 13px; border-left: 1px solid var(--chud-line); background: var(--chud-fog); white-space: nowrap; }
+    .reg-search button { border: 0; background: var(--chud-orange); color: #fff; font: inherit; font-weight: 700; padding: 0 22px; cursor: pointer; }
+    .reg-search button:hover { background: var(--chud-orange-dark); }
+    .reg-hint { font-size: 12px; color: #9aa0a6; margin: 8px 2px 0; }
+
+    .reg-result { margin-top: 22px; border: 1px solid var(--chud-line); border-radius: 12px; background: #fff; padding: 20px 22px; display: none; }
+    .reg-result.show { display: block; }
+    .reg-result .fqdn { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--chud-ink); word-break: break-all; }
+    .reg-status { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; padding: 4px 11px; border-radius: 99px; margin-top: 10px; }
+    .reg-status.ok { background: #d1fae5; color: #065f46; }
+    .reg-status.no { background: #fee2e2; color: #991b1b; }
+    .reg-status .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .reg-priceline { margin-top: 14px; font-size: 15px; color: var(--chud-ink-2); }
+    .reg-priceline strong { color: var(--chud-ink); }
+
+    .reg-checkout { margin-top: 18px; border-top: 1px solid var(--chud-line); padding-top: 18px; display: none; }
+    .reg-checkout.show { display: block; }
+    .reg-checkout h3 { font-size: 16px; margin: 0 0 4px; }
+    .reg-checkout .pitch { font-size: 13px; color: #6b7280; margin: 0 0 14px; }
+    .reg-pay { background: var(--chud-fog); border-radius: 10px; padding: 14px 16px; font-size: 13px; }
+    .reg-pay .row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px dashed var(--chud-line); }
+    .reg-pay .row:last-child { border-bottom: 0; }
+    .reg-pay .k { color: #6b7280; font-weight: 600; }
+    .reg-pay .v { font-family: 'JetBrains Mono', monospace; color: var(--chud-ink); text-align: right; word-break: break-all; }
+    .reg-pay .v .copy { margin-left: 8px; font-size: 11px; color: var(--chud-orange-dark); cursor: pointer; font-weight: 700; background: none; border: 0; }
+    .reg-paybtns { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+    .reg-sig { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+    .reg-sig input { flex: 1; min-width: 220px; border: 1px solid var(--chud-line); border-radius: 8px; padding: 11px 13px; font: inherit; font-size: 13px; font-family: 'JetBrains Mono', monospace; outline: none; }
+    .reg-sig input:focus { border-color: var(--chud-orange); }
+    .reg-msg { margin-top: 12px; font-size: 13px; border-radius: 8px; padding: 10px 12px; display: none; }
+    .reg-msg.show { display: block; }
+    .reg-msg.err { background: #fef2f2; color: #b91c1c; border-left: 3px solid #dc2626; }
+    .reg-msg.pending { background: #fffbeb; color: #92400e; border-left: 3px solid #f59e0b; }
+
+    .reg-cert { margin-top: 18px; border: 2px solid var(--chud-orange); border-radius: 12px; padding: 22px; background: linear-gradient(180deg,#fff,#FFF7ED); display: none; }
+    .reg-cert.show { display: block; }
+    .reg-cert .seal { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--chud-orange-dark); font-weight: 800; }
+    .reg-cert h3 { font-size: 22px; margin: 6px 0 4px; font-family: 'JetBrains Mono', monospace; word-break: break-all; }
+    .reg-cert pre { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--chud-ink-2); white-space: pre-wrap; margin: 12px 0 0; }
+
+    .reg-whois { margin-top: 40px; border-top: 1px solid var(--chud-line); padding-top: 22px; }
+    .reg-whois h2 { font-size: 18px; margin: 0 0 10px; }
+    .reg-whois .row2 { display: flex; gap: 10px; flex-wrap: wrap; }
+    .reg-whois input { flex: 1; min-width: 220px; border: 1px solid var(--chud-line); border-radius: 8px; padding: 11px 13px; font: inherit; font-size: 14px; outline: none; }
+    .reg-whois pre { background: var(--chud-fog); border-radius: 8px; padding: 12px 14px; font-family: 'JetBrains Mono', monospace; font-size: 12px; white-space: pre-wrap; margin-top: 12px; display: none; }
+    .reg-whois pre.show { display: block; }
+    .reg-note { font-size: 12px; color: #9aa0a6; line-height: 1.6; margin-top: 26px; }
+  </style>
+</head>
+<body data-no-banner>
+  <div class="compliance" style="background:#FAF7F1;color:#5a6068;font-size:12px;line-height:1.5;text-align:center;padding:10px 24px;border-bottom:1px solid var(--chud-line)">
+    Chudflare is a parody of Cloudflare. Not affiliated with, endorsed by, or related to Cloudflare, Inc. The Chud Registrar sells subdomains of a domain we own &mdash; not real TLDs. For real domains, visit <a href="https://www.cloudflare.com/products/registrar/" target="_blank" rel="noopener" style="color:var(--chud-orange-dark);font-weight:600">Cloudflare Registrar</a>.
+  </div>
+
+  <div class="bar">
+    <span class="bar-emoji">🌐</span>
+    Chud Registrar: $5/yr subdomains, settled in USDC on Solana. We don&rsquo;t take Visa.
+    <a href="#whois">Look up a chud →</a>
+  </div>
+
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/chudflare-mascot.png" alt="" aria-hidden="true"/>
+        <span>Chudflare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="products.html">Products</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="registrar.html" style="color:var(--chud-orange-dark)" aria-current="page">Domains</a>
+        <a href="docs.html">Docs</a>
+        <a href="radar.html">Radar</a>
+        <a href="status.html">Status</a>
+        <a href="blog/index.html">Blog</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="dashboard.html" class="hide-sm">Dashboard</a>
+        <a href="pricing.html" class="btn btn-primary btn-sm">Start chudmaxxing</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="reg-wrap">
+    <div class="eyebrow" style="color:var(--chud-orange-dark)">Chud Registrar</div>
+    <h1>Own a piece of the chud-native internet.</h1>
+    <p class="lead">Register a real subdomain for <strong>$5/year</strong>, settled in USDC on Solana. No banks, no Visa, no processor fees &mdash; just $5 of USDC and a memo. Priced to keep the spammers out.</p>
+
+    <div class="reg-search">
+      <input id="reg-name" type="text" placeholder="yourname" autocomplete="off" spellcheck="false" maxlength="63"/>
+      <span class="suffix" id="reg-suffix">.imafatfuckingchud.com</span>
+      <button id="reg-check">Search</button>
+    </div>
+    <div class="reg-hint">a&ndash;z, 0&ndash;9 and hyphens, up to 63 chars. reserved &amp; abusive names are blocked.</div>
+
+    <div class="reg-result" id="reg-result"></div>
+
+    <section class="reg-whois" id="whois">
+      <h2>WHOIS / RDAP lookup</h2>
+      <div class="row2">
+        <input id="whois-q" type="text" placeholder="bob.imafatfuckingchud.com" autocomplete="off"/>
+        <button class="btn btn-secondary btn-sm" id="whois-go">Look up</button>
+      </div>
+      <pre id="whois-out"></pre>
+    </section>
+
+    <p class="reg-note">
+      Subdomains are real and resolve under a domain we control. Registrations are recorded in a KV ledger and bound to your Solana payment via an on-chain memo (so a payment can buy exactly one name, once). Every name passes a reserved/abuse filter; report abuse to <code>security@chudflare.com</code> and we&rsquo;ll take it down. <strong>Chudflare reserves the right to remove any purchased subdomain that violates <a href="https://www.cloudflare.com/website-terms/" target="_blank" rel="noopener">Cloudflare&rsquo;s</a> (the real company) Terms of Service.</strong> This is a parody product: there is no SLA, no refunds, and nothing ever happens.
+    </p>
+  </main>
+
+  <footer class="foot" style="margin-top:0">
+    <div class="container">
+      <div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px">
+        &copy; 2026 Chudflare, Inc. All rights chudded. &middot;
+        <a href="index.html" style="color:var(--chud-orange-light)">chudflare.com</a> &middot;
+        <a href="products.html" style="color:var(--chud-orange-light)">Products</a> &middot;
+        <a href="radar.html" style="color:var(--chud-orange-light)">Radar</a> &middot;
+        <a href="status.html" style="color:var(--chud-orange-light)">Status</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/chudflare.js?v=4"></script>
+  <script>
+  (function () {
+    'use strict';
+    var $ = function (s) { return document.querySelector(s); };
+    var nameEl = $('#reg-name'), suffixEl = $('#reg-suffix'), checkBtn = $('#reg-check'),
+        resultEl = $('#reg-result'), whoisQ = $('#whois-q'), whoisGo = $('#whois-go'), whoisOut = $('#whois-out');
+    var PARENT = 'imafatfuckingchud.com';
+    var current = null;
+
+    function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+    function copyBtn(id, text) { return '<button class="copy" data-copy-text="' + esc(text) + '">copy</button>'; }
+
+    async function check() {
+      var name = (nameEl.value || '').trim().toLowerCase();
+      if (!name) { nameEl.focus(); return; }
+      resultEl.className = 'reg-result show';
+      resultEl.innerHTML = '<div class="reg-priceline">checking <strong>' + esc(name) + '.' + PARENT + '</strong>\u2026</div>';
+      try {
+        var r = await fetch('/api/registrar?name=' + encodeURIComponent(name) + '&parent=' + encodeURIComponent(PARENT), { headers: { accept: 'application/json' } });
+        if (!r.ok && r.status !== 400) throw new Error('http ' + r.status);
+        var j = await r.json();
+        renderResult(j);
+      } catch (e) {
+        resultEl.innerHTML = '<div class="reg-status no"><span class="dot"></span>registry offline</div>' +
+          '<div class="reg-priceline">The Chud Registrar runs on a Cloudflare Pages Function. Locally it 404s &mdash; deploy or use <code>wrangler pages dev .</code> to try registration.</div>';
+      }
+    }
+
+    function renderResult(j) {
+      current = j;
+      if (!j.available) {
+        var reason = j.reason ? ' (' + esc(j.reason) + ')' : '';
+        resultEl.innerHTML = '<div class="fqdn">' + esc(j.fqdn || ((nameEl.value || '').toLowerCase() + '.' + PARENT)) + '</div>' +
+          '<div class="reg-status no"><span class="dot"></span>' + (j.reason === 'invalid format' || j.reason ? 'unavailable' + reason : 'taken') + '</div>';
+        return;
+      }
+      var pay = j.pay || {};
+      var html = '<div class="fqdn">' + esc(j.fqdn) + '</div>' +
+        '<div class="reg-status ok"><span class="dot"></span>available</div>' +
+        '<div class="reg-priceline"><strong>$' + Number(j.price_usdc).toFixed(2) + '/yr</strong> &middot; ' + Number(j.price_usdc) + ' USDC on Solana &middot; priced to deter spam</div>' +
+        '<div class="reg-paybtns"><button class="btn btn-primary" id="reg-start">Register for $' + Number(j.price_usdc).toFixed(2) + '</button></div>' +
+        '<div class="reg-checkout" id="reg-checkout"></div>';
+      resultEl.innerHTML = html;
+      $('#reg-start').addEventListener('click', function () { startCheckout(j); });
+    }
+
+    function startCheckout(j) {
+      var pay = j.pay || {};
+      var co = $('#reg-checkout');
+      co.className = 'reg-checkout show';
+      var addr = pay.address || '(not configured on this deployment)';
+      var rows = '' +
+        '<div class="row"><span class="k">Amount</span><span class="v">' + Number(pay.amount).toFixed(2) + ' USDC</span></div>' +
+        '<div class="row"><span class="k">Network</span><span class="v">Solana &middot; ' + esc(pay.token || 'USDC') + '</span></div>' +
+        '<div class="row"><span class="k">Pay to</span><span class="v">' + esc(addr) + (pay.address ? ' ' + copyBtn('a', pay.address) : '') + '</span></div>' +
+        '<div class="row"><span class="k">Memo (required)</span><span class="v">' + esc(pay.memo) + ' ' + copyBtn('m', pay.memo) + '</span></div>';
+      var solpay = pay.solana_pay
+        ? '<a class="btn btn-primary btn-sm" href="' + esc(pay.solana_pay) + '">Open in wallet (Solana Pay)</a>'
+        : '';
+      var cfgNote = pay.configured ? '' : '<div class="reg-msg pending show">Heads up: this deployment hasn\u2019t set <code>CHUD_PAY_ADDRESS</code> / <code>SOLANA_RPC</code> yet, so verification will fail until it does. The flow is otherwise live.</div>';
+      co.innerHTML =
+        '<h3>Pay $' + Number(pay.amount).toFixed(2) + ' in USDC (Solana)</h3>' +
+        '<p class="pitch">We don\u2019t take Visa. Send exactly ' + Number(pay.amount).toFixed(2) + ' USDC with the memo below (it binds the payment to this name), then paste your transaction signature. By registering, you agree Chudflare may remove any subdomain that violates Cloudflare\u2019s (the real company) ToS.</p>' +
+        '<div class="reg-pay">' + rows + '</div>' +
+        '<div class="reg-paybtns">' + solpay + '</div>' +
+        cfgNote +
+        '<div class="reg-sig"><input id="reg-sig" placeholder="paste Solana transaction signature" autocomplete="off"/><button class="btn btn-primary" id="reg-verify">Verify &amp; register</button></div>' +
+        '<div class="reg-msg" id="reg-result-msg"></div>' +
+        '<div class="reg-cert" id="reg-cert"></div>';
+      co.querySelectorAll('.copy').forEach(function (b) {
+        b.addEventListener('click', function () {
+          navigator.clipboard && navigator.clipboard.writeText(b.getAttribute('data-copy-text'));
+          var t = b.textContent; b.textContent = 'copied'; setTimeout(function () { b.textContent = t; }, 1200);
+        });
+      });
+      $('#reg-verify').addEventListener('click', function () { register(j); });
+    }
+
+    async function register(j) {
+      var sig = ($('#reg-sig').value || '').trim();
+      var msg = $('#reg-result-msg');
+      if (!sig) { msg.className = 'reg-msg err show'; msg.textContent = 'paste your transaction signature first.'; return; }
+      msg.className = 'reg-msg pending show'; msg.textContent = 'verifying payment on-chain\u2026';
+      try {
+        var r = await fetch('/api/registrar', {
+          method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name: j.fqdn.split('.')[0], parent: PARENT, signature: sig })
+        });
+        var jr = await r.json();
+        if (!jr.ok) { msg.className = 'reg-msg err show'; msg.textContent = jr.error || 'verification failed.'; return; }
+        msg.className = 'reg-msg'; msg.textContent = '';
+        var cert = $('#reg-cert');
+        cert.className = 'reg-cert show';
+        cert.innerHTML = '<div class="seal">\u2713 Certificate of Chudation</div>' +
+          '<h3>' + esc(jr.registration.fqdn) + '</h3>' +
+          '<pre>' + esc(jr.certificate) + '</pre>';
+      } catch (e) {
+        msg.className = 'reg-msg err show'; msg.textContent = 'registry offline (needs Cloudflare Pages Functions).';
+      }
+    }
+
+    async function whois() {
+      var q = (whoisQ.value || '').trim().toLowerCase();
+      if (!q) return;
+      whoisOut.className = 'show'; whoisOut.textContent = 'querying CNS registry\u2026';
+      try {
+        var r = await fetch('/api/registrar?whois=' + encodeURIComponent(q), { headers: { accept: 'application/json' } });
+        var j = await r.json();
+        whoisOut.textContent = JSON.stringify(j, null, 2);
+      } catch (e) { whoisOut.textContent = '; registry offline (needs Cloudflare Pages).'; }
+    }
+
+    checkBtn.addEventListener('click', check);
+    nameEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); check(); } });
+    whoisGo.addEventListener('click', whois);
+    whoisQ.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); whois(); } });
+  })();
+  </script>
+</body>
+</html>

@@ -206,6 +206,14 @@ cmd_dig() {
   require_arg "$domain" "usage: chudflare dig <domain>"
   domain=$(printf '%s' "$domain" | sed -E 's|^https?://||; s|/.*$||')
 
+  # The resolver is real: query CNS over DoH. Falls back to local compute offline.
+  local doh
+  if doh=$(curl -fsS --max-time 6 "https://chudflare.com/dns-query?name=${domain}&type=ANY&format=dig" 2>/dev/null) && [ -n "$doh" ]; then
+    printf '%s\n' "$doh"
+    return 0
+  fi
+  printf '%s; (offline: CNS unreachable over DoH, using local chud-cache)%s\n' "$DIM" "$NC"
+
   local seed; seed=$(hash_str "$domain")
   local a1=$(( seed % 254 ))
   local a2=$(( (seed / 256) % 254 ))
