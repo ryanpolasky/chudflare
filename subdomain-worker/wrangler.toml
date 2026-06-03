@@ -1,0 +1,23 @@
+# chud-subdomains Worker — serves registered *.imafatfuckingchud.com subdomains.
+# Deploy from this folder: npx wrangler deploy
+name = "chud-subdomains"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# Wildcard route. The zone (imafatfuckingchud.com) must be on this Cloudflare
+# account, and a proxied (orange-cloud) record must exist for the wildcard so
+# the route can attach — your existing `*` CNAME is fine; the Worker intercepts
+# before any origin is contacted, which is what kills the 522.
+routes = [
+  { pattern = "*.imafatfuckingchud.com/*", zone_name = "imafatfuckingchud.com" }
+]
+
+# Bind the SAME KV namespace the Pages registrar writes to, so registrations
+# made at /registrar are visible here. Get the id with:
+#   npx wrangler kv namespace list
+[[kv_namespaces]]
+binding = "CHUD_REGISTRY"
+id = "1f156f42b9b342edaa4a607e93e5f8f9"
+
+[vars]
+CHUD_PARENTS = "imafatfuckingchud.com"

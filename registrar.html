@@ -265,6 +265,18 @@
     nameEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); check(); } });
     whoisGo.addEventListener('click', whois);
     whoisQ.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); whois(); } });
+
+    // Arrived from the wildcard Worker? It bounces unregistered subdomains here
+    // as /registrar?suggest=<label>. Pre-fill the search and check it immediately.
+    (function prefillFromQuery() {
+      var params = new URLSearchParams(location.search);
+      var pre = (params.get('suggest') || params.get('name') || '').trim().toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 63);
+      if (!pre) return;
+      nameEl.value = pre;
+      var hint = document.querySelector('.reg-hint');
+      if (hint) hint.innerHTML = '<strong>' + pre + '.imafatfuckingchud.com</strong> isn\u2019t a chud yet \u2014 checking availability\u2026';
+      check();
+    })();
   })();
   </script>
 </body>
