@@ -30,7 +30,6 @@ chudflare/
 ├── psl-detector.html        Free PSL detector (image URL or name → hash → PSL score)
 ├── status.html              Fake status page (operational dashboard + incident history)
 ├── radar.html               Chud Radar: network-wide trends dashboard (parody of radar.cloudflare.com)
-├── dashboard.html           Chud Dashboard: logged-in zone view + editable CNS records (parody of dash.cloudflare.com)
 ├── slop.html                Dial-up SDN demo (streams an asset at a chosen baud via /cdn-chud/slop)
 ├── registrar.html           Chud Registrar: $5/yr subdomains paid in USDC on Solana
 ├── verify.html              Cloudflare-style "checking if you're a chud" interstitial (works as a real gate via `?return=<url>`)
@@ -106,7 +105,6 @@ python3 -m http.server 8000
 | **Fake status page**       | `/status`                           | Operational dashboard + 4 historical incidents + subscribe form                                                                                                                       |
 | **Chudtern™ applications** | `/apply`                            | Four parody internship roles; submissions POST to a Cloudflare Pages Function that forwards a formatted embed to a Discord webhook                                                    |
 | **Chud Radar**             | `/radar`                            | Network-wide trend dashboard: live KPIs, PSL-over-time chart, top mogged domains, region/vector bars, PoP health                                                                      |
-| **Chud Dashboard**         | `/dashboard`                        | Fake logged-in zone view: live tiles, 24h traffic chart, security events, and an editable CNS records table with proxy toggles                                                        |
 | **Chud DNS (DoH)**         | `/dns-query`                        | A real DNS-over-HTTPS resolver (JSON + RFC 8484 wire). The CNS widget and `chudflare dig` query it live; point a browser's Secure DNS at it.                                          |
 | **Dial-up SDN**            | `/slop`                             | Streams a real asset back at a chosen baud (110–56k) through a throttled edge stream. The CDN you can feel.                                                                           |
 | **ChudPoW**                | `/verify`                           | Real HMAC-signed hashcash; the gate makes you "prove you're chud enough" (`/api/challenge`) before opening.                                                                           |
@@ -249,7 +247,6 @@ corporate apparatus:
 | `/.well-known/security.txt`                  | same, with chud-bounty severity scale              |
 | The Cloudflare Blog                          | `/blog` with 5 engineering posts                   |
 | Cloudflare Radar                             | `/radar`                                           |
-| Cloudflare dashboard (`dash.cloudflare.com`) | `/dashboard`                                       |
 | Cloudflare Speed / scan                      | `/psl-detector`                                    |
 | Cloudflare Workers playground                | `/playground`                                      |
 | `1.1.1.1` DNS-over-HTTPS                     | `/dns-query` (real DoH: JSON + RFC 8484 wire)      |
@@ -275,7 +272,6 @@ Cloudflare Pages serves `/foo` from `foo.html` automatically and applies `_heade
 /psl-detector      → psl-detector.html
 /status            → status.html
 /radar             → radar.html
-/dashboard         → dashboard.html
 /blog              → blog/index.html
 /install.sh        → install.sh     (Content-Type: text/x-shellscript)
 /chudflare         → chudflare      (Content-Type: text/x-shellscript)
