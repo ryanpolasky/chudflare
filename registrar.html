@@ -77,13 +77,7 @@
 </head>
 <body data-no-banner>
   <div class="compliance" style="background:#FAF7F1;color:#5a6068;font-size:12px;line-height:1.5;text-align:center;padding:10px 24px;border-bottom:1px solid var(--chud-line)">
-    Chudflare is a parody of Cloudflare. Not affiliated with, endorsed by, or related to Cloudflare, Inc. The Chud Registrar sells subdomains of a domain we own &mdash; not real TLDs. For real domains, visit <a href="https://www.cloudflare.com/products/registrar/" target="_blank" rel="noopener" style="color:var(--chud-orange-dark);font-weight:600">Cloudflare Registrar</a>.
-  </div>
-
-  <div class="bar">
-    <span class="bar-emoji">🌐</span>
-    Chud Registrar: $5/yr subdomains, settled in USDC on Solana. We don&rsquo;t take Visa.
-    <a href="#whois">Look up a chud →</a>
+    Chudflare is a parody of Cloudflare. Not affiliated with, endorsed by, or related to Cloudflare, Inc. The Chud Registrar sells subdomains of a domain we own - not real TLDs. For real domains, visit <a href="https://www.cloudflare.com/products/registrar/" target="_blank" rel="noopener" style="color:var(--chud-orange-dark);font-weight:600">Cloudflare Registrar</a>.
   </div>
 
   <header class="nav">
@@ -95,10 +89,12 @@
       <nav class="nav-links">
         <a href="products.html">Products</a>
         <a href="pricing.html">Pricing</a>
-        <a href="registrar.html" style="color:var(--chud-orange-dark)" aria-current="page">Domains</a>
+        <a href="registrar.html">Domains</a>
+        <a href="chud-check.html">Verify your site</a>
         <a href="docs.html">Docs</a>
-        <a href="radar.html">Radar</a>
+        <a href="playground.html">Playground</a>
         <a href="status.html">Status</a>
+        <a href="apply.html">Careers</a>
         <a href="blog/index.html">Blog</a>
       </nav>
       <div class="nav-cta">
@@ -110,8 +106,8 @@
 
   <main class="reg-wrap">
     <div class="eyebrow" style="color:var(--chud-orange-dark)">Chud Registrar</div>
-    <h1>Own a piece of the chud-native internet.</h1>
-    <p class="lead">Register a real subdomain for <strong>$5/year</strong>, settled in USDC on Solana. No banks, no Visa, no processor fees &mdash; just $5 of USDC and a memo. Priced to keep the spammers out.</p>
+    <h1>Own a piece of the chud-native web.</h1>
+    <p class="lead">Register a real subdomain for <strong>$5/year</strong>, settled in USDC on Solana. No banks, no Visa, no processor fees - just $5 of USDC and a memo.</p>
 
     <div class="reg-search">
       <input id="reg-name" type="text" placeholder="yourname" autocomplete="off" spellcheck="false" maxlength="63"/>
@@ -173,7 +169,7 @@
         renderResult(j);
       } catch (e) {
         resultEl.innerHTML = '<div class="reg-status no"><span class="dot"></span>registry offline</div>' +
-          '<div class="reg-priceline">The Chud Registrar runs on a Cloudflare Pages Function. Locally it 404s &mdash; deploy or use <code>wrangler pages dev .</code> to try registration.</div>';
+          '<div class="reg-priceline">The Chud Registrar runs on a Cloudflare Pages Function. Locally it 404s - deploy or use <code>wrangler pages dev .</code> to try registration.</div>';
       }
     }
 

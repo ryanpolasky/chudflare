@@ -31,7 +31,7 @@ chudflare/
 ├── status.html              Fake status page (operational dashboard + incident history)
 ├── radar.html               Chud Radar: network-wide trends dashboard (parody of radar.cloudflare.com)
 ├── dashboard.html           Chud Dashboard: logged-in zone view + editable CNS records (parody of dash.cloudflare.com)
-├── slop.html                Dial-up SDN demo (streams an asset at a chosen baud via /cdn-cgi/slop)
+├── slop.html                Dial-up SDN demo (streams an asset at a chosen baud via /cdn-chud/slop)
 ├── registrar.html           Chud Registrar: $5/yr subdomains paid in USDC on Solana
 ├── verify.html              Cloudflare-style "checking if you're a chud" interstitial (works as a real gate via `?return=<url>`)
 ├── apply.html               Chudtern™ internship application form (posts to Discord via Pages Function)
@@ -59,8 +59,8 @@ chudflare/
 ├── _redirects               Cloudflare Pages URL canonicalization (strips .html)
 ├── functions/                  Cloudflare Pages Functions (real serverless endpoints)
 │   ├── dns-query.js            DoH resolver: /dns-query (JSON + RFC 8484 wire + dig text)
-│   ├── cdn-cgi/
-│   │   └── slop.js             Dial-up SDN: /cdn-cgi/slop streams an asset throttled to baud
+│   ├── cdn-chud/
+│   │   └── slop.js             Dial-up SDN: /cdn-chud/slop streams an asset throttled to baud
 │   ├── api/
 │   │   ├── apply.js            POST /api/apply -> Discord webhook
 │   │   ├── challenge.js        ChudPoW: /api/challenge (HMAC-signed proof-of-work)

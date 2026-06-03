@@ -1,19 +1,22 @@
 /**
  * Cloudflare Pages Function: GET/POST /dns-query
  *
- * A real DNS-over-HTTPS resolver. It is, of course, a parody: every answer is
- * deterministic chud nonsense (A records in 10.20.0.0/16, a "v=chud1" TXT,
- * DoorDash MX, etc.). But the wire protocol is real, so you can point actual
- * DoH clients at it:
+ * The Chud Name System (CNS). It resolves domains the way a guy at a party
+ * answers questions he does not know the answer to: instantly, confidently, and
+ * the same way every time. You get A records in 10.20.0.0/16, a "v=chud1" TXT,
+ * and your mail routed through DoorDash. None of it is real. All of it is wrong.
  *
- *   # JSON DoH (Google/Cloudflare style)
+ * The inconvenient part: it speaks actual DoH, so real clients believe it.
+ * Point one at it and watch it nod along:
+ *
+ *   # JSON DoH (the Google/Cloudflare dialect)
  *   curl -s 'https://chudflare.com/dns-query?name=imafatfuckingchud.com&type=A' \
  *        -H 'accept: application/dns-json'
  *
- *   # RFC 8484 wire format (what browsers' Secure DNS uses)
+ *   # RFC 8484 wire format (what your browser's Secure DNS speaks)
  *   kdig @https://chudflare.com/dns-query imafatfuckingchud.com
  *
- * Resolver identity: 6.9.6.9. Records are stable per domain (FNV-1a seed).
+ * Resolver identity: 6.9.6.9. Same domain in, same nonsense out (FNV-1a seed).
  */
 
 const TYPE_BY_NAME = { A: 1, NS: 2, CNAME: 5, SOA: 6, MX: 15, TXT: 16, AAAA: 28, ANY: 255 };

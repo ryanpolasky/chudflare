@@ -5,9 +5,9 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Slop Delivery Network | Live dial-up demo | Chudflare</title>
-  <meta name="description" content="The Slop Delivery Network you can actually feel. A real Cloudflare Pages Function streams any same-origin asset back to you at authentic dial-up baud rates. Parody of a CDN."/>
-  <meta property="og:title" content="Slop Delivery Network — live dial-up demo"/>
-  <meta property="og:description" content="Stream a real asset at 300/2400/56k baud and watch the slop trickle in. A parody CDN that delivers at dial-up speed."/>
+  <meta name="description" content="The Slop Delivery Network: your files, kept by a geographically inconvenient chud who reads them back to you one byte at a time over a landline. A CDN, technically."/>
+  <meta property="og:title" content="Slop Delivery Network: slop, hand-delivered at dial-up speed"/>
+  <meta property="og:description" content="Pick a file, pick a baud rate, and watch a geographically inconvenient chud read it back one byte at a time. nothing ever happens, slowly."/>
   <meta property="og:image" content="https://chudflare.com/assets/img/og-image.png?v=3"/>
   <meta property="og:type" content="website"/>
   <meta property="og:site_name" content="Chudflare"/>
@@ -58,12 +58,6 @@
     Chudflare is a parody of Cloudflare. Not affiliated with, endorsed by, or related to Cloudflare, Inc. For a CDN that is fast (the opposite of this), visit <a href="https://cloudflare.com" target="_blank" rel="noopener" style="color:var(--chud-orange-dark);font-weight:600">cloudflare.com</a>.
   </div>
 
-  <div class="bar">
-    <span class="bar-emoji">📞</span>
-    The Slop Delivery Network now serves at speeds up to 56k. Please do not pick up the phone.
-    <a href="products.html#sdn">About the SDN →</a>
-  </div>
-
   <header class="nav">
     <div class="container nav-row">
       <a href="index.html" class="nav-logo">
@@ -73,11 +67,12 @@
       <nav class="nav-links">
         <a href="products.html">Products</a>
         <a href="pricing.html">Pricing</a>
+        <a href="registrar.html">Domains</a>
         <a href="chud-check.html">Verify your site</a>
         <a href="docs.html">Docs</a>
         <a href="playground.html">Playground</a>
-        <a href="radar.html">Radar</a>
         <a href="status.html">Status</a>
+        <a href="apply.html">Careers</a>
         <a href="blog/index.html">Blog</a>
       </nav>
       <div class="nav-cta">
@@ -90,7 +85,7 @@
   <main class="slop-wrap">
     <div class="eyebrow" style="color:var(--chud-orange-dark)">Slop Delivery Network</div>
     <h1>The CDN you can feel.</h1>
-    <p class="lead">Most CDNs race to deliver bytes in milliseconds. The SDN delivers them at authentic dial-up baud, one trickle at a time, from a real edge function. Pick an asset, pick a speed, and listen for the handshake.</p>
+    <p class="lead">Other CDNs keep copies of your files in 300 cities so they arrive in milliseconds. The Slop Delivery Network keeps one copy, with a chud, in a basement, in a time zone that does not make sense. When you ask for a file he picks up the landline and reads it to you one byte at a time. Pick a file, pick a speed, and listen for the handshake.</p>
 
     <div class="slop-controls">
       <div>
@@ -140,7 +135,7 @@
     </div>
 
     <p class="slop-note">
-      This is real: <code>/cdn-cgi/slop</code> is a Cloudflare Pages Function that streams a genuine same-origin asset back through a throttled <code>ReadableStream</code> at <code>baud / 10</code> bytes per second. Delivery is capped at ~30s (the slop nap) so a 110-baud request can't run until the heat death of the universe. Same-origin assets only; no open proxy.
+      Yes, it actually works. Try not to think about why. <code>/cdn-chud/slop</code> rings up a chud stationed somewhere geographically inconvenient, who reads a real file back to you at <code>baud / 10</code> bytes per second, which is about as fast as a man can read bytes aloud. Deliveries are capped at roughly 30 seconds (the slop nap), so a 110-baud request will not run until the heat death of the universe. He only fetches files from this site. He is not an open proxy, he is just a guy.
     </p>
   </main>
 
@@ -218,7 +213,7 @@
       log('GET ' + asset, 'sys');
 
       controller = new AbortController();
-      var url = '/cdn-cgi/slop?url=' + encodeURIComponent(asset) + '&baud=' + baud + '&t=' + Date.now();
+      var url = '/cdn-chud/slop?url=' + encodeURIComponent(asset) + '&baud=' + baud + '&t=' + Date.now();
       var start = performance.now();
       try {
         var resp = await fetch(url, { signal: controller.signal });
@@ -257,8 +252,8 @@
         if (e.name === 'AbortError') { log('NO CARRIER (you hung up).', 'err'); }
         else {
           log('ERROR: ' + e.message, 'err');
-          log('// the SDN function only runs on Cloudflare Pages. locally (python http.server) /cdn-cgi/slop 404s.', 'sys');
-          ph.textContent = 'SDN offline (deploy to Pages)';
+          log('// the courier chud only clocks in on Cloudflare Pages. on a plain python http.server there is no /cdn-chud/slop, so he no-shows.', 'sys');
+          ph.textContent = 'no chud picked up (deploy to Pages)';
         }
       } finally {
         controller = null; conn.textContent = 'ON HOOK';

@@ -1,16 +1,22 @@
 /**
- * Cloudflare Pages Function: GET /cdn-cgi/slop
+ * Cloudflare Pages Function: GET /cdn-chud/slop
+ *
+ * NOTE ON THE PATH: this lives at /cdn-chud/ and NOT /cdn-cgi/ on purpose.
+ * Cloudflare reserves the /cdn-cgi/ prefix for its own edge services and
+ * intercepts those requests before Pages Functions run, so a function at
+ * /cdn-cgi/slop never executes (it 404s even on Pages). /cdn-chud/ is a normal
+ * route, so the SDN actually works while still looking like an internal path.
  *
  * The Slop Delivery Network, except it delivers slop at authentic dial-up
  * speeds. It streams a real same-origin asset back to you, throttled to a
  * chosen baud rate via a paced ReadableStream. This is genuinely functional:
  * the bytes really do trickle out at ~baud/10 bytes per second.
  *
- *   GET /cdn-cgi/slop?url=/assets/img/chudflare-mascot.png&baud=2400
+ *   GET /cdn-chud/slop?url=/assets/img/chudflare-mascot.png&baud=2400
  *
  * Guardrails:
  *   - same-origin assets only (no open proxy)
- *   - refuses to slop /cdn-cgi/* (no loops)
+ *   - refuses to slop /cdn-chud/* (no loops)
  *   - total delivery time capped at ~30s (the "slop nap"); below that the
  *     requested baud is honored exactly.
  */
@@ -38,7 +44,7 @@ export async function onRequest(context) {
   let target;
   try { target = new URL(path, url.origin); } catch (e) { return err('that is not a slop-deliverable URL.'); }
   if (target.origin !== url.origin) return err('the SDN only slops same-origin assets. no open proxy, chud.');
-  if (target.pathname.startsWith('/cdn-cgi/')) return err('refusing to slop the slop endpoint. that way lies agartha.');
+  if (target.pathname.startsWith('/cdn-chud/')) return err('refusing to slop the slop endpoint. that way lies agartha.');
 
   let assetResp;
   try { assetResp = await fetch(target.toString(), { cf: { cacheTtl: 300 } }); }
